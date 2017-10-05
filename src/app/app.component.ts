@@ -1,13 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
+import { enableProdMode, Component, ViewChild } from '@angular/core';
 import { Nav, Platform, Config } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-
-import { AnnotatePage } from '../pages/annotate/annotate';
+import { ProjectsPage } from '../pages/projects/projects';
 
 // import { Data } from './data';
 
+// Enable production mode unless running locally
+// if (!/localhost/.test(document.location.host)) {
+  enableProdMode();
+// }
 
 @Component({
   templateUrl: 'app.html'
@@ -15,14 +18,14 @@ import { AnnotatePage } from '../pages/annotate/annotate';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = AnnotatePage;
+  rootPage: any = ProjectsPage;
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, 
-    // public data: Data, 
-    public _config: Config, 
-    public statusbar: StatusBar, 
+  constructor(public platform: Platform,
+    // public data: Data,
+    public _config: Config,
+    public statusbar: StatusBar,
     public splashscreen: SplashScreen) {
     this.initializeApp();
 

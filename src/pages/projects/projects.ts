@@ -23,7 +23,7 @@ export class ProjectsPage {
   public projects = []
   public validSecurity  = false
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
   	public navParams: NavParams,
     private projectService: ProjectService,
     public storage: Storage,
@@ -88,6 +88,5 @@ export class ProjectsPage {
 
   }
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProjectPage');
   }
 }

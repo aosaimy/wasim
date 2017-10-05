@@ -81,7 +81,7 @@ export class AnnotatePage {
         hash : this.hash
       })
     }
-    if (!navParams.data.id){
+    if (!navParams.data.id && navCtrl.length() >1){
       navCtrl.pop();
     }
     else{

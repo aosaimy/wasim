@@ -102,7 +102,7 @@ var AnnotatePage = (function () {
                 hash: this.hash
             });
         }
-        if (!navParams.data.id) {
+        if (!navParams.data.id && navCtrl.length() > 1) {
             navCtrl.pop();
         }
         else {
@@ -781,8 +781,10 @@ var ConlluService = (function () {
                     that.data[project + "-" + pageid] = data.file;
                     resolve(that.data[project + "-" + pageid]);
                 }
-                else
+                else {
+                    console.error(data.error);
                     reject(data.error);
+                }
             });
         });
     };
@@ -910,10 +912,10 @@ var ConlluService = (function () {
 }());
 ConlluService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _b || Object])
 ], ConlluService);
 
+var _a, _b;
 //# sourceMappingURL=conllu-service.js.map
 
 /***/ }),
@@ -1293,7 +1295,6 @@ var ProjectsPage = (function () {
         });
     };
     ProjectsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad ProjectPage');
     };
     return ProjectsPage;
 }());
@@ -1301,13 +1302,10 @@ ProjectsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<!--\n  Generated template for the ProjectsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>المشاريع</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding rtl>\n   <ion-card *ngIf="!validSecurity">\n   <ion-card-header>تسجيل الدخول كمدير</ion-card-header>\n   <ion-card-content>\n     <ion-item>\n      <ion-label fixed>رمز الدخول</ion-label>\n      <ion-input type="password" [(ngModel)]="security"></ion-input>\n      </ion-item>\n        <button ion-button (click)="securityChanged()">الدخول</button>\n    </ion-card-content>\n  </ion-card>\n\n  <ion-card *ngIf="validSecurity">\n  <ion-item-divider>\n    المشرايع الحالية\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>\n    		<button ion-button outline item-end icon-left (click)="remove(p)">احذف</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>لا يوجد أي مشروع</ion-item>\n  <ion-item-divider>\n    مشروع جديد\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>اسم المشروع</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>\n	</ion-item>\n  </ion-card>\n\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */],
-        __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]) === "function" && _e || Object])
 ], ProjectsPage);
 
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=projects.js.map
 
 /***/ }),
@@ -3452,7 +3450,6 @@ var ProjectService = (function () {
         this.myconfig = myconfig;
         this.data = {};
         this.list = { ok: false, projects: [], error: "Not laoded yet." };
-        console.log('Hello WordService Provider');
     }
     ProjectService.prototype.getList = function (security) {
         var _this = this;
@@ -3499,10 +3496,10 @@ var ProjectService = (function () {
 }());
 ProjectService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _b || Object])
 ], ProjectService);
 
+var _a, _b;
 //# sourceMappingURL=project-service.js.map
 
 /***/ }),
@@ -3656,7 +3653,6 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23_ng_selectize__ = __webpack_require__(293);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24_ng2_file_upload__ = __webpack_require__(208);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_24_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__config__ = __webpack_require__(299);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3690,7 +3686,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-
 // import { Storage } from '@ionic/storage';
 // let storage = new Storage(['sqlite', 'websql', 'indexeddb'], { name: '__hadiths' })// optional config);
 // export function provideData() {
@@ -3699,6 +3694,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 // export function provideStorage() {
 // return storage;
 // }
+var wasim_config = {
+    server: "http://localhost:7878/",
+    // udpipe: "http://localhost:1441/",
+    locationStrategy: 'hash',
+};
 var deepLinkConfig = {
     links: [
         // { component: AnnotatePage, name: 'Annotate Page', segment: '',defaultHistory: [ ] },
@@ -3734,7 +3734,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_19__angular_http__["b" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_23_ng_selectize__["a" /* NgSelectizeModule */],
             __WEBPACK_IMPORTED_MODULE_20__ionic_storage__["a" /* IonicStorageModule */].forRoot(),
-            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], __WEBPACK_IMPORTED_MODULE_25__config__["a" /* myconfig */], deepLinkConfig)
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], wasim_config, deepLinkConfig)
         ],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicApp */]],
         entryComponents: [
@@ -3774,7 +3774,7 @@ AppModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(198);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_annotate_annotate__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(107);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3790,15 +3790,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 // import { Data } from './data';
+// Enable production mode unless running locally
+// if (!/localhost/.test(document.location.host)) {
+Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
+// }
 var MyApp = (function () {
     function MyApp(platform, 
-        // public data: Data, 
+        // public data: Data,
         _config, statusbar, splashscreen) {
         this.platform = platform;
         this._config = _config;
         this.statusbar = statusbar;
         this.splashscreen = splashscreen;
-        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_annotate_annotate__["a" /* AnnotatePage */];
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__["a" /* ProjectsPage */];
         this.initializeApp();
         // used for an example of ngFor and navigation
         this.pages = [];
@@ -3821,17 +3825,15 @@ var MyApp = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */]),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */])
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */]) === "function" && _a || Object)
 ], MyApp.prototype, "nav", void 0);
 MyApp = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/'<ion-menu [content]="content">\n  <ion-header>\n    <ion-toolbar>\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <ion-content>\n    <ion-list>\n      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n        {{p.title}}\n      </button>\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
-        __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
-        __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]) === "function" && _e || Object])
 ], MyApp);
 
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=app.component.js.map
 
 /***/ }),
@@ -4096,20 +4098,6 @@ NotMultiTag = __decorate([
 ], NotMultiTag);
 
 //# sourceMappingURL=not-multi-tag.js.map
-
-/***/ }),
-
-/***/ 299:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return myconfig; });
-var myconfig = {
-    server: "http://localhost:7878/",
-    // udpipe: "http://localhost:1441/",
-    locationStrategy: 'hash',
-};
-//# sourceMappingURL=config.js.map
 
 /***/ })
 

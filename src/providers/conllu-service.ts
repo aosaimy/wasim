@@ -58,8 +58,10 @@ export class ConlluService {
 	        	that.data[project+"-"+pageid] = data.file;
 	        	resolve(that.data[project+"-"+pageid]);
 	        }
-	        else
+	        else{
+            console.error(data.error)
 	        	reject(data.error)
+          }
 	      });
 	  });
 	}

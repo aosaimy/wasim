@@ -13,9 +13,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ProjectService {
 
-  constructor(public http: Http, 
+  constructor(public http: Http,
   	public myconfig: Config) {
-    console.log('Hello WordService Provider');
   }
   data = {}
   list : {ok:boolean,projects:string[],error:string}= {ok:false,projects:[],error:"Not laoded yet."}
@@ -33,7 +32,7 @@ export class ProjectService {
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
-	        console.log(data) 
+	        console.log(data)
 	        // data = data;
 	        if(data.ok){
 	        	that.list = data;

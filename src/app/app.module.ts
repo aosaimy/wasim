@@ -38,7 +38,11 @@ import { myconfig } from './config';
 // export function provideStorage() {
   // return storage;
 // }
-
+var wasim_config = {
+  server: "http://localhost:7878/",
+  // udpipe: "http://localhost:1441/",
+  locationStrategy: 'hash',
+}
 
 
 export const deepLinkConfig: DeepLinkConfig = {
@@ -71,7 +75,7 @@ export const deepLinkConfig: DeepLinkConfig = {
     HttpModule,
     NgSelectizeModule,
     IonicStorageModule.forRoot(),
-    IonicModule.forRoot(MyApp,myconfig, deepLinkConfig)
+    IonicModule.forRoot(MyApp,wasim_config, deepLinkConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
