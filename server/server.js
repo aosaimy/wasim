@@ -20,7 +20,7 @@ var app = express();
 var crypto = require('crypto');
 var config = require('./config');
 var http = require("http");
-var conllu = require(config.resultConllU_path+"resultConllU")
+var conllu = require(config.sawaref_path+"resultConllU")
 var querystring = require('querystring')
 // if(config.require && Array.isArray(config.require)){
 //     config.required = {}
