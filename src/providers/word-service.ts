@@ -45,7 +45,7 @@ export class WordService {
 	        	return console.warn("parsing Conllu error",x)
 	        },true);
 
-	        // console.log(parsed) 
+	        // console.log(parsed)
 	        // data = data;
 	        var result : ConlluElement[][] = []
 	        parsed.sentences[0].elements
@@ -57,8 +57,8 @@ export class WordService {
             		 	result[wid] = []
             		 result[wid].push(e)
             	})
-	        that.data[sentence] = result;	        
-	        
+	        that.data[sentence] = result;
+
 	        resolve(that.data[sentence]);
 	      });
 	  });
