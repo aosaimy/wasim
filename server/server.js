@@ -330,40 +330,45 @@ var dls = {
               'model': argv.model || undefined
             })
             console.log(querystring.stringify(postData))
-            var req = http.request({
-                url: config.udpipe.url,
-                port: config.udpipe.port,
-                method: 'POST',
-                path: '/process',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Content-Length': Buffer.byteLength(postData)
-                }
-            },function (ress) {
-                if (ress.statusCode != 200) {
-                    console.error(ress.statusCode)
-                }
-                var response = []
-                ress.setEncoding('utf8');
-                ress.on('data', (chunk) => {
-                    // console.log(`${chunk}`);
-                    response.push(chunk)
-                  });
+            try{
+              var req = http.request({
+                  url: config.udpipe.url,
+                  port: config.udpipe.port,
+                  method: 'POST',
+                  path: '/process',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'Content-Length': Buffer.byteLength(postData)
+                  }
+              },function (ress) {
+                  if (ress.statusCode != 200) {
+                      console.error(ress.statusCode)
+                  }
+                  var response = []
+                  ress.setEncoding('utf8');
+                  ress.on('data', (chunk) => {
+                      // console.log(`${chunk}`);
+                      response.push(chunk)
+                    });
 
-                ress.on('end',()=>{
-                    try{
-                        var result = JSON.parse(response.join(''))
-                        fs.writeFile(path.join(config.wasim,user,argv.project,argv.newFilename), result.result)
-                        return res.json({ok:true, filename: argv.newFilename})
-                    }
-                    catch(e){
-                        return res.json({ok:false,error: "udpipe did not returned a proper JSON response."})
-                    }
+                  ress.on('end',()=>{
+                      try{
+                          var result = JSON.parse(response.join(''))
+                          fs.writeFile(path.join(config.wasim,user,argv.project,argv.newFilename), result.result)
+                          return res.json({ok:true, filename: argv.newFilename})
+                      }
+                      catch(e){
+                          return res.json({ok:false,error: "udpipe did not returned a proper JSON response."})
+                      }
 
-                })
-            })
-            req.write(postData)
-            req.end();
+                  })
+              })
+              req.write(postData)
+              req.end();
+            }
+            catch(e){
+              return res.json({ok:false,error: "connection to udpipe failed.", details: e})
+            }
         },
         guidelines: function(request, res) {
             var r = request.body;
