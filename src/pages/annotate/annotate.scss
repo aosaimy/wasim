@@ -30,6 +30,12 @@ page-annotate {
 	.rtl input{
 		direction : rtl
 	}
+
+  @mixin mobile-portrait-only {
+    page-annotate .element {
+      font-size: 11pt;
+    }
+  }
 	.topbar_button{
 		float: right
 	}
@@ -512,7 +518,7 @@ span.gloss {
 	  font-size: 90%;
 	  /* match jQuery UI .ui-widget-content color */
 	  color: #2e6e9e;
-	}   
+	}
 
 	.accesskey {
 	  text-decoration: underline;
@@ -557,7 +563,7 @@ span.gloss {
 	#readme_container {
 	  position: relative;
 	}
-	#more_readme_button {                   
+	#more_readme_button {
 	  padding: 2px 5px;
 	  position: absolute;
 	  top: -2px;
@@ -763,5 +769,5 @@ ion-input.form_input{
     text-align: center;
     direction: rtl;
     line-height: 3em;
-    
+
 }

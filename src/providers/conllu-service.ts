@@ -14,7 +14,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ConlluService {
 
-  constructor(public http: Http, 
+  constructor(public http: Http,
   	public myconfig: Config) {
   }
   data = {}
@@ -108,7 +108,7 @@ export class ConlluService {
 	      .map(res => res.json())
 	      .subscribe((data: {ok:boolean, filename: string, error: string}) => {
 	        // we've got back the raw data, now generate the core schedule data
-	        // and save the data for later reference	        
+	        // and save the data for later reference
 	        if(data.ok)
 	        	resolve(data);
 	        else
@@ -142,7 +142,7 @@ export class ConlluService {
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
-	        console.log(data) 
+	        console.log(data)
 	        // data = data;
 	        if(data.ok)
         		resolve(data);
@@ -176,7 +176,7 @@ export class ConlluService {
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
-	        console.log(data) 
+	        console.log(data)
 	        // data = data;
 	        if(data.ok)
         		resolve(data);

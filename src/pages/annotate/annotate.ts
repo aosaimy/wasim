@@ -5,7 +5,6 @@ import {
 } from '@angular/forms';
 
 import { Http } from '@angular/http';
-import { Hadith, Data } from '../../app/data';
 import { WordService } from '../../providers/word-service';
 import { ConlluService } from '../../providers/conllu-service';
 import { ConfigService } from '../../providers/config-service';
@@ -45,8 +44,7 @@ export class AnnotatePage {
   // sentenceTags: { tag: string, desc: string, fn: number }[] = null
 
   @ViewChild('lemma') lemmaGroup: RadioGroup;
-  
-  hadith: Hadith = null
+
   // conllu : ConllU = new ConllU().Document();
   log = "";
   doc= null;
@@ -54,6 +52,7 @@ export class AnnotatePage {
   project = ""
   hash = ""
   pageid = ""
+  isConlluHidden = false
   @ViewChild('myTags') myTags: TagsSelectorComponent;
 
   constructor(public navCtrl: NavController,
@@ -62,14 +61,14 @@ export class AnnotatePage {
     // public data: Data,
     public http: Http,
     private cdr: ChangeDetectorRef,
-    private renderer:Renderer, 
+    private renderer:Renderer,
     public events: Events,
     private wordservice: WordService,
     private conlluService: ConlluService,
     private configService: ConfigService,
     public alertCtrl: AlertController,
     public toastCtrl: ToastController) {
-    
+
     if (!navParams.data.project){
       //TODO change
       navCtrl.setRoot(ProjectsPage)
@@ -247,10 +246,10 @@ export class AnnotatePage {
     var action = this.config.keyboardShortcuts
       .filter(v=>{
         return (v.code == e.code) &&
-               // (v.key!=undefined && v.key == e.key) && 
-               ((v.metaKey==true) == e.metaKey) && 
-               ((v.shiftKey==true) == e.shiftKey) && 
-               ((v.altKey==true) == e.altKey) && 
+               // (v.key!=undefined && v.key == e.key) &&
+               ((v.metaKey==true) == e.metaKey) &&
+               ((v.shiftKey==true) == e.shiftKey) &&
+               ((v.altKey==true) == e.altKey) &&
                ((v.ctrlKey==true) == e.ctrlKey) &&
                true
       })
@@ -433,10 +432,10 @@ export class AnnotatePage {
           x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == parseInt(that.highlight.element.id) + 1)[0]
         else if(params[0]=="word_right")
           x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(that.highlight.element.id) - 1))[0]
-        else if(params[0]=="word_down")
-          x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(that.highlight.element.id) + this.config.rowlength))[0]
-        else if(params[0]=="word_up")
-          x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(that.highlight.element.id) - this.config.rowlength))[0]
+        // else if(params[0]=="word_down")
+        //   x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(that.highlight.element.id) + this.config.rowlength))[0]
+        // else if(params[0]=="word_up")
+        //   x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(that.highlight.element.id) - this.config.rowlength))[0]
         if (x) {
           this.events.publish('highligh:change', x);
           // this.highlight.element = x
@@ -447,7 +446,7 @@ export class AnnotatePage {
             var y = this.doc.sentences[sindex + 1]
           else if(params[0]=="word_up")
             var y = this.doc.sentences[sindex - 1]
-          
+
           if (y) {
             // this.highlight.sentence = y
             this.events.publish('highligh:change', y.elements.filter(x => !x.isMultiword())[0])
@@ -543,7 +542,7 @@ export class AnnotatePage {
         // code...
         break;
     }
-    
+
 
     this.jump(this.doc.getElementLine(this.highlight.element, this.highlight.sentence))
     // console.log(this.highlight.element)
@@ -615,7 +614,7 @@ export class AnnotatePage {
     // console.log("asda")
     if(!this.maResult){
       this.maResult = new Array(this.doc.sentences.length)
-      this.doc.sentences.forEach((s,i) => 
+      this.doc.sentences.forEach((s,i) =>
          this.wordservice.load(s.tokens().map(e => e.form).join(" "),this.config)
            .then((elements: ConlluElement[][]) => {
              this.maResult[i] = elements
@@ -640,7 +639,7 @@ export class AnnotatePage {
   jump(line) {
 
     var ta = document.querySelector("#conlluTextArea textarea")
-    //TODO: replace rows with a more realistic measure. 
+    //TODO: replace rows with a more realistic measure.
     //TODO: change color of current word
     var lineHeight = ta.clientHeight / parseInt(ta.getAttribute("rows"));
     var jump = (line - 1) * lineHeight;
@@ -674,14 +673,14 @@ export class Highlight {
     this.events.subscribe("changeTag", (tag)=>{
         this.element.xpostag = tag.tag
         this.element.upostag = tag.mapToConllU
-        
+
     })
   }
 }
 
 export class Stats {
   start : Date = new Date()
-  // homographs : 
+  // homographs :
   all = []
   constructor(public events:Events){
 

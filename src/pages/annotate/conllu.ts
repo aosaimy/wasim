@@ -1,14 +1,19 @@
 /*
 * @Filename:   conllu.ts
 * @Author: abbander
-* @Author: Sampo Pyysalo
+Author: Sampo Pyysalo
 * @Date:   2017-05-10 14:26:53
-License: MIT (http://opensource.org/licenses/MIT)
 */
+// -*- Mode: JavaScript; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim:set ft=javascript ts=4 sw=4 sts=4 cindent:
+
 /*
 CoNLL-U format library for JavaScript.
-Source: http://github.com/spyysalo/conllu.js
+Home: http://github.com/spyysalo/conllu.js
 Format: http://universaldependencies.github.io/docs/format.html
+
+Author: Sampo Pyysalo
+License: MIT (http://opensource.org/licenses/MIT)
 */
 import { Word, WordAnalysis } from "../../providers/word-service"
 import { Events} from 'ionic-angular';

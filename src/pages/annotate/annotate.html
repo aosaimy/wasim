@@ -2,7 +2,7 @@
 
   <ion-navbar>
     <ion-title>ترميز الملف: {{pageid}}</ion-title>
-    
+
     <ion-buttons end>
       <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">
         <ion-icon name="more"></ion-icon>
@@ -36,22 +36,23 @@
           <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>
 
 
-          <button class='topbar_button' ion-button tabindex="-1" (click)="syncConllU()"><ion-icon name="sync"></ion-icon></button>
+          <!-- <button class='topbar_button' ion-button tabindex="-1" (click)="syncConllU()"><ion-icon name="sync"></ion-icon></button> -->
           <button class='topbar_button' ion-button tabindex="-1" (click)="showStats()"><ion-icon name="print"></ion-icon></button>
           <button class='topbar_button' ion-button tabindex="-1" (click)="tag_morphofeatures()"><ion-icon name="apps"></ion-icon></button>
-          
+
           <button class='topbar_button' [disabled]="undoArr.length==0" ion-button tabindex="-1" (click)="undo()"><ion-icon name="undo"></ion-icon></button>
           <button class='topbar_button' [disabled]="redoArr.length==0" ion-button tabindex="-1" (click)="redo()"><ion-icon name="redo"></ion-icon></button>
-          
+
           <button class='topbar_button' ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button>
-          
+
           <button class='topbar_button' ion-button tabindex="-1" (click)="tag_ma()"><ion-icon name="menu"></ion-icon></button>
           <button class='topbar_button' ion-button tabindex="-1" (click)="mark_misc('UNCLEAR')"><ion-icon name="warning"></ion-icon></button>
 
           <button class='topbar_button' ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button>
 
           <button class='topbar_button' ion-button tabindex="-1" (click)="save()"><ion-icon name="cloud-upload"></ion-icon></button>
-          
+          <button class='topbar_button' ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden"><ion-icon name="sync"></ion-icon></button>
+
         </ion-row>
 
         <!-- <ion-row>
@@ -114,20 +115,20 @@
       <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialPos" [project]="project" [hash]="hash"> </guider>
       <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialSeg" [project]="project" [hash]="hash"> </guider>
     </ion-col>
-    <ion-col col-6 id="sentences" *ngIf="config" >
+    <ion-col id="sentences" *ngIf="config" >
       <!-- <p>Here's a validating visualizer. Visualization:</p> -->
       <!-- <pre>{{documentJson}}</pre> -->
       <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{
               rtl:configService.isRtl(project)}">
           <div>{{sent.tag}}</div>
-          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element" 
+          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element"
             [ngClass]="{
               isCompounds:elem.upostag=='_',
               highlight: elem == highlight.element,
               rtl:configService.isRtl(project),
               unclear: elem.miscs['UNCLEAR'],
-              newline: i%config.rowlength==0,
-              isSeg: elem.isSeg > 0 }" 
+              newline2: i%config.rowlength==0,
+              isSeg: elem.isSeg > 0 }"
             (click)="highlight.element = elem; highlight.sentence = sent"
           >
               <span class="form">{{getForm(elem)}}</span>
@@ -139,9 +140,9 @@
               </span> -->
           </div>
       </div>
-      
+
     </ion-col>
-    <ion-col col-4 id="conlluColumn">
+    <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">
       <ion-row>
         <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>
         </ion-row>

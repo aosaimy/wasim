@@ -14,6 +14,9 @@ Text annotation of highly inflectional languages (including Arabic) requires key
 
 Wasim has been tested on four case studies and these features proved to be useful.
 
+## Demo
+You can use start using wasim [here: http://wasim.al-osaimy.com](http://wasim.al-osaimy.com).
+
 ## Using this project (for developers)
 
 You'll need the Ionic CLI with support for v2 apps:

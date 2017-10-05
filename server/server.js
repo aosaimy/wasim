@@ -60,8 +60,13 @@ var dls = {
             app.use("/", express.static(path.join(__dirname, 'public')));
             app.use(function(req, res, next) {
 
-                // Website you wish to allow to connect
-                res.setHeader('Access-Control-Allow-Origin', config.wasim_client_url);
+              var allowedOrigins = [config.wasim_client_url, 'http://localhost', 'http://wasim.al-osaimy.com'];
+              var origin = req.headers.origin;
+              if(allowedOrigins.indexOf(origin) > -1){
+                    // Website you wish to allow to connect
+                   res.setHeader('Access-Control-Allow-Origin', origin);
+              }
+
 
                 // Request methods you wish to allow
                 res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -248,7 +253,7 @@ var dls = {
             }
             if(!/^[_0-9a-zA-Z]+$/.test(arr[0]))
                 return res.json({ok:false,error: "path must be alphanumbers"})
-            
+
             var files  = req.files
             files.forEach(f=>{
                 console.log(path.join(f.destination+f.filename),path.join(config.wasim,user,arr[0],f.originalname))
@@ -256,7 +261,7 @@ var dls = {
             })
 
             console.log("here",req.files)
-            
+
             return res.json({ok:true,msg: "file has been uploaded successfuly"})
         },
         conllu_save: function(request, res) {
@@ -272,13 +277,13 @@ var dls = {
             }
             if(! fs.existsSync(path.join(config.wasim,user,argv.project,argv.pageid))){
                 return res.json({ok:false,error: "file name does not exist"})
-            }            
+            }
             fs.writeFile(path.join(config.wasim,user,argv.project,argv.pageid), r.data, (err) => {
               if (err) throw err;
               res.send({ok:true})
-              
+
                var git = require('simple-git')(path.join(config.wasim,user,argv.project)).add(path.join(config.wasim,user,argv.project,argv.pageid)).commit("Automatic Save from Wasim")
-               if(config.remote) 
+               if(config.remote)
                     git.push("origin","master")
             });
         },
@@ -295,17 +300,17 @@ var dls = {
             }
             if(! fs.existsSync(path.join(config.wasim,user,argv.project,argv.pageid))){
                 return res.json({ok:false,error: "file name does not exist"})
-            }            
+            }
             fs.remove(path.join(config.wasim,user,argv.project,argv.pageid), (err) => {
               if (err) throw err;
               res.send({ok:true})
-              
-              var git = require('simple-git')(path.join(config.wasim,user,argv.project)).rm(path.join(config.wasim,user,argv.project,argv.pageid)).commit("Automatic Remove from Wasim")
-              if(config.remote) 
-                    git.push("origin","master")
-              
 
-              
+              var git = require('simple-git')(path.join(config.wasim,user,argv.project)).rm(path.join(config.wasim,user,argv.project,argv.pageid)).commit("Automatic Remove from Wasim")
+              if(config.remote)
+                    git.push("origin","master")
+
+
+
             });
         },
 
@@ -354,7 +359,7 @@ var dls = {
                     catch(e){
                         return res.json({ok:false,error: "udpipe did not returned a proper JSON response."})
                     }
-                    
+
                 })
             })
             req.write(postData)
@@ -364,7 +369,7 @@ var dls = {
             var r = request.body;
             var argv = r//.argv
             var result = {}
-            
+
             var guides = ["specialPos","specialSeg"].map(v=>{
                 if(! fs.existsSync(path.join(config.wasim,user,argv.project))){
                     return {ok:false,error: "project name does not exist"}
@@ -385,7 +390,7 @@ var dls = {
         },
         save_config: function(request, res) {
             var argv = request.body//.argv
-            
+
             if(md5(argv.project+config.salt) !== argv.hash){
                 return res.json({ok:false,error: "project hash is not correct",default: config.defaultProjectConfig})
             }
@@ -397,7 +402,7 @@ var dls = {
         },
         get_config: function(request, res) {
             var argv = request.body//.argv
-            
+
             if(!/^[_0-9a-zA-Z]+$/.test(argv.project))
                 return res.json({ok:false,error: "project must be alphanumbers"})
 
