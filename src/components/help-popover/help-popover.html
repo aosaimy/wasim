@@ -1,0 +1,12 @@
+  <ion-card>
+  <ion-card-header>
+    Keyboard Shortcuts
+  </ion-card-header>
+      <ion-item *ngFor="let sh of shortcuts">
+        <h2><button ion-button outline item-right icon-left>
+          {{sh[0]}}
+        </button></h2>
+        <p>{{sh[1]}}</p>
+      </ion-item>
+      
+      </ion-card>

@@ -1,0 +1,63 @@
+ma-selectize-popover-page {
+	.title {
+	    background-color: grey;
+    color: white;
+    font-size: 1.5vw;
+    direction: rtl;
+    padding: 0.5vw;
+	}
+	.counter{
+		border: 2px white solid;
+	    padding: 0 5px;
+	    margin-left: 5px;
+	}
+	.elements {
+		    list-style: none;
+		}
+	.elements .element {
+	    float: right;
+	    position: relative;
+	    padding: 0.7em 1em 0.7em 1em;
+	    border: 1px blue solid;
+	    border-radius: 8px;
+	    margin: 2px;
+	    text-align: center;
+	    font-family: KawkabMonoLight;
+	    min-width: 4em;
+	    font-size: 1.25vw;
+	}
+	.elements li:first-child .element {
+		margin-right: 0pt;
+	}
+	.elements li:first-child .element:before {
+	    content: "";
+	    position: absolute;
+	    right: 0px;
+	    font-size: 18pt;
+	}
+	.elements .element {
+		margin-right: 20px;
+	}
+	.elements .element .form {
+		float: right;
+		margin-left: 1em;
+	}
+	.elements .element .pos {
+		float: left;
+	}
+	.elements .element:before {
+	    content: "+";
+	    position: absolute;
+	    right: -20px;
+	    font-size: 18pt;
+	}
+	.selectize-dropdown-content {
+	    max-height: 45vh !important;
+	}
+	.morphfeats{
+	    font-size: 0.5em
+	}
+	.selected { 
+		// background-color: #ffffe5
+	}
+}

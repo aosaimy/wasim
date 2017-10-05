@@ -1,0 +1,272 @@
+{
+	"buckwalter_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
+	"resultConllU_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
+	"port": 7878,
+	"uploadDir": "./uploads/",
+	"wasim": "/wasim/",
+	"wasim_client_url": "http://localhost:8100",
+	"security": "www123",
+	"saltforhash": "kld@Sa",
+	"udpipe": {
+		"url":"http://localhost",
+		"port": 1441
+	},
+	"require": [
+	],
+	"ma": {
+		"require": "./madamira_conllu",
+		"url":"http://localhost",
+		"port": 8223
+	},
+	"defaultProjectConfig" :{
+		"remote_repo" : "",
+		"language" : "qac",
+		"tagset": "",
+		"rowlength": 7,
+		"keyboardShortcuts":[
+			{"code": "ArrowLeft", 
+			"action": "nav",
+			"params":["word_left"]},
+
+			{"code": "ArrowRight", 
+			"action": "nav",
+			"params":["word_right"]},
+
+			{"code": "KeyL", 
+			"action": ""},
+
+			{"code": "ArrowDown", 
+			"action": "nav",
+			"params":["word_down"]},
+
+			{"code": "ArrowUp", 
+			"action": "nav",
+			"params":["word_up"]},
+
+			{"code": "Escape", 
+			"action": ""},
+			
+			{"code": "Space", 
+			"action": "tag_morphofeatures"},
+			
+			{"code": "Enter", 
+			"action": "tag_ma"},
+			
+			{"code": "Enter", 
+			"metaKey": true, 
+			"action": "tag_ma"},
+			
+			{"code": "Backspace", 
+			"action": ""},
+			
+			{"code": "KeyS", 
+			"action": "saveFile",
+			"metaKey": true
+			},
+
+			{"code": "KeyS", 
+			"action": "syncConllU",
+			"metaKey": true,
+			"shiftKey": true
+			},
+
+			{"code": "KeyQ", 
+			"action": "diac",
+			"params":["َ"]},
+
+			{"code": "KeyW", 
+			"action": "diac",
+			"params":["ً"]},
+
+			{"code": "KeyE", 
+			"action": "diac",
+			"params":["ُ"]},
+
+			{"code": "KeyR", 
+			"action": "diac",
+			"params":["ٌ"]},
+
+			{"code": "KeyA", 
+			"action": "diac",
+			"params":["ِ"]},
+
+			{"code": "KeyS", 
+			"action": "diac",
+			"params":["ٍ"]},
+
+			{"code": "KeyX", 
+			"action": "diac",
+			"params":["ْ"]},
+
+			{"code": "Backquote", 
+			"action": "diac",
+			"params":["ّ"]},
+
+
+			{"code": "Equal", 
+			"shiftKey": true,
+			"action": "clone"},
+			
+			{"code": "Slash", 
+			"action": "mark_misc",
+			"shiftKey" : true,
+			"params":["UNCLEAR"]},
+			
+			{"code": "Digit0", 
+			"action": "showOtherUTags"},
+			
+			{"code": "Digit1", 
+			"action": "assignUTag",
+			"params": [1]},
+			
+			{"code": "Digit2", 
+			"action": "assignUTag",
+			"params": [2]},
+			
+			{"code": "Digit3", 
+			"action": "assignUTag",
+			"params": [3]},
+			
+			{"code": "Digit4", 
+			"action": "assignUTag",
+			"params": [4]},
+			
+			{"code": "Digit5", 
+			"action": "assignUTag",
+			"params": [5]},
+			
+			{"code": "Digit6", 
+			"action": "assignUTag",
+			"params": [6]},
+			
+			{"code": "Digit7", 
+			"action": "assignUTag",
+			"params": [7]},
+			
+			{"code": "Digit8", 
+			"action": "assignUTag",
+			"params": [8]},
+			
+			{"code": "Digit9", 
+			"action": "assignUTag",
+			"params": [9]},
+
+			{"code": "F1", 
+			"action": "assignSentenceTag",
+			"params": [1]},
+			
+			{"code": "F2", 
+			"action": "assignSentenceTag",
+			"params": [2]},
+			
+			{"code": "F3", 
+			"action": "assignSentenceTag",
+			"params": [3]},
+			
+			{"code": "F4", 
+			"action": "assignSentenceTag",
+			"params": [4]},
+			
+			{"code": "F5", 
+			"action": "assignSentenceTag",
+			"params": [5]},
+			
+			{"code": "F6", 
+			"action": "assignSentenceTag",
+			"params": [6]},
+			
+			{"code": "F7", 
+			"action": "assignSentenceTag",
+			"params": [7]},
+			
+			{"code": "F8", 
+			"action": "assignSentenceTag",
+			"params": [8]},
+			
+			{"code": "F9", 
+			"action": "assignSentenceTag",
+			"params": [9]},
+
+			{"code": "Minus", 
+			"shiftKey" : false,
+			"action": "delete"}
+		],
+		"mfXpos":{
+	      "Gender": ["NOUN","ADJ","VERB","PROPN","","PRON","NUM"],
+	      "Number": ["NOUN","ADJ","VERB","PROPN","","PRON"],
+	      "Case": ["NOUN","ADJ","","PROPN","","PRON"],
+	      "Definite": ["NOUN","ADJ","","PROPN","",""],
+	      "Mood": ["","","VERB","","",""],
+	      "Tense": ["","","VERB","","",""],
+	      "Aspect": ["","","VERB","","",""],
+	      "Voice": ["","ADJ","VERB","","",""],
+	      "Person": ["","","VERB","","","PRON"]
+	    },
+		"mf":{
+	      "Gender": ["Masc","Fem","Neut"],//"Com"],
+	      // "Animacy":[],//"Anim","Inan","Hum","Nhum"],
+	      "Number": ["Sing","Plur","Dual"],//"Tri","Pauc","Grpa","Grpl","Inv","Count","Ptan","Coll"]
+	      "Case": ["Nom","Acc","Gen"],//
+	      "Definite": ["Def","Ind","Cons","Com"],//
+	      "Mood": ["Imp","Ind","Sub","Jus"],//,"Cnd"
+	      "Tense": ["Past","Pres","Fut"],//"Pqp"],//
+	      "Aspect": ["Perf","Imp"],//"Prosp","Prog"],//"Pqp"],//
+	      "Voice": ["Act","Pass"],//"Prosp","Prog"],//"Pqp"],//
+	      "Person": ["1","2","3"]//"Prosp","Prog"],//"Pqp"],//
+	    },
+		"alltags" : 
+	    	[{"tag":"N","desc":"Noun","count":25136},
+			{"tag":"PRON","desc":"Personal Pronoun","count":24685},
+			{"tag":"V","desc":"verb","count":19356},
+			{"tag":"P","desc":"preposition","count":13006},
+			{"tag":"CONJ","desc":"coordinating conjuntion","count":9450},
+			{"tag":"DET","desc":"(not listed in published paper),Determinator","count":8377},
+			{"tag":"PN","desc":"Proper Noun","count":3911},
+			{"tag":"REL","desc":"relative pronoun","count":3575},
+			{"tag":"REM","desc":"حرف استئنافية-Resumption particle","count":2925},
+			{"tag":"NEG","desc":"negative particle","count":2688},
+			{"tag":"ACC","desc":"Accusative particle","count":2283},
+			{"tag":"ADJ","desc":"Adjective","count":1961},
+			{"tag":"EMPH","desc":"Emphativ lam prefix","count":1244},
+			{"tag":"T","desc":"time adverb","count":1166},
+			{"tag":"DEM","desc":"Demonstrative pronoun","count":1059},
+			{"tag":"COND","desc":"حرف شرط-Conditional particle","count":1049},
+			{"tag":"INTG","desc":"حرف استفهام-Interogative particle","count":946},
+			{"tag":"SUB","desc":"subordinating conjuntion","count":684},
+			{"tag":"LOC","desc":"location adverb","count":669},
+			{"tag":"RES","desc":"restriction particle","count":558},
+			{"tag":"CERT","desc":"حرف تحقيق-Particle of certainty","count":414},
+			{"tag":"VOC","desc":"vocative particle","count":376},
+			{"tag":"RSLT","desc":"حرف واقع في جواب الشرط-Result particle","count":350},
+			{"tag":"PRO","desc":"حرف نهي-Prohibition particle","count":332},
+			{"tag":"PRP","desc":"Purpose lam prefix","count":319},
+			{"tag":"CIRC","desc":"حرف حال-Circumstantial particle","count":293},
+			{"tag":"SUP","desc":"حرف زائد-Supplemental particle","count":235},
+			{"tag":"PREV","desc":"حرف كاف-Preventive particle","count":162},
+			{"tag":"FUT","desc":"future particle","count":161},
+			{"tag":"RET","desc":"حرف اضراب-Retraction particle","count":122},
+			{"tag":"EXP","desc":"أداة استثناء-Exceptive particle","count":104},
+			{"tag":"INC","desc":"حرف ابتداء-Inceptive particle","count":90},
+			{"tag":"CAUS","desc":"Particle of cause","count":88},
+			{"tag":"IMPV","desc":"Imperative lam prefix","count":78},
+			{"tag":"EXL","desc":"?,explanation particle","count":66},
+			{"tag":"AMD","desc":"Amendment particle","count":65},
+			{"tag":"INT","desc":"حرف تفسير-Particle of interpretation","count":47},
+			{"tag":"ANS","desc":"Answer particle","count":40},
+			{"tag":"EXH","desc":"حرف تحضيض-Exhortation particle","count":40},
+			{"tag":"SUR","desc":"حرف فجاءة-Surprise particle","count":35},
+			{"tag":"AVR","desc":"Aversion particle","count":33},
+			{"tag":"INL","desc":"حروف مقطعة - Quranic initials","count":30},
+			{"tag":"EQ","desc":"حرف تسوية-Equalization particle","count":6},
+			{"tag":"COM","desc":"واو المعية-Comitative particle","count":3},
+			{"tag":"IMPN","desc":"imperative verbal noun","count":2},
+			{"tag":"NUM","desc":"Number","count":0}],
+		"sentenceTags" : [
+			    {"tag":"R","desc":"سلسلة الرواة","fn":1},
+			    {"tag":"H","desc":"كلام النبي ﷺ","fn":2},
+			    {"tag":"S","desc":"كلام الصحابي","fn":3},
+			    {"tag":"T","desc":"تخريج الحديث","fn":4},
+			    {"tag":"E","desc":"شرح الحديث","fn":5}
+			  ]
+	}
+}

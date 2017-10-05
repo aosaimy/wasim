@@ -1,0 +1,12 @@
+page-docs {
+    .my-drop-zone { border: dotted 3px lightgray; }
+    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+    .another-file-over-class { border: dotted 3px green; }
+    .configErrors{
+    	    background-color: #B22222;
+    padding: 10px;
+    border-radius: 7px;
+    text-align: center;
+    color: white;
+    }
+}

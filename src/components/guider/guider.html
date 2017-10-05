@@ -1,0 +1,19 @@
+<ion-card *ngIf="show()">
+        <ion-card-header>
+          {{element}}
+        </ion-card-header>
+
+        <ion-card-content >
+            <div *ngFor="let e of this.options" >
+                <button ion-button (click)="toggle(e)">
+                  {{e.value}}  
+                  <ion-badge color="secondary" item-end>{{e.percentage}}</ion-badge>
+                </button>
+
+              <div *ngIf="e.showDetails">
+                <div *ngFor="let ex of e.examples">{{ex}}</div>
+              </div>
+              </div>
+        </ion-card-content>
+
+    </ion-card>

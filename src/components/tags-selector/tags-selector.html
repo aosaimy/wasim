@@ -1,0 +1,9 @@
+<button color="secondary" ion-button *ngFor="let tag of currentTags;" class="tag" title="{{tag.desc}}" (click)="selectTag(tag)">
+  {{tag.tag}}
+  <ion-badge >{{tag.fn}}</ion-badge>
+</button>
+
+<button ion-button color="secondary" class="tag" title="Press 0 for more tags" (click)="increaseTagsRow()">
+  More
+  <span class="fn">0</span>
+</button>
