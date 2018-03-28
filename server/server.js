@@ -2,8 +2,11 @@
 This file is the server that handle requests via browser. it can be run by: node server.js
 params: none
 */
+"use strict";
 var json_comments = require('json-comments');
-var async = require('async');
+json_comments = json_comments; // Just to pypass JSHint
+
+// var async = require('async');
 var session = require('express-session');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -11,27 +14,27 @@ var md5 = require('md5');
 var multer = require('multer');
 var fs = require('fs-extra');
 var path = require('path');
-var util = require('util');
-var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
-var spawnSync = require('child_process').spawnSync;
+// var util = require('util');
+// var exec = require('child_process').exec;
+// var spawn = require('child_process').spawn;
+// var spawnSync = require('child_process').spawnSync;
 var uid = require('node-uuid');
 var app = express();
-var crypto = require('crypto');
+// var crypto = require('crypto');
 var config = require('./config');
 var http = require("http");
-var conllu = require(config.sawaref_path+"resultConllU")
-var querystring = require('querystring')
+var conllu = require('sawaref-converters').conllu;
+var querystring = require('querystring');
 // if(config.require && Array.isArray(config.require)){
 //     config.required = {}
 //     config.require.forEach(x=>config.required[x[0]] = require(x[1]))
 // }
 
-var LocalStorage = require('node-localstorage').LocalStorage,
-    localStorage = new LocalStorage('./scratch');
+// var LocalStorage = require('node-localstorage').LocalStorage
+// var localStorage = new LocalStorage('./scratch');
 
-var user = "abobander"
-var ma = require(config.ma.require)
+var user = "abobander";
+var ma = require(config.ma.require);
 
 // list = {
 //     MT: "ATKS Tagger",
@@ -92,9 +95,10 @@ var dls = {
             app.use(function(err, req, res, next) {
                 console.error(err.stack);
                 res.status(500).send('Something broke!');
+                next = next // Just to pypass JSHint"
             });
             app.use(session({
-                genid: function(req) {
+                genid: function() {
                     return uid.v4(); // use UUIDs for session IDs
                 },
                 secret: 'as2d&f,',
@@ -118,14 +122,14 @@ var dls = {
                 console.error("config.port is not set");
                 process.exit(1);
             }
-            app.listen(config.port, x=> console.log("You can access Wasim API from http:://localhost:"+config.port))
+            app.listen(config.port, ()=> console.log("You can access Wasim API from http:://localhost:"+config.port))
         },
         initPosts: function() {
             //routes
-            for (var i in dls.requests) {
+            for (let i in dls.requests) {
                 app.post('/' + i, dls.requests[i]);
             }
-            for (var i in dls.requestsGet) {
+            for (let i in dls.requestsGet) {
                 app.get('/' + i, dls.requestsGet[i]);
             }
 
@@ -136,10 +140,10 @@ var dls = {
     requests: {
         conllu: function(request, res) {
             var r = request.body;
-            var argv = r//.argv
+            var argv = r;//.argv
             if(fs.existsSync('/morpho/conllu/'+ r.sorah + "-" + r.ayah)){
-                var d = fs.readFileSync('/morpho/conllu/'+ r.sorah + "-" + r.ayah,"utf8")
-                return res.send({ok:true,data:d})
+                var d = fs.readFileSync('/morpho/conllu/'+ r.sorah + "-" + r.ayah,"utf8");
+                return res.send({ok:true,data:d});
             }
 
             argv.f = "/morpho/output/unique/" + r.sorah + "-" + r.ayah + ".json"
@@ -161,7 +165,7 @@ var dls = {
             if(argv.security != config.security)
                 return res.json({ok:false,error: "wrong security code"})
             fs.readdir(path.join(config.wasim,user), function(err, items) {
-                // for (var i=0; i<items.length; i++) {
+                // for (let i=0; i<items.length; i++) {
                 //     console.log(items[i]);
                 // }
                 return res.json({ok:true,projects: items.filter(x=>!/^\./.test(x)).map(i=>new Object({
@@ -216,7 +220,7 @@ var dls = {
             }
 
             fs.readdir(path.join(config.wasim,user,argv.project), function(err, items) {
-                // for (var i=0; i<items.length; i++) {
+                // for (let i=0; i<items.length; i++) {
                     // console.log(items[i]);
                 // }
                 return res.json({ok:true,files: items.filter(x=>!/^\./.test(x))})
@@ -341,15 +345,17 @@ var dls = {
                       'Content-Length': Buffer.byteLength(postData)
                   }
               },function (ress) {
-                  if (ress.statusCode != 200) {
-                      console.error(ress.statusCode)
-                  }
                   var response = []
                   ress.setEncoding('utf8');
                   ress.on('data', (chunk) => {
                       // console.log(`${chunk}`);
                       response.push(chunk)
                     });
+
+                  if (ress.statusCode != 200) {
+                      console.error("Error: Response Code != 200: Code=",ress.statusCode, "Response",response)
+                      return
+                  }
 
                   ress.on('end',()=>{
                       try{
@@ -358,6 +364,7 @@ var dls = {
                           return res.json({ok:true, filename: argv.newFilename})
                       }
                       catch(e){
+                        console.error("error", e, response);
                           return res.json({ok:false,error: "udpipe did not returned a proper JSON response."})
                       }
 
@@ -373,7 +380,7 @@ var dls = {
         guidelines: function(request, res) {
             var r = request.body;
             var argv = r//.argv
-            var result = {}
+            // var result = {}
 
             var guides = ["specialPos","specialSeg"].map(v=>{
                 if(! fs.existsSync(path.join(config.wasim,user,argv.project))){
@@ -402,7 +409,7 @@ var dls = {
             if(! fs.existsSync(path.join(config.wasim,user,argv.project))){
                 return res.json({ok:false,error: "project name does not exist",default: config.defaultProjectConfig})
             }
-            var c = fs.writeFileSync(path.join(config.wasim,user,argv.project,".config.json"),JSON.stringify(argv.config,null,4), "utf8")
+            fs.writeFileSync(path.join(config.wasim,user,argv.project,".config.json"),JSON.stringify(argv.config,null,4), "utf8")
             return res.json({ok:true})
         },
         get_config: function(request, res) {
@@ -425,7 +432,7 @@ var dls = {
                 return res.json({ok:true,config:JSON.parse(c)})
             }
             catch(e){
-                console.error(path.join(config.wasim,user,argv.project,"."+v+".json", "is not proper JOSN formatted"))
+                console.error(path.join(config.wasim,user,argv.project,".config.json", "is not proper JOSN formatted"))
                 return res.json({ok:false,error:"Not proper JOSN formatted",default: config.defaultProjectConfig})
             }
         },
@@ -444,7 +451,7 @@ var dls = {
         },
     },
     init: function() {
-        for (var i in dls.inits) {
+        for (let i in dls.inits) {
             dls.inits[i].call();
         }
     }

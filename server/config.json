@@ -1,6 +1,7 @@
 {
 	"buckwalter_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
-	"resultConllU_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
+  "resultConllU_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
+	"sawaref_path": "/Users/abbander/Leeds/ArabicMorphologyTools/bin/",
 	"port": 7878,
 	"uploadDir": "./uploads/",
 	"wasim": "/wasim/",
@@ -24,170 +25,170 @@
 		"tagset": "",
 		"rowlength": 7,
 		"keyboardShortcuts":[
-			{"code": "ArrowLeft", 
+			{"code": "ArrowLeft",
 			"action": "nav",
 			"params":["word_left"]},
 
-			{"code": "ArrowRight", 
+			{"code": "ArrowRight",
 			"action": "nav",
 			"params":["word_right"]},
 
-			{"code": "KeyL", 
+			{"code": "KeyL",
 			"action": ""},
 
-			{"code": "ArrowDown", 
+			{"code": "ArrowDown",
 			"action": "nav",
 			"params":["word_down"]},
 
-			{"code": "ArrowUp", 
+			{"code": "ArrowUp",
 			"action": "nav",
 			"params":["word_up"]},
 
-			{"code": "Escape", 
+			{"code": "Escape",
 			"action": ""},
-			
-			{"code": "Space", 
+
+			{"code": "Space",
 			"action": "tag_morphofeatures"},
-			
-			{"code": "Enter", 
+
+			{"code": "Enter",
 			"action": "tag_ma"},
-			
-			{"code": "Enter", 
-			"metaKey": true, 
+
+			{"code": "Enter",
+			"metaKey": true,
 			"action": "tag_ma"},
-			
-			{"code": "Backspace", 
+
+			{"code": "Backspace",
 			"action": ""},
-			
-			{"code": "KeyS", 
+
+			{"code": "KeyS",
 			"action": "saveFile",
 			"metaKey": true
 			},
 
-			{"code": "KeyS", 
+			{"code": "KeyS",
 			"action": "syncConllU",
 			"metaKey": true,
 			"shiftKey": true
 			},
 
-			{"code": "KeyQ", 
+			{"code": "KeyQ",
 			"action": "diac",
 			"params":["َ"]},
 
-			{"code": "KeyW", 
+			{"code": "KeyW",
 			"action": "diac",
 			"params":["ً"]},
 
-			{"code": "KeyE", 
+			{"code": "KeyE",
 			"action": "diac",
 			"params":["ُ"]},
 
-			{"code": "KeyR", 
+			{"code": "KeyR",
 			"action": "diac",
 			"params":["ٌ"]},
 
-			{"code": "KeyA", 
+			{"code": "KeyA",
 			"action": "diac",
 			"params":["ِ"]},
 
-			{"code": "KeyS", 
+			{"code": "KeyS",
 			"action": "diac",
 			"params":["ٍ"]},
 
-			{"code": "KeyX", 
+			{"code": "KeyX",
 			"action": "diac",
 			"params":["ْ"]},
 
-			{"code": "Backquote", 
+			{"code": "Backquote",
 			"action": "diac",
 			"params":["ّ"]},
 
 
-			{"code": "Equal", 
+			{"code": "Equal",
 			"shiftKey": true,
 			"action": "clone"},
-			
-			{"code": "Slash", 
+
+			{"code": "Slash",
 			"action": "mark_misc",
 			"shiftKey" : true,
 			"params":["UNCLEAR"]},
-			
-			{"code": "Digit0", 
+
+			{"code": "Digit0",
 			"action": "showOtherUTags"},
-			
-			{"code": "Digit1", 
+
+			{"code": "Digit1",
 			"action": "assignUTag",
 			"params": [1]},
-			
-			{"code": "Digit2", 
+
+			{"code": "Digit2",
 			"action": "assignUTag",
 			"params": [2]},
-			
-			{"code": "Digit3", 
+
+			{"code": "Digit3",
 			"action": "assignUTag",
 			"params": [3]},
-			
-			{"code": "Digit4", 
+
+			{"code": "Digit4",
 			"action": "assignUTag",
 			"params": [4]},
-			
-			{"code": "Digit5", 
+
+			{"code": "Digit5",
 			"action": "assignUTag",
 			"params": [5]},
-			
-			{"code": "Digit6", 
+
+			{"code": "Digit6",
 			"action": "assignUTag",
 			"params": [6]},
-			
-			{"code": "Digit7", 
+
+			{"code": "Digit7",
 			"action": "assignUTag",
 			"params": [7]},
-			
-			{"code": "Digit8", 
+
+			{"code": "Digit8",
 			"action": "assignUTag",
 			"params": [8]},
-			
-			{"code": "Digit9", 
+
+			{"code": "Digit9",
 			"action": "assignUTag",
 			"params": [9]},
 
-			{"code": "F1", 
+			{"code": "F1",
 			"action": "assignSentenceTag",
 			"params": [1]},
-			
-			{"code": "F2", 
+
+			{"code": "F2",
 			"action": "assignSentenceTag",
 			"params": [2]},
-			
-			{"code": "F3", 
+
+			{"code": "F3",
 			"action": "assignSentenceTag",
 			"params": [3]},
-			
-			{"code": "F4", 
+
+			{"code": "F4",
 			"action": "assignSentenceTag",
 			"params": [4]},
-			
-			{"code": "F5", 
+
+			{"code": "F5",
 			"action": "assignSentenceTag",
 			"params": [5]},
-			
-			{"code": "F6", 
+
+			{"code": "F6",
 			"action": "assignSentenceTag",
 			"params": [6]},
-			
-			{"code": "F7", 
+
+			{"code": "F7",
 			"action": "assignSentenceTag",
 			"params": [7]},
-			
-			{"code": "F8", 
+
+			{"code": "F8",
 			"action": "assignSentenceTag",
 			"params": [8]},
-			
-			{"code": "F9", 
+
+			{"code": "F9",
 			"action": "assignSentenceTag",
 			"params": [9]},
 
-			{"code": "Minus", 
+			{"code": "Minus",
 			"shiftKey" : false,
 			"action": "delete"}
 		],
@@ -214,7 +215,7 @@
 	      "Voice": ["Act","Pass"],//"Prosp","Prog"],//"Pqp"],//
 	      "Person": ["1","2","3"]//"Prosp","Prog"],//"Pqp"],//
 	    },
-		"alltags" : 
+		"alltags" :
 	    	[{"tag":"N","desc":"Noun","count":25136},
 			{"tag":"PRON","desc":"Personal Pronoun","count":24685},
 			{"tag":"V","desc":"verb","count":19356},

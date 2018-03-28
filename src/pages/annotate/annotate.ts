@@ -231,6 +231,7 @@ export class AnnotatePage {
   }
   keyboardShortcuts(e) {
     var highlighNode : any = document.querySelector(".highlight")
+    console.log(e)
     if (e.target != document.querySelector("body") && e.target.parentNode.parentNode != highlighNode.parentNode.parentNode){
       if(e.code == "Escape"){
         this.events.publish("stats",{action:"keyboard",event:e})
@@ -309,7 +310,7 @@ export class AnnotatePage {
             return
           after = this.doc.sentences[sindex + 1].elements
 
-          var counter = this.highlight.sentence.words(false).length + 1;
+          let counter = this.highlight.sentence.words(false).length + 1;
           after.forEach(e => {
             if (e.xpostag != "_")
               e.id = "" + counter++;
@@ -323,7 +324,7 @@ export class AnnotatePage {
         }
         else {
           this.highlight.sentence.elements = before;
-          var counter = 1;
+          let counter = 1;
           after.forEach(e => {
             if (e.xpostag != "_")
               e.id = "" + counter++;
@@ -442,10 +443,11 @@ export class AnnotatePage {
         }
         else{
           var sindex = this.doc.sentences.indexOf(this.highlight.sentence)
+          var y = null
           if(params[0]=="word_down")
-            var y = this.doc.sentences[sindex + 1]
+            y = this.doc.sentences[sindex + 1]
           else if(params[0]=="word_up")
-            var y = this.doc.sentences[sindex - 1]
+            y = this.doc.sentences[sindex - 1]
 
           if (y) {
             // this.highlight.sentence = y
@@ -504,7 +506,7 @@ export class AnnotatePage {
         break
 
       case "assignXTag":
-          var fn = this.myTags.getTags()[params[0] - 1]
+          let fn = this.myTags.getTags()[params[0] - 1]
           if (fn){
             this.highlight.element.xpostag = fn.tag;
             this.highlight.element.upostag = this.config.alltags.find(x=>x.tag==fn.tag).mapToConllU
@@ -517,7 +519,7 @@ export class AnnotatePage {
           break;
 
       case "assignSentenceTag":
-          var fn = this.config.sentenceTags[parseInt(params[0]) - 1]
+          fn = this.config.sentenceTags[parseInt(params[0]) - 1]
           if(fn)
             this.highlight.sentence.tag = fn.tag
           this.saveForUndo()
@@ -533,9 +535,9 @@ export class AnnotatePage {
 
       case "validateConllu":
           if(e) e.preventDefault();
-          var that = this
+          // var that = this
           var doc = new ConlluDocument(this.config);
-          doc.parse(this.doc.toConllU(),s=>that.log = that.log + s + '\n',true)
+          doc.parse(this.doc.toConllU(),function(s){this.log = this.log + s + '\n'},true)
           break;
 
       default:
@@ -548,23 +550,47 @@ export class AnnotatePage {
     // console.log(this.highlight.element)
   }
 
-  saveFile(e=null){
+  saveFile(e=null,askToMarkIsDone=true){
     if(e) e.preventDefault();
-    this.conlluRaw = this.doc.toConllU()
-    this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(s => {
-      this.toastCtrl.create({
-        message: 'File was successfully saved',
-        duration: 3000,
-        position: "top"
-      }).present()
-      this.showAlertMessage = false;
-    }).catch(reason => {
-      this.toastCtrl.create({
-        message: 'Error: ' + reason,
-        duration: 3000,
-        position: "top"
-      }).present()
-    })
+    if(askToMarkIsDone){
+      let alertPopup = this.alertCtrl.create({
+          title: 'Mark as done?',
+          message: 'Do you want to mark it as done?',
+          buttons: [{
+                  text: '(Y)es',
+                  handler: () => {
+                    this.doc.sentences[0].comments.unshift("#done "+this.stats.getLine())
+                    this.saveFile(null,false)
+                  }
+              },
+              {
+                  text: '(N)o',
+                  handler: () => {
+                    this.doc.sentences[0].comments.unshift("#notdone "+this.stats.getLine())
+                    this.saveFile(null,false)
+                  }
+              }]
+      });
+      alertPopup.present()
+    }
+    else{
+      this.conlluRaw = this.doc.toConllU()
+      this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(s => {
+        this.toastCtrl.create({
+          message: 'File was successfully saved',
+          duration: 3000,
+          position: "top"
+        }).present()
+        this.showAlertMessage = false;
+      }).catch(reason => {
+        this.toastCtrl.create({
+          message: 'Error: ' + reason,
+          duration: 3000,
+          position: "top"
+        }).present()
+      })
+    }
+
   }
   syncConllU(e=null){
     this.conlluRaw = this.doc.toConllU()
@@ -689,13 +715,29 @@ export class Stats {
         // console.log(obj)
     })
   }
+  getLine(){
+    var a = this.getStatsFromAll()
+    var d = new Date()
+    return ["from="+this.start,
+    "to="+d,
+    "T="+Math.abs(d.getTime() - this.start.getTime()),
+    "stats="+Object.keys(a).map(s=>s+"="+a[s]).join("|")
+    ].join("|")
+  }
   print(){
+    console.log(this.getStatsFromAll())
+    console.log(this.getAll());
+    var d = new Date()
+    console.log(this.start, d, Math.abs(d.getTime() - this.start.getTime()))
+  }
+  getStatsFromAll(){
     var cats = {}
     this.all.forEach(e=>cats[e.action]=cats[e.action]+1 || 1)
-    console.log(cats)
-    console.log(this.all)
+    return cats;
+  }
+  getAll(){
     var cache = [];
-    console.log(JSON.parse(JSON.stringify(this.all, function(key, value) {
+    var x= JSON.parse(JSON.stringify(this.all, function(key, value) {
         if (typeof value === 'object' && value !== null) {
             if (cache.indexOf(value) !== -1) {
                 // Circular reference found, discard key
@@ -705,9 +747,8 @@ export class Stats {
             cache.push(value);
         }
         return value;
-    })));
-cache = null; // Enable garbage collection
-    var d = new Date()
-    console.log(this.start, d, Math.abs(d.getTime() - this.start.getTime()))
+    }))
+    cache = null; // Enable garbage collection
+    return x
   }
 }

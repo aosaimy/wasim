@@ -1,6 +1,604 @@
 webpackJsonp([0],{
 
-/***/ 101:
+/***/ 102:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DocsPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__ = __webpack_require__(284);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__projects_projects__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__annotate_annotate__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(106);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+/**
+ * Generated class for the DocsPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
+var DocsPage = (function () {
+    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, toastCtrl) {
+        var _this = this;
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.conlluService = conlluService;
+        this.myconfig = myconfig;
+        this.configService = configService;
+        this.toastCtrl = toastCtrl;
+        this.uploader = new __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.get("server") + "conllu_upload" });
+        this.hasBaseDropZoneOver = false;
+        this.hasAnotherDropZoneOver = false;
+        this.project = "";
+        this.hash = "";
+        this.newFilename = "";
+        this.text = "";
+        this.list = [];
+        this.config = "";
+        this.configErrors = "";
+        if (!navParams.data.project) {
+            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__projects_projects__["a" /* ProjectsPage */]);
+        }
+        else {
+            this.project = navParams.data.project;
+            this.hash = navParams.data.hash;
+        }
+        var that = this;
+        this.uploader.authToken = this.project + ":" + this.hash;
+        this.uploader.onSuccessItem = function (item) {
+            that.list.push(item.file.name);
+        };
+        conlluService.getList(this.project, this.hash).then(function (result) {
+            if (result.ok)
+                _this.list = result.files;
+            else
+                _this.toastCtrl.create({
+                    message: result.error,
+                    duration: 3000,
+                    position: "top"
+                }).present();
+        });
+        this.configService.load(this.project, this.hash).then(function (s) {
+            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
+        }).catch(function (x) {
+            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
+        });
+    }
+    DocsPage.prototype.goto = function (id) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__annotate_annotate__["a" /* AnnotatePage */], {
+            project: this.project,
+            hash: this.hash,
+            id: id,
+        });
+    };
+    DocsPage.prototype.remove = function (id) {
+        var _this = this;
+        this.conlluService.remove(this.project, this.hash, id).then(function (s) {
+            if (s.ok)
+                _this.list.splice(_this.list.findIndex(function (x) { return x == id; }), 1);
+        });
+    };
+    DocsPage.prototype.udpipe = function (sentence) {
+        var _this = this;
+        var that = this;
+        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
+            that.list.push(result.filename);
+        }).catch(function (err) {
+            _this.toastCtrl.create({
+                message: err,
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+    };
+    DocsPage.prototype.saveConfig = function () {
+        var _this = this;
+        try {
+            this.configService.save(this.project, this.hash, JSON.parse(this.config)).then(function (e) {
+                _this.toastCtrl.create({
+                    message: "Config file has been updated successfully.",
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            }).catch(function (e) {
+                throw ({ message: e });
+            });
+        }
+        catch (e) {
+            console.dir(e);
+            this.configErrors = e.message;
+        }
+    };
+    DocsPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad DocsPage');
+    };
+    DocsPage.prototype.fileOverBase = function (e) {
+        this.hasBaseDropZoneOver = e;
+    };
+    DocsPage.prototype.fileOverAnother = function (e) {
+        this.hasAnotherDropZoneOver = e;
+    };
+    return DocsPage;
+}());
+DocsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>إدارة المشروع: {{project}}</ion-title>\n    </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <ion-grid>\n        <ion-row>\n            <ion-col col-12>\n                <ion-list>\n                    <ion-item *ngFor="let i of list">\n                        {{i}}\n                        <button ion-button outline item-end icon-left (click)="goto(i)">اذهب</button>\n                        <button ion-button outline item-end icon-left (click)="remove(i)">احذف</button>\n                    </ion-item>\n                </ion-list>\n            </ion-col>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-item>\n                    <!-- <ion-label >Text</ion-label> -->\n                    <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n                </ion-item>\n                  <ion-item-divider>\n                  </ion-item-divider>\n                <ion-item>\n                    <ion-label fixed>اسم الملف</ion-label>\n                    <ion-input [(ngModel)]="newFilename"></ion-input>\n                    <button ion-button outline item-end icon-left (click)="udpipe(text)">اذهب</button>\n                </ion-item>\n            </ion-card>\n        </ion-row>\n        <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n            <ion-card>\n                <ion-card-header>\n                    رفع الملفات\n                </ion-card-header>\n                <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n                <ion-list>\n                  <ion-item-divider>\n                    قائمة الملفات\n                  </ion-item-divider>\n\n                    <ion-item *ngFor="let item of uploader.queue">\n                        <ion-avatar item-start>\n                            <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n                            <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n                            <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n                        </ion-avatar>\n                        <h2>{{ item?.file?.name }}</h2>\n                        <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n                        <div *ngIf="uploader.isHTML5">\n                            <div class="progress" style="margin-bottom: 0;">\n                                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n                            </div>\n                        </div>\n                        <ion-row>\n                            <ion-col>\n                                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                                    <ion-icon name="cloud-upload"></ion-icon>\n                                    <div>Upload</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                                    <ion-icon name="undo"></ion-icon>\n                                    <div>Cancel</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.remove()">\n                                    <ion-icon name="trash"></ion-icon>\n                                    <div>Remove</div>\n                                </button>\n                            </ion-col>\n                        </ion-row>\n                    </ion-item>\n                </ion-list>\n                  <ion-item-divider>\n                    رفع ملف/ملفات جديدة\n                  </ion-item-divider>\n                    <button ion-button (click)="uploadbutton.click()" icon-only >\n                        <ion-icon name="cloud-upload"></ion-icon>\n                        <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n                    </button>\n\n            </ion-card>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-card-header>\n                    Configuration File\n                </ion-card-header>\n                <ion-card-content>\n                    <div [hidden]="!configErrors" class="configErrors">{{configErrors}}</div>\n                    <ion-textarea rows="15" [(ngModel)]="config"></ion-textarea>\n                    <button ion-button item-end (click)="saveConfig(i)">حفظ</button>\n                </ion-card-content>\n            </ion-card>\n        </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
+        __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["a" /* ConfigService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]])
+], DocsPage);
+
+//# sourceMappingURL=docs.js.map
+
+/***/ }),
+
+/***/ 105:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConlluService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+// import { Sentence} from '../pages/annotate/conllu';
+
+/*
+  Generated class for the WordService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
+var ConlluService = (function () {
+    function ConlluService(http, myconfig) {
+        this.http = http;
+        this.myconfig = myconfig;
+        this.data = {};
+        this.projects = {};
+    }
+    ConlluService.prototype.load = function (project, hash, pageid) {
+        var _this = this;
+        if (this.data[project + "-" + pageid]) {
+            // already loaded data
+            return Promise.resolve(this.data[project + "-" + pageid]);
+        }
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            // We're using Angular HTTP provider to request the data,
+            // then on the response, it'll map the JSON data to a parsed JS object.
+            // Next, we process the data and resolve the promise with the new data.
+            //    let opts:RequestOptionsArgs = {
+            //    	headers : new Headers({
+            //    		'Content-Type': 'application/json; charset=utf-8',
+            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
+            //    	}),
+            //    	// 'body': JSON.stringify()
+            // }
+            _this.http.post(_this.myconfig.get("server") + "conllu_get", {
+                "project": project,
+                "hash": hash,
+                "file": pageid,
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                // data = data;
+                if (data.ok) {
+                    that.data[project + "-" + pageid] = data.file;
+                    resolve(that.data[project + "-" + pageid]);
+                }
+                else {
+                    console.error(data.error);
+                    reject(data.error);
+                }
+            });
+        });
+    };
+    ConlluService.prototype.getList = function (project, hash, force_update) {
+        var _this = this;
+        if (force_update === void 0) { force_update = false; }
+        if (!force_update && this.projects[project]) {
+            return Promise.resolve(this.projects[project]);
+        }
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve) {
+            _this.http.post(_this.myconfig.get("server") + "conllu_list", {
+                "project": project,
+                "hash": hash,
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                // data = data;
+                if (data.ok) {
+                    _this.projects[project] = data;
+                }
+                resolve(data);
+            });
+        });
+    };
+    ConlluService.prototype.udpipe = function (project, hash, sentence, newFilename, language) {
+        var _this = this;
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            // We're using Angular HTTP provider to request the data,
+            // then on the response, it'll map the JSON data to a parsed JS object.
+            // Next, we process the data and resolve the promise with the new data.
+            _this.http.post(_this.myconfig.get("server") + 'conllu_udpipe', {
+                tokenizer: true,
+                tagger: true,
+                "project": project,
+                "hash": hash,
+                sentence: sentence,
+                model: language,
+                newFilename: newFilename,
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                if (data.ok)
+                    resolve(data);
+                else
+                    reject(data.error);
+            });
+        });
+    };
+    ConlluService.prototype.save = function (project, hash, pageid, data) {
+        var _this = this;
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            // We're using Angular HTTP provider to request the data,
+            // then on the response, it'll map the JSON data to a parsed JS object.
+            // Next, we process the data and resolve the promise with the new data.
+            //    let opts:RequestOptionsArgs = {
+            //    	headers : new Headers({
+            //    		'Content-Type': 'application/json; charset=utf-8',
+            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
+            //    	}),
+            //    	// 'body': JSON.stringify()
+            // }
+            _this.http.post(_this.myconfig.get("server") + 'conllu_save', {
+                "project": project,
+                "hash": hash,
+                "pageid": pageid,
+                "data": data
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                console.log(data);
+                // data = data;
+                if (data.ok)
+                    resolve(data);
+                else
+                    reject(data.error);
+            });
+        });
+    };
+    ConlluService.prototype.remove = function (project, hash, pageid) {
+        var _this = this;
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            // We're using Angular HTTP provider to request the data,
+            // then on the response, it'll map the JSON data to a parsed JS object.
+            // Next, we process the data and resolve the promise with the new data.
+            //    let opts:RequestOptionsArgs = {
+            //    	headers : new Headers({
+            //    		'Content-Type': 'application/json; charset=utf-8',
+            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
+            //    	}),
+            //    	// 'body': JSON.stringify()
+            // }
+            _this.http.post(_this.myconfig.get("server") + 'conllu_remove', {
+                "project": project,
+                "hash": hash,
+                "pageid": pageid,
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                console.log(data);
+                // data = data;
+                if (data.ok)
+                    resolve(data);
+                // else
+                // 	reject(data.error)
+            });
+        });
+    };
+    return ConlluService;
+}());
+ConlluService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+], ConlluService);
+
+//# sourceMappingURL=conllu-service.js.map
+
+/***/ }),
+
+/***/ 106:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+// import { Sentence} from '../pages/annotate/conllu';
+
+/*
+  Generated class for the WordService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
+var ConfigService = (function () {
+    function ConfigService(http, myconfig) {
+        this.http = http;
+        this.myconfig = myconfig;
+        this.config = {
+            "default": {
+                "remote_repo": "",
+                "language": "qac",
+                "tagset": "",
+                "rowlength": 7,
+                "keyboardShortcuts": {},
+                "MF.vs.POS": {},
+                "mf": {},
+                "alltags": [],
+                "sentenceTags": [],
+                "loaded": false
+            }
+        };
+        this.rtls = ["arabic", "qac"];
+    }
+    ConfigService.prototype.load = function (project, hash) {
+        var _this = this;
+        if (this.config[project]) {
+            // already loaded data
+            return Promise.resolve(this.config[project]);
+        }
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.get("server") + "get_config", {
+                project: project,
+                hash: hash
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    if (data.config["MF.vs.POS"])
+                        data.config.alltags.forEach(function (xx, i, arr) { return arr[i].mf = Object.keys(data.config.mf)
+                            .filter(function (x) { return data.config["MF.vs.POS"][x]
+                            .indexOf(data.config["MF.vs.POS_upostag"] ? xx.mapToConllU : xx.tag) >= 0; }); });
+                    data.config.allxtags = data.config.alltags.map(function (x) { return x.tag; });
+                    data.config.allutags = data.config.alltags.map(function (x) { return x.mapToConllU; }).sort().filter(function (el, i, a) { return i == a.indexOf(el); }); // sort and unique
+                    that.config[project] = data.config;
+                    resolve(that.config[project]);
+                }
+                else if (data.default)
+                    that.config.default = data.default;
+                reject(data);
+            });
+        });
+    };
+    ConfigService.prototype.save = function (project, hash, config) {
+        var _this = this;
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.get("server") + "save_config", {
+                project: project,
+                hash: hash,
+                config: config
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    resolve();
+                    _this.config[project] = config;
+                }
+                else
+                    reject(data.error);
+            });
+        });
+    };
+    ConfigService.prototype.getConfig = function (project) {
+        return this.config[project] ? this.config[project] : this.config.default;
+    };
+    ConfigService.prototype.isRtl = function (project) {
+        return this.rtls.indexOf(this.getConfig(project).language) >= 0;
+    };
+    return ConfigService;
+}());
+ConfigService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+], ConfigService);
+
+//# sourceMappingURL=config-service.js.map
+
+/***/ }),
+
+/***/ 115:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 115;
+
+/***/ }),
+
+/***/ 157:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 157;
+
+/***/ }),
+
+/***/ 201:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+/*
+  Generated class for the WordService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
+var ProjectService = (function () {
+    function ProjectService(http, myconfig) {
+        this.http = http;
+        this.myconfig = myconfig;
+        this.data = {};
+        this.list = { ok: false, projects: [], error: "Not laoded yet." };
+    }
+    ProjectService.prototype.getList = function (security) {
+        var _this = this;
+        if (this.list.ok) {
+            return Promise.resolve(this.list);
+        }
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve) {
+            _this.http.post(_this.myconfig.get("server") + "projects_list", {
+                "security": security
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                console.log(data);
+                // data = data;
+                if (data.ok) {
+                    that.list = data;
+                }
+                resolve(data);
+            });
+        });
+    };
+    ProjectService.prototype.create = function (security, project) {
+        var _this = this;
+        var that = this;
+        // don't have the data yet
+        return new Promise(function (resolve) {
+            _this.http.post(_this.myconfig.get("server") + "projects_create", {
+                "security": security,
+                "project": project,
+            })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                resolve(data);
+            });
+        });
+    };
+    return ProjectService;
+}());
+ProjectService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+], ProjectService);
+
+//# sourceMappingURL=project-service.js.map
+
+/***/ }),
+
+/***/ 206:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10,16 +608,16 @@ webpackJsonp([0],{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_word_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_config_service__ = __webpack_require__(103);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_tags_selector_tags_selector__ = __webpack_require__(206);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_help_popover_help_popover__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__docs_docs__ = __webpack_require__(104);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__projects_projects__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__conllu__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_word_service__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_config_service__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_tags_selector_tags_selector__ = __webpack_require__(211);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_help_popover_help_popover__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__docs_docs__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__projects_projects__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__conllu__ = __webpack_require__(208);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -236,6 +834,7 @@ var AnnotatePage = (function () {
     };
     AnnotatePage.prototype.keyboardShortcuts = function (e) {
         var highlighNode = document.querySelector(".highlight");
+        console.log(e);
         if (e.target != document.querySelector("body") && e.target.parentNode.parentNode != highlighNode.parentNode.parentNode) {
             if (e.code == "Escape") {
                 this.events.publish("stats", { action: "keyboard", event: e });
@@ -317,13 +916,13 @@ var AnnotatePage = (function () {
             if (!this.doc.sentences[sindex + 1])
                 return;
             after = this.doc.sentences[sindex + 1].elements;
-            var counter = this.highlight.sentence.words(false).length + 1;
+            var counter_1 = this.highlight.sentence.words(false).length + 1;
             after.forEach(function (e) {
                 if (e.xpostag != "_")
-                    e.id = "" + counter++;
+                    e.id = "" + counter_1++;
                 else {
                     var arr = e.id.split("-");
-                    e.id = counter + "-" + (counter + parseInt(arr[1]) - parseInt(arr[0]));
+                    e.id = counter_1 + "-" + (counter_1 + parseInt(arr[1]) - parseInt(arr[0]));
                 }
             });
             this.highlight.sentence.elements = this.highlight.sentence.elements.concat(after);
@@ -331,13 +930,13 @@ var AnnotatePage = (function () {
         }
         else {
             this.highlight.sentence.elements = before;
-            var counter = 1;
+            var counter_2 = 1;
             after.forEach(function (e) {
                 if (e.xpostag != "_")
-                    e.id = "" + counter++;
+                    e.id = "" + counter_2++;
                 else {
                     var arr = e.id.split("-");
-                    e.id = counter + "-" + (counter + parseInt(arr[1]) - parseInt(arr[0]));
+                    e.id = counter_2 + "-" + (counter_2 + parseInt(arr[1]) - parseInt(arr[0]));
                 }
             });
             var sent = new __WEBPACK_IMPORTED_MODULE_12__conllu__["c" /* ConlluSentence */]("new", after, [], this.doc);
@@ -441,10 +1040,11 @@ var AnnotatePage = (function () {
                 }
                 else {
                     var sindex = this.doc.sentences.indexOf(this.highlight.sentence);
+                    var y = null;
                     if (params[0] == "word_down")
-                        var y = this.doc.sentences[sindex + 1];
+                        y = this.doc.sentences[sindex + 1];
                     else if (params[0] == "word_up")
-                        var y = this.doc.sentences[sindex - 1];
+                        y = this.doc.sentences[sindex - 1];
                     if (y) {
                         // this.highlight.sentence = y
                         this.events.publish('highligh:change', y.elements.filter(function (x) { return !x.isMultiword(); })[0]);
@@ -493,10 +1093,10 @@ var AnnotatePage = (function () {
                 this.delete(e);
                 break;
             case "assignXTag":
-                var fn = this.myTags.getTags()[params[0] - 1];
-                if (fn) {
-                    this.highlight.element.xpostag = fn.tag;
-                    this.highlight.element.upostag = this.config.alltags.find(function (x) { return x.tag == fn.tag; }).mapToConllU;
+                var fn_1 = this.myTags.getTags()[params[0] - 1];
+                if (fn_1) {
+                    this.highlight.element.xpostag = fn_1.tag;
+                    this.highlight.element.upostag = this.config.alltags.find(function (x) { return x.tag == fn_1.tag; }).mapToConllU;
                 }
                 this.saveForUndo();
                 break;
@@ -504,9 +1104,9 @@ var AnnotatePage = (function () {
                 this.myTags.increaseTagsRow();
                 break;
             case "assignSentenceTag":
-                var fn = this.config.sentenceTags[parseInt(params[0]) - 1];
-                if (fn)
-                    this.highlight.sentence.tag = fn.tag;
+                fn_1 = this.config.sentenceTags[parseInt(params[0]) - 1];
+                if (fn_1)
+                    this.highlight.sentence.tag = fn_1.tag;
                 this.saveForUndo();
                 break;
             case "saveFile":
@@ -520,9 +1120,9 @@ var AnnotatePage = (function () {
             case "validateConllu":
                 if (e)
                     e.preventDefault();
-                var that = this;
+                // var that = this
                 var doc = new __WEBPACK_IMPORTED_MODULE_12__conllu__["a" /* ConlluDocument */](this.config);
-                doc.parse(this.doc.toConllU(), function (s) { return that.log = that.log + s + '\n'; }, true);
+                doc.parse(this.doc.toConllU(), function (s) { this.log = this.log + s + '\n'; }, true);
                 break;
             default:
                 // code...
@@ -531,26 +1131,50 @@ var AnnotatePage = (function () {
         this.jump(this.doc.getElementLine(this.highlight.element, this.highlight.sentence));
         // console.log(this.highlight.element)
     };
-    AnnotatePage.prototype.saveFile = function (e) {
+    AnnotatePage.prototype.saveFile = function (e, askToMarkIsDone) {
         var _this = this;
         if (e === void 0) { e = null; }
+        if (askToMarkIsDone === void 0) { askToMarkIsDone = true; }
         if (e)
             e.preventDefault();
-        this.conlluRaw = this.doc.toConllU();
-        this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(function (s) {
-            _this.toastCtrl.create({
-                message: 'File was successfully saved',
-                duration: 3000,
-                position: "top"
-            }).present();
-            _this.showAlertMessage = false;
-        }).catch(function (reason) {
-            _this.toastCtrl.create({
-                message: 'Error: ' + reason,
-                duration: 3000,
-                position: "top"
-            }).present();
-        });
+        if (askToMarkIsDone) {
+            var alertPopup = this.alertCtrl.create({
+                title: 'Mark as done?',
+                message: 'Do you want to mark it as done?',
+                buttons: [{
+                        text: '(Y)es',
+                        handler: function () {
+                            _this.doc.sentences[0].comments.unshift("#done " + _this.stats.getLine());
+                            _this.saveFile(null, false);
+                        }
+                    },
+                    {
+                        text: '(N)o',
+                        handler: function () {
+                            _this.doc.sentences[0].comments.unshift("#notdone " + _this.stats.getLine());
+                            _this.saveFile(null, false);
+                        }
+                    }]
+            });
+            alertPopup.present();
+        }
+        else {
+            this.conlluRaw = this.doc.toConllU();
+            this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(function (s) {
+                _this.toastCtrl.create({
+                    message: 'File was successfully saved',
+                    duration: 3000,
+                    position: "top"
+                }).present();
+                _this.showAlertMessage = false;
+            }).catch(function (reason) {
+                _this.toastCtrl.create({
+                    message: 'Error: ' + reason,
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            });
+        }
     };
     AnnotatePage.prototype.syncConllU = function (e) {
         if (e === void 0) { e = null; }
@@ -647,7 +1271,7 @@ __decorate([
 ], AnnotatePage.prototype, "myTags", void 0);
 AnnotatePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n\n  <ion-navbar>\n    <ion-title>ترميز الملف: {{pageid}}</ion-title>\n\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="more"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n\n\n</ion-header>\n\n\n<ion-content padding>\n<!-- <ion-list> -->\n  <!-- <ion-item *ngFor="">\n    <ion-avatar item-left>\n      <h1></h1>\n    </ion-avatar>\n    <h2>Finn</h2>\n    <h3>Don\'t Know What To Do!</h3>\n    <p>I\'ve had a pretty messed up day. If we just...</p>\n  </ion-item> -->\n\n<ion-grid (window:keydown)="keyboardShortcuts($event)" (window:click)="mouseClick($event)">\n  <ion-row>\n      <ion-col style="display:none; margin: 0">\n        <div id="vis"></div>\n        <ion-textarea id="parsed" rows="10" cols="80"></ion-textarea>\n      </ion-col>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>\n\n\n          <!-- <button class=\'topbar_button\' ion-button tabindex="-1" (click)="syncConllU()"><ion-icon name="sync"></ion-icon></button> -->\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="showStats()"><ion-icon name="print"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="tag_morphofeatures()"><ion-icon name="apps"></ion-icon></button>\n\n          <button class=\'topbar_button\' [disabled]="undoArr.length==0" ion-button tabindex="-1" (click)="undo()"><ion-icon name="undo"></ion-icon></button>\n          <button class=\'topbar_button\' [disabled]="redoArr.length==0" ion-button tabindex="-1" (click)="redo()"><ion-icon name="redo"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="tag_ma()"><ion-icon name="menu"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="mark_misc(\'UNCLEAR\')"><ion-icon name="warning"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="save()"><ion-icon name="cloud-upload"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden"><ion-icon name="sync"></ion-icon></button>\n\n        </ion-row>\n\n        <!-- <ion-row>\n          <div *ngFor="let tag of sentenceTags;" class="tag" title="{{tag.desc}}" >\n              {{tag.tag}}\n              <span class="fn">F{{tag.fn}}</span>\n          </div>\n        </ion-row> -->\n      </ion-col>\n\n  </ion-row>\n  <ion-row>\n    <ion-col col-2>\n      <ion-list *ngIf="highlight.element">\n<!--         <ion-item>\n          <ion-label color="primary" stacked>Lemma</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>\n        </ion-item>\n -->\n        <ion-item *ngIf="highlight.element.parent">\n          <ion-label color="primary" stacked>الكلمة الكاملة</ion-label>\n          <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n       <ion-item>\n          <ion-label color="primary" stacked>الكلمة</ion-label>\n          <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>قسم الكلام</ion-label>\n          <ion-select [(ngModel)]="highlight.element.xpostag">\n            <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.desc}}</ion-option>\n          </ion-select>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>قسم الكلام العالمي</ion-label>\n          <ion-select [(ngModel)]="highlight.element.upostag">\n            <ion-option *ngFor="let tag of config.allutags;" [value]="tag">{{tag}}</ion-option>\n          </ion-select>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>الجذع</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n\n        <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{feat.key}}</ion-label>\n         <ion-select [(ngModel)]="feat.value" interface="popover">\n            <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e">{{e}}</ion-option>\n          </ion-select>\n\n            <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->\n        </ion-item>\n      </ion-list>\n      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialPos" [project]="project" [hash]="hash"> </guider>\n      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n    </ion-col>\n    <ion-col id="sentences" *ngIf="config" >\n      <!-- <p>Here\'s a validating visualizer. Visualization:</p> -->\n      <!-- <pre>{{documentJson}}</pre> -->\n      <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}">\n          <div>{{sent.tag}}</div>\n          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element"\n            [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: elem == highlight.element,\n              rtl:configService.isRtl(project),\n              unclear: elem.miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0 }"\n            (click)="highlight.element = elem; highlight.sentence = sent"\n          >\n              <span class="form">{{getForm(elem)}}</span>\n              <span class="postag">{{config.useUD ? elem.upostag : elem.xpostag}}</span>\n              <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              <!-- <span *ngFor="let feat of elem.features()">\n                <span class="featname">{{feat[0]}}</span>\n                <span class="featname">{{feat[1]}}</span>\n              </span> -->\n          </div>\n      </div>\n\n    </ion-col>\n    <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">\n      <ion-row>\n        <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row>\n        <h2>Error log:</h2>\n        <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">\n        </ion-textarea>\n      </ion-row>\n    </ion-col>\n  </ion-row>\n\n\n<!-- no need to show the intermediate data representation -->\n\n<!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n\n</ion-grid>\n<!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
+        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n\n  <ion-navbar>\n    <ion-title>ترميز الملف: {{pageid}}</ion-title>\n\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="more"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n\n\n</ion-header>\n\n\n<ion-content padding>\n<!-- <ion-list> -->\n  <!-- <ion-item *ngFor="">\n    <ion-avatar item-left>\n      <h1></h1>\n    </ion-avatar>\n    <h2>Finn</h2>\n    <h3>Don\'t Know What To Do!</h3>\n    <p>I\'ve had a pretty messed up day. If we just...</p>\n  </ion-item> -->\n\n<ion-grid (window:keydown)="keyboardShortcuts($event)" (window:click)="mouseClick($event)">\n  <ion-row>\n      <ion-col style="display:none; margin: 0">\n        <div id="vis"></div>\n        <ion-textarea id="parsed" rows="10" cols="80"></ion-textarea>\n      </ion-col>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>\n\n\n          <!-- <button class=\'topbar_button\' ion-button tabindex="-1" (click)="syncConllU()"><ion-icon name="sync"></ion-icon></button> -->\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="showStats()"><ion-icon name="print"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="tag_morphofeatures()"><ion-icon name="apps"></ion-icon></button>\n\n          <button class=\'topbar_button\' [disabled]="undoArr.length==0" ion-button tabindex="-1" (click)="undo()"><ion-icon name="undo"></ion-icon></button>\n          <button class=\'topbar_button\' [disabled]="redoArr.length==0" ion-button tabindex="-1" (click)="redo()"><ion-icon name="redo"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="tag_ma()"><ion-icon name="menu"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="mark_misc(\'UNCLEAR\')"><ion-icon name="warning"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button>\n\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="save()"><ion-icon name="cloud-upload"></ion-icon></button>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden"><ion-icon name="sync"></ion-icon></button>\n\n        </ion-row>\n\n        <!-- <ion-row>\n          <div *ngFor="let tag of sentenceTags;" class="tag" title="{{tag.desc}}" >\n              {{tag.tag}}\n              <span class="fn">F{{tag.fn}}</span>\n          </div>\n        </ion-row> -->\n      </ion-col>\n\n  </ion-row>\n  <ion-row>\n    <ion-col col-2>\n      <ion-list *ngIf="highlight.element">\n<!--         <ion-item>\n          <ion-label color="primary" stacked>Lemma</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>\n        </ion-item>\n -->\n        <ion-item *ngIf="highlight.element.parent">\n          <ion-label color="primary" stacked>Inflected Word Form</ion-label>\n          <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n       <ion-item>\n          <ion-label color="primary" stacked>Token form</ion-label>\n          <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>XPOS Tag</ion-label>\n          <ion-select [(ngModel)]="highlight.element.xpostag">\n            <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.desc}}</ion-option>\n          </ion-select>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>UPOS Tag</ion-label>\n          <ion-select [(ngModel)]="highlight.element.upostag">\n            <ion-option *ngFor="let tag of config.allutags;" [value]="tag">{{tag}}</ion-option>\n          </ion-select>\n        </ion-item>\n\n       <ion-item>\n          <ion-label color="primary" stacked>Lemma</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n\n        <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{feat.key}}</ion-label>\n         <ion-select [(ngModel)]="feat.value" interface="popover">\n            <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e">{{e}}</ion-option>\n          </ion-select>\n\n            <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->\n        </ion-item>\n      </ion-list>\n      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialPos" [project]="project" [hash]="hash"> </guider>\n      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n    </ion-col>\n    <ion-col id="sentences" *ngIf="config" >\n      <!-- <p>Here\'s a validating visualizer. Visualization:</p> -->\n      <!-- <pre>{{documentJson}}</pre> -->\n      <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}">\n          <div>{{sent.tag}}</div>\n          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element"\n            [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: elem == highlight.element,\n              rtl:configService.isRtl(project),\n              unclear: elem.miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0 }"\n            (click)="highlight.element = elem; highlight.sentence = sent"\n          >\n              <span class="form">{{getForm(elem)}}</span>\n              <span class="postag">{{config.useUD ? elem.upostag : elem.xpostag}}</span>\n              <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              <!-- <span *ngFor="let feat of elem.features()">\n                <span class="featname">{{feat[0]}}</span>\n                <span class="featname">{{feat[1]}}</span>\n              </span> -->\n          </div>\n      </div>\n\n    </ion-col>\n    <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">\n      <ion-row>\n        <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row>\n        <h2>Error log:</h2>\n        <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">\n        </ion-textarea>\n      </ion-row>\n    </ion-col>\n  </ion-row>\n\n\n<!-- no need to show the intermediate data representation -->\n\n<!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n\n</ion-grid>\n<!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
     }),
     __metadata("design:paramtypes", [typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* PopoverController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* PopoverController */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"]) === "function" && _h || Object, typeof (_j = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"]) === "function" && _j || Object, typeof (_k = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]) === "function" && _k || Object, typeof (_l = typeof __WEBPACK_IMPORTED_MODULE_3__providers_word_service__["a" /* WordService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_word_service__["a" /* WordService */]) === "function" && _l || Object, typeof (_m = typeof __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */]) === "function" && _m || Object, typeof (_o = typeof __WEBPACK_IMPORTED_MODULE_5__providers_config_service__["a" /* ConfigService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_config_service__["a" /* ConfigService */]) === "function" && _o || Object, typeof (_p = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _p || Object, typeof (_q = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]) === "function" && _q || Object])
 ], AnnotatePage);
@@ -682,13 +1306,29 @@ var Stats = (function () {
             // console.log(obj)
         });
     }
+    Stats.prototype.getLine = function () {
+        var a = this.getStatsFromAll();
+        var d = new Date();
+        return ["from=" + this.start,
+            "to=" + d,
+            "T=" + Math.abs(d.getTime() - this.start.getTime()),
+            "stats=" + Object.keys(a).map(function (s) { return s + "=" + a[s]; }).join("|")
+        ].join("|");
+    };
     Stats.prototype.print = function () {
+        console.log(this.getStatsFromAll());
+        console.log(this.getAll());
+        var d = new Date();
+        console.log(this.start, d, Math.abs(d.getTime() - this.start.getTime()));
+    };
+    Stats.prototype.getStatsFromAll = function () {
         var cats = {};
         this.all.forEach(function (e) { return cats[e.action] = cats[e.action] + 1 || 1; });
-        console.log(cats);
-        console.log(this.all);
+        return cats;
+    };
+    Stats.prototype.getAll = function () {
         var cache = [];
-        console.log(JSON.parse(JSON.stringify(this.all, function (key, value) {
+        var x = JSON.parse(JSON.stringify(this.all, function (key, value) {
             if (typeof value === 'object' && value !== null) {
                 if (cache.indexOf(value) !== -1) {
                     // Circular reference found, discard key
@@ -698,10 +1338,9 @@ var Stats = (function () {
                 cache.push(value);
             }
             return value;
-        })));
+        }));
         cache = null; // Enable garbage collection
-        var d = new Date();
-        console.log(this.start, d, Math.abs(d.getTime() - this.start.getTime()));
+        return x;
     };
     return Stats;
 }());
@@ -711,632 +1350,7 @@ var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
 
 /***/ }),
 
-/***/ 102:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConlluService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-// import { Sentence} from '../pages/annotate/conllu';
-
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
-var ConlluService = (function () {
-    function ConlluService(http, myconfig) {
-        this.http = http;
-        this.myconfig = myconfig;
-        this.data = {};
-        this.projects = {};
-    }
-    ConlluService.prototype.load = function (project, hash, pageid) {
-        var _this = this;
-        if (this.data[project + "-" + pageid]) {
-            // already loaded data
-            return Promise.resolve(this.data[project + "-" + pageid]);
-        }
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            // We're using Angular HTTP provider to request the data,
-            // then on the response, it'll map the JSON data to a parsed JS object.
-            // Next, we process the data and resolve the promise with the new data.
-            //    let opts:RequestOptionsArgs = {
-            //    	headers : new Headers({
-            //    		'Content-Type': 'application/json; charset=utf-8',
-            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
-            //    	}),
-            //    	// 'body': JSON.stringify()
-            // }
-            _this.http.post(_this.myconfig.get("server") + "conllu_get", {
-                "project": project,
-                "hash": hash,
-                "file": pageid,
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                // data = data;
-                if (data.ok) {
-                    that.data[project + "-" + pageid] = data.file;
-                    resolve(that.data[project + "-" + pageid]);
-                }
-                else {
-                    console.error(data.error);
-                    reject(data.error);
-                }
-            });
-        });
-    };
-    ConlluService.prototype.getList = function (project, hash, force_update) {
-        var _this = this;
-        if (force_update === void 0) { force_update = false; }
-        if (!force_update && this.projects[project]) {
-            return Promise.resolve(this.projects[project]);
-        }
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve) {
-            _this.http.post(_this.myconfig.get("server") + "conllu_list", {
-                "project": project,
-                "hash": hash,
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                // data = data;
-                if (data.ok) {
-                    _this.projects[project] = data;
-                }
-                resolve(data);
-            });
-        });
-    };
-    ConlluService.prototype.udpipe = function (project, hash, sentence, newFilename, language) {
-        var _this = this;
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            // We're using Angular HTTP provider to request the data,
-            // then on the response, it'll map the JSON data to a parsed JS object.
-            // Next, we process the data and resolve the promise with the new data.
-            _this.http.post(_this.myconfig.get("server") + 'conllu_udpipe', {
-                tokenizer: true,
-                tagger: true,
-                "project": project,
-                "hash": hash,
-                sentence: sentence,
-                model: language,
-                newFilename: newFilename,
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                if (data.ok)
-                    resolve(data);
-                else
-                    reject(data.error);
-            });
-        });
-    };
-    ConlluService.prototype.save = function (project, hash, pageid, data) {
-        var _this = this;
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            // We're using Angular HTTP provider to request the data,
-            // then on the response, it'll map the JSON data to a parsed JS object.
-            // Next, we process the data and resolve the promise with the new data.
-            //    let opts:RequestOptionsArgs = {
-            //    	headers : new Headers({
-            //    		'Content-Type': 'application/json; charset=utf-8',
-            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
-            //    	}),
-            //    	// 'body': JSON.stringify()
-            // }
-            _this.http.post(_this.myconfig.get("server") + 'conllu_save', {
-                "project": project,
-                "hash": hash,
-                "pageid": pageid,
-                "data": data
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                console.log(data);
-                // data = data;
-                if (data.ok)
-                    resolve(data);
-                else
-                    reject(data.error);
-            });
-        });
-    };
-    ConlluService.prototype.remove = function (project, hash, pageid) {
-        var _this = this;
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            // We're using Angular HTTP provider to request the data,
-            // then on the response, it'll map the JSON data to a parsed JS object.
-            // Next, we process the data and resolve the promise with the new data.
-            //    let opts:RequestOptionsArgs = {
-            //    	headers : new Headers({
-            //    		'Content-Type': 'application/json; charset=utf-8',
-            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
-            //    	}),
-            //    	// 'body': JSON.stringify()
-            // }
-            _this.http.post(_this.myconfig.get("server") + 'conllu_remove', {
-                "project": project,
-                "hash": hash,
-                "pageid": pageid,
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                console.log(data);
-                // data = data;
-                if (data.ok)
-                    resolve(data);
-                // else
-                // 	reject(data.error)
-            });
-        });
-    };
-    return ConlluService;
-}());
-ConlluService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _b || Object])
-], ConlluService);
-
-var _a, _b;
-//# sourceMappingURL=conllu-service.js.map
-
-/***/ }),
-
-/***/ 103:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-// import { Sentence} from '../pages/annotate/conllu';
-
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
-var ConfigService = (function () {
-    function ConfigService(http, myconfig) {
-        this.http = http;
-        this.myconfig = myconfig;
-        this.config = {
-            "default": {
-                "remote_repo": "",
-                "language": "qac",
-                "tagset": "",
-                "rowlength": 7,
-                "keyboardShortcuts": {},
-                "MF.vs.POS": {},
-                "mf": {},
-                "alltags": [],
-                "sentenceTags": [],
-                "loaded": false
-            }
-        };
-        this.rtls = ["arabic", "qac"];
-    }
-    ConfigService.prototype.load = function (project, hash) {
-        var _this = this;
-        if (this.config[project]) {
-            // already loaded data
-            return Promise.resolve(this.config[project]);
-        }
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.get("server") + "get_config", {
-                project: project,
-                hash: hash
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    if (data.config["MF.vs.POS"])
-                        data.config.alltags.forEach(function (xx, i, arr) { return arr[i].mf = Object.keys(data.config.mf)
-                            .filter(function (x) { return data.config["MF.vs.POS"][x]
-                            .indexOf(data.config["MF.vs.POS_upostag"] ? xx.mapToConllU : xx.tag) >= 0; }); });
-                    data.config.allxtags = data.config.alltags.map(function (x) { return x.tag; });
-                    data.config.allutags = data.config.alltags.map(function (x) { return x.mapToConllU; }).sort().filter(function (el, i, a) { return i == a.indexOf(el); }); // sort and unique
-                    that.config[project] = data.config;
-                    resolve(that.config[project]);
-                }
-                else if (data.default)
-                    that.config.default = data.default;
-                reject(data);
-            });
-        });
-    };
-    ConfigService.prototype.save = function (project, hash, config) {
-        var _this = this;
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.get("server") + "save_config", {
-                project: project,
-                hash: hash,
-                config: config
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    resolve();
-                    _this.config[project] = config;
-                }
-                else
-                    reject(data.error);
-            });
-        });
-    };
-    ConfigService.prototype.getConfig = function (project) {
-        return this.config[project] ? this.config[project] : this.config.default;
-    };
-    ConfigService.prototype.isRtl = function (project) {
-        return this.rtls.indexOf(this.getConfig(project).language) >= 0;
-    };
-    return ConfigService;
-}());
-ConfigService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
-], ConfigService);
-
-//# sourceMappingURL=config-service.js.map
-
-/***/ }),
-
-/***/ 104:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DocsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__ = __webpack_require__(284);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__projects_projects__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__annotate_annotate__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(103);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-/**
- * Generated class for the DocsPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-var DocsPage = (function () {
-    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, toastCtrl) {
-        var _this = this;
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.conlluService = conlluService;
-        this.myconfig = myconfig;
-        this.configService = configService;
-        this.toastCtrl = toastCtrl;
-        this.uploader = new __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.get("server") + "conllu_upload" });
-        this.hasBaseDropZoneOver = false;
-        this.hasAnotherDropZoneOver = false;
-        this.project = "";
-        this.hash = "";
-        this.newFilename = "";
-        this.text = "";
-        this.list = [];
-        this.config = "";
-        this.configErrors = "";
-        if (!navParams.data.project) {
-            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__projects_projects__["a" /* ProjectsPage */]);
-        }
-        else {
-            this.project = navParams.data.project;
-            this.hash = navParams.data.hash;
-        }
-        var that = this;
-        this.uploader.authToken = this.project + ":" + this.hash;
-        this.uploader.onSuccessItem = function (item) {
-            that.list.push(item.file.name);
-        };
-        conlluService.getList(this.project, this.hash).then(function (result) {
-            if (result.ok)
-                _this.list = result.files;
-            else
-                _this.toastCtrl.create({
-                    message: result.error,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-        });
-        this.configService.load(this.project, this.hash).then(function (s) {
-            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
-        }).catch(function (x) {
-            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
-        });
-    }
-    DocsPage.prototype.goto = function (id) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__annotate_annotate__["a" /* AnnotatePage */], {
-            project: this.project,
-            hash: this.hash,
-            id: id,
-        });
-    };
-    DocsPage.prototype.remove = function (id) {
-        var _this = this;
-        this.conlluService.remove(this.project, this.hash, id).then(function (s) {
-            if (s.ok)
-                _this.list.splice(_this.list.findIndex(function (x) { return x == id; }), 1);
-        });
-    };
-    DocsPage.prototype.udpipe = function (sentence) {
-        var _this = this;
-        var that = this;
-        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
-            that.list.push(result.filename);
-        }).catch(function (err) {
-            _this.toastCtrl.create({
-                message: err,
-                duration: 3000,
-                position: "top"
-            }).present();
-        });
-    };
-    DocsPage.prototype.saveConfig = function () {
-        var _this = this;
-        try {
-            this.configService.save(this.project, this.hash, JSON.parse(this.config)).then(function (e) {
-                _this.toastCtrl.create({
-                    message: "Config file has been updated successfully.",
-                    duration: 3000,
-                    position: "top"
-                }).present();
-            }).catch(function (e) {
-                throw ({ message: e });
-            });
-        }
-        catch (e) {
-            console.dir(e);
-            this.configErrors = e.message;
-        }
-    };
-    DocsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad DocsPage');
-    };
-    DocsPage.prototype.fileOverBase = function (e) {
-        this.hasBaseDropZoneOver = e;
-    };
-    DocsPage.prototype.fileOverAnother = function (e) {
-        this.hasAnotherDropZoneOver = e;
-    };
-    return DocsPage;
-}());
-DocsPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>إدارة المشروع: {{project}}</ion-title>\n    </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <ion-grid>\n        <ion-row>\n            <ion-col col-12>\n                <ion-list>\n                    <ion-item *ngFor="let i of list">\n                        {{i}}\n                        <button ion-button outline item-end icon-left (click)="goto(i)">اذهب</button>\n                        <button ion-button outline item-end icon-left (click)="remove(i)">احذف</button>\n                    </ion-item>\n                </ion-list>\n            </ion-col>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-item>\n                    <!-- <ion-label >Text</ion-label> -->\n                    <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n                </ion-item>\n                  <ion-item-divider>\n                  </ion-item-divider>\n                <ion-item>\n                    <ion-label fixed>اسم الملف</ion-label>\n                    <ion-input [(ngModel)]="newFilename"></ion-input>\n                    <button ion-button outline item-end icon-left (click)="udpipe(text)">اذهب</button>\n                </ion-item>\n            </ion-card>\n        </ion-row>\n        <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n            <ion-card>\n                <ion-card-header>\n                    رفع الملفات\n                </ion-card-header>\n                <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n                <ion-list>\n                  <ion-item-divider>\n                    قائمة الملفات\n                  </ion-item-divider>\n\n                    <ion-item *ngFor="let item of uploader.queue">\n                        <ion-avatar item-start>\n                            <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n                            <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n                            <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n                        </ion-avatar>\n                        <h2>{{ item?.file?.name }}</h2>\n                        <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n                        <div *ngIf="uploader.isHTML5">\n                            <div class="progress" style="margin-bottom: 0;">\n                                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n                            </div>\n                        </div>\n                        <ion-row>\n                            <ion-col>\n                                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                                    <ion-icon name="cloud-upload"></ion-icon>\n                                    <div>Upload</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                                    <ion-icon name="undo"></ion-icon>\n                                    <div>Cancel</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.remove()">\n                                    <ion-icon name="trash"></ion-icon>\n                                    <div>Remove</div>\n                                </button>\n                            </ion-col>\n                        </ion-row>\n                    </ion-item>\n                </ion-list>\n                  <ion-item-divider>\n                    رفع ملف/ملفات جديدة\n                  </ion-item-divider>\n                    <button ion-button (click)="uploadbutton.click()" icon-only >\n                        <ion-icon name="cloud-upload"></ion-icon>\n                        <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n                    </button>\n\n            </ion-card>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-card-header>\n                    Configuration File\n                </ion-card-header>\n                <ion-card-content>\n                    <div [hidden]="!configErrors" class="configErrors">{{configErrors}}</div>\n                    <ion-textarea rows="15" [(ngModel)]="config"></ion-textarea>\n                    <button ion-button item-end (click)="saveConfig(i)">حفظ</button>\n                </ion-card-content>\n            </ion-card>\n        </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
-    }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
-        __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["a" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]])
-], DocsPage);
-
-//# sourceMappingURL=docs.js.map
-
-/***/ }),
-
-/***/ 107:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(104);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(213);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-/**
- * Generated class for the ProjectsPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-var ProjectsPage = (function () {
-    function ProjectsPage(navCtrl, navParams, projectService, storage, toastCtrl) {
-        var _this = this;
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.projectService = projectService;
-        this.storage = storage;
-        this.toastCtrl = toastCtrl;
-        this.hasBaseDropZoneOver = false;
-        this.hasAnotherDropZoneOver = false;
-        this.security = "";
-        this.projects = [];
-        this.validSecurity = false;
-        this.new_project = "";
-        this.storage.get("security").then(function (v) {
-            _this.security = v;
-            if (_this.security) {
-                _this.validSecurity = true;
-                _this.securityChanged();
-            }
-        });
-    }
-    ProjectsPage.prototype.create = function () {
-        var _this = this;
-        this.projectService.create(this.security, this.new_project)
-            .then(function (result) {
-            if (result.ok) {
-                _this.projects.push({
-                    project: result.project,
-                    hash: result.hash,
-                });
-                _this.storage.set("project_hash_" + result.project, result.hash);
-            }
-            else
-                _this.toastCtrl.create({
-                    message: result.error,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-        });
-    };
-    ProjectsPage.prototype.goto = function (project) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["a" /* DocsPage */], {
-            project: project.project,
-            hash: project.hash,
-        });
-    };
-    ProjectsPage.prototype.securityChanged = function () {
-        var _this = this;
-        this.projectService.getList(this.security).then(function (result) {
-            if (result.ok) {
-                _this.projects = result.projects;
-                _this.validSecurity = true;
-                _this.storage.set("security", _this.security);
-                if (result.projects.length == 0) {
-                    _this.toastCtrl.create({
-                        message: "There is no projects created yet. Please create one now.",
-                        duration: 3000,
-                        position: "top"
-                    }).present();
-                }
-            }
-            else
-                _this.toastCtrl.create({
-                    message: result.error,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-        });
-    };
-    ProjectsPage.prototype.ionViewDidLoad = function () {
-    };
-    return ProjectsPage;
-}());
-ProjectsPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<!--\n  Generated template for the ProjectsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>المشاريع</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding rtl>\n   <ion-card *ngIf="!validSecurity">\n   <ion-card-header>تسجيل الدخول كمدير</ion-card-header>\n   <ion-card-content>\n     <ion-item>\n      <ion-label fixed>رمز الدخول</ion-label>\n      <ion-input type="password" [(ngModel)]="security"></ion-input>\n      </ion-item>\n        <button ion-button (click)="securityChanged()">الدخول</button>\n    </ion-card-content>\n  </ion-card>\n\n  <ion-card *ngIf="validSecurity">\n  <ion-item-divider>\n    المشرايع الحالية\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>\n    		<button ion-button outline item-end icon-left (click)="remove(p)">احذف</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>لا يوجد أي مشروع</ion-item>\n  <ion-item-divider>\n    مشروع جديد\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>اسم المشروع</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>\n	</ion-item>\n  </ion-card>\n\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
-    }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]) === "function" && _e || Object])
-], ProjectsPage);
-
-var _a, _b, _c, _d, _e;
-//# sourceMappingURL=projects.js.map
-
-/***/ }),
-
-/***/ 116:
-/***/ (function(module, exports) {
-
-function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 116;
-
-/***/ }),
-
-/***/ 158:
-/***/ (function(module, exports) {
-
-function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 158;
-
-/***/ }),
-
-/***/ 202:
+/***/ 207:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1348,7 +1362,7 @@ webpackEmptyAsyncContext.id = 158;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_annotate_conllu__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_annotate_conllu__ = __webpack_require__(208);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1399,7 +1413,7 @@ var WordService = (function () {
                 var parsed = doc.parse(data.rs.join("\n"), function (x) {
                     return console.warn("parsing Conllu error", x);
                 }, true);
-                // console.log(parsed) 
+                // console.log(parsed)
                 // data = data;
                 var result = [];
                 parsed.sentences[0].elements
@@ -1486,7 +1500,7 @@ var Word = (function () {
 
 /***/ }),
 
-/***/ 203:
+/***/ 208:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3013,7 +3027,7 @@ Util.dependencyRegex = /^(\d+(?:\.\d+)?):(.*)$/;
 
 /***/ }),
 
-/***/ 204:
+/***/ 209:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3147,7 +3161,7 @@ SelectizePopoverPageComponent = __decorate([
 
 /***/ }),
 
-/***/ 205:
+/***/ 210:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3283,7 +3297,7 @@ MASelectizePopoverPageComponent = __decorate([
 
 /***/ }),
 
-/***/ 206:
+/***/ 211:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3361,7 +3375,7 @@ TagsSelectorComponent = __decorate([
 
 /***/ }),
 
-/***/ 207:
+/***/ 212:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3412,95 +3426,6 @@ HelpPopoverComponent = __decorate([
 ], HelpPopoverComponent);
 
 //# sourceMappingURL=help-popover.js.map
-
-/***/ }),
-
-/***/ 212:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
-var ProjectService = (function () {
-    function ProjectService(http, myconfig) {
-        this.http = http;
-        this.myconfig = myconfig;
-        this.data = {};
-        this.list = { ok: false, projects: [], error: "Not laoded yet." };
-    }
-    ProjectService.prototype.getList = function (security) {
-        var _this = this;
-        if (this.list.ok) {
-            return Promise.resolve(this.list);
-        }
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve) {
-            _this.http.post(_this.myconfig.get("server") + "projects_list", {
-                "security": security
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                console.log(data);
-                // data = data;
-                if (data.ok) {
-                    that.list = data;
-                }
-                resolve(data);
-            });
-        });
-    };
-    ProjectService.prototype.create = function (security, project) {
-        var _this = this;
-        var that = this;
-        // don't have the data yet
-        return new Promise(function (resolve) {
-            _this.http.post(_this.myconfig.get("server") + "projects_create", {
-                "security": security,
-                "project": project,
-            })
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                // we've got back the raw data, now generate the core schedule data
-                // and save the data for later reference
-                resolve(data);
-            });
-        });
-    };
-    return ProjectService;
-}());
-ProjectService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _b || Object])
-], ProjectService);
-
-var _a, _b;
-//# sourceMappingURL=project-service.js.map
 
 /***/ }),
 
@@ -3631,27 +3556,27 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(275);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(207);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(106);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(204);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(205);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(206);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(210);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__ = __webpack_require__(211);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__ = __webpack_require__(290);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_guider_guider__ = __webpack_require__(291);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_help_popover_help_popover__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_docs_docs__ = __webpack_require__(104);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_projects_projects__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_help_popover_help_popover__ = __webpack_require__(212);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_docs_docs__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_projects_projects__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__pipes_not_multi_tag__ = __webpack_require__(292);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__angular_http__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__ionic_storage__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__ionic_native_status_bar__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__ionic_native_splash_screen__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__ionic_native_status_bar__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__ionic_native_splash_screen__ = __webpack_require__(200);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23_ng_selectize__ = __webpack_require__(293);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24_ng2_file_upload__ = __webpack_require__(208);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24_ng2_file_upload__ = __webpack_require__(202);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_24_ng2_file_upload__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3772,9 +3697,9 @@ AppModule = __decorate([
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(52);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3825,15 +3750,17 @@ var MyApp = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */]),
-    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */]) === "function" && _a || Object)
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */])
 ], MyApp.prototype, "nav", void 0);
 MyApp = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/'<ion-menu [content]="content">\n  <ion-header>\n    <ion-toolbar>\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <ion-content>\n    <ion-list>\n      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n        {{p.title}}\n      </button>\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/
     }),
-    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
+        __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
+        __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
 
-var _a, _b, _c, _d, _e;
 //# sourceMappingURL=app.component.js.map
 
 /***/ }),
@@ -4098,6 +4025,125 @@ NotMultiTag = __decorate([
 ], NotMultiTag);
 
 //# sourceMappingURL=not-multi-tag.js.map
+
+/***/ }),
+
+/***/ 52:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectsPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(213);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+/**
+ * Generated class for the ProjectsPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
+var ProjectsPage = (function () {
+    function ProjectsPage(navCtrl, navParams, projectService, storage, toastCtrl) {
+        var _this = this;
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.projectService = projectService;
+        this.storage = storage;
+        this.toastCtrl = toastCtrl;
+        this.hasBaseDropZoneOver = false;
+        this.hasAnotherDropZoneOver = false;
+        this.security = "";
+        this.projects = [];
+        this.validSecurity = false;
+        this.new_project = "";
+        this.storage.get("security").then(function (v) {
+            _this.security = v;
+            if (_this.security) {
+                _this.validSecurity = true;
+                _this.securityChanged();
+            }
+        });
+    }
+    ProjectsPage.prototype.create = function () {
+        var _this = this;
+        this.projectService.create(this.security, this.new_project)
+            .then(function (result) {
+            if (result.ok) {
+                _this.projects.push({
+                    project: result.project,
+                    hash: result.hash,
+                });
+                _this.storage.set("project_hash_" + result.project, result.hash);
+            }
+            else
+                _this.toastCtrl.create({
+                    message: result.error,
+                    duration: 3000,
+                    position: "top"
+                }).present();
+        });
+    };
+    ProjectsPage.prototype.goto = function (project) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["a" /* DocsPage */], {
+            project: project.project,
+            hash: project.hash,
+        });
+    };
+    ProjectsPage.prototype.securityChanged = function () {
+        var _this = this;
+        this.projectService.getList(this.security).then(function (result) {
+            if (result.ok) {
+                _this.projects = result.projects;
+                _this.validSecurity = true;
+                _this.storage.set("security", _this.security);
+                if (result.projects.length == 0) {
+                    _this.toastCtrl.create({
+                        message: "There is no projects created yet. Please create one now.",
+                        duration: 3000,
+                        position: "top"
+                    }).present();
+                }
+            }
+            else
+                _this.toastCtrl.create({
+                    message: result.error,
+                    duration: 3000,
+                    position: "top"
+                }).present();
+        });
+    };
+    ProjectsPage.prototype.ionViewDidLoad = function () {
+    };
+    return ProjectsPage;
+}());
+ProjectsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<!--\n  Generated template for the ProjectsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>المشاريع</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding rtl>\n   <ion-card *ngIf="!validSecurity">\n   <ion-card-header>تسجيل الدخول كمدير</ion-card-header>\n   <ion-card-content>\n     <ion-item>\n      <ion-label fixed>رمز الدخول</ion-label>\n      <ion-input type="password" [(ngModel)]="security"></ion-input>\n      </ion-item>\n        <button ion-button (click)="securityChanged()">الدخول</button>\n    </ion-card-content>\n  </ion-card>\n\n  <ion-card *ngIf="validSecurity">\n  <ion-item-divider>\n    المشرايع الحالية\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>\n    		<button ion-button outline item-end icon-left (click)="remove(p)">احذف</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>لا يوجد أي مشروع</ion-item>\n  <ion-item-divider>\n    مشروع جديد\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>اسم المشروع</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>\n	</ion-item>\n  </ion-card>\n\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */],
+        __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]])
+], ProjectsPage);
+
+//# sourceMappingURL=projects.js.map
 
 /***/ })
 

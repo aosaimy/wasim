@@ -73,32 +73,32 @@
         </ion-item>
  -->
         <ion-item *ngIf="highlight.element.parent">
-          <ion-label color="primary" stacked>الكلمة الكاملة</ion-label>
+          <ion-label color="primary" stacked>Inflected Word Form</ion-label>
           <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
         </ion-item>
        <ion-item>
-          <ion-label color="primary" stacked>الكلمة</ion-label>
+          <ion-label color="primary" stacked>Token form</ion-label>
           <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
         </ion-item>
 
        <ion-item>
-          <ion-label color="primary" stacked>قسم الكلام</ion-label>
+          <ion-label color="primary" stacked>XPOS Tag</ion-label>
           <ion-select [(ngModel)]="highlight.element.xpostag">
             <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.desc}}</ion-option>
           </ion-select>
         </ion-item>
 
        <ion-item>
-          <ion-label color="primary" stacked>قسم الكلام العالمي</ion-label>
+          <ion-label color="primary" stacked>UPOS Tag</ion-label>
           <ion-select [(ngModel)]="highlight.element.upostag">
             <ion-option *ngFor="let tag of config.allutags;" [value]="tag">{{tag}}</ion-option>
           </ion-select>
         </ion-item>
 
        <ion-item>
-          <ion-label color="primary" stacked>الجذع</ion-label>
+          <ion-label color="primary" stacked>Lemma</ion-label>
           <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
         </ion-item>

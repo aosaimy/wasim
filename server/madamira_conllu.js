@@ -1,15 +1,18 @@
+"use strict"
 var config = require('./config');
 var http = require("http");
 var parser =require("xml2js").Parser(
                      {
                         trim: true,
                         // explicitArray: true
-                     });;
-var resultsParser = require('/Users/abbander/Leeds/ArabicMorphologyTools/bin/resultsParser')
-var resultsConllU = require('/Users/abbander/Leeds/ArabicMorphologyTools/bin/resultConllU')
-var resultsUniquer = require('/Users/abbander/Leeds/ArabicMorphologyTools/bin/resultsUniquer')
+                     });
+var resultsParser = require('sawaref-parser')
+var resultsConllU = require('sawaref-converters').conllu
+var resultsUniquer = require('sawaref-uniqer')
 
-var buckwalter = require(config.buckwalter_path+'buckwalter');
+var buckwalter = require('buckwalter-transliteration');
+buckwalter.bw2utf = buckwalter("bw2utf")
+buckwalter.utf2bw = buckwalter("utf2bw")
 exports.post = function(request, res) {
   var data = request.body;
   var req = http.request({
@@ -28,6 +31,7 @@ exports.post = function(request, res) {
     ress.on('data', (chunk) => {
       xml.push(chunk)
     });
+
     ress.on('end', () => {
       parser.parseString(xml.join(""), function(err, result) {
         if (!Array.isArray(result.madamira_output.out_doc[0].out_seg[0].word_info[0].word))
@@ -54,13 +58,17 @@ exports.post = function(request, res) {
                 res.send({ ok: true, rs: objs })
             });
         } catch (e) {
-          console.error(e)
+          console.error(e.message)
           return res.send({ ok: false, rs: ress.statusCode, body: result })
         }
       })
     })
   })
   // console.log(getXML(data.sentence))
+  req.on('error', function(error) {
+    // Error handling here
+    console.error(error);
+  });
   req.write(getXML(data.sentence))
   req.end()
 

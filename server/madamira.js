@@ -1,10 +1,11 @@
+"use strict"
 var config = require('./config');
 var http = require("http");
 var parser =require("xml2js").Parser(
                      {
                         trim: true,
                         // explicitArray: true
-                     });;
+                     });
 var buckwalter = require(config.buckwalter_path+'buckwalter');
 exports.post = function(request, res) {
   var data = request.body;
