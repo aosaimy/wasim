@@ -1,11 +1,8 @@
 "use strict"
 var config = require('./config');
 var http = require("http");
-var parser =require("xml2js").Parser(
-                     {
-                        trim: true,
-                        // explicitArray: true
-                     });
+var parser = require('xml2json');
+
 var resultsParser = require('sawaref-parser')
 var resultsConllU = require('sawaref-converters').conllu
 var resultsUniquer = require('sawaref-uniqer')
@@ -25,7 +22,7 @@ exports.post = function(request, res) {
     }
   }, function(ress) {
     if (ress.statusCode != 200) {
-      console.error(ress)
+      console.error("Status != 200",ress)
     }
     var xml = []
     ress.on('data', (chunk) => {
@@ -33,35 +30,35 @@ exports.post = function(request, res) {
     });
 
     ress.on('end', () => {
-      parser.parseString(xml.join(""), function(err, result) {
-        if (!Array.isArray(result.madamira_output.out_doc[0].out_seg[0].word_info[0].word))
-          result.madamira_output.out_doc[0].out_seg[0].word_info[0].word = [result.madamira_output.out_doc[0].out_seg[0].word_info.word]
-        try {
-            // console.log(JSON.stringify(result.madamira_output.out_doc[0].out_seg[0].word_info[0].word));
-            // console.dir(result.madamira_output.out_doc[0].out_seg[0].word_info[0]);
-          var stream = resultsParser
-                .parseString(JSON.stringify(result.madamira_output.out_doc[0].out_seg[0].word_info[0].word),
-                    "MX",data.sentence)
-          var stream2 = resultsUniquer.oneTool.uniqueFromJSON(stream,"MX",data.sentence, {
-            m: "all",
-            s: true,
-            md5 : true,
-            t: true
-          })
-          var stream3 = resultsConllU.oneTool.toConlluFromInStream(stream2,"MX",data.sentence, {})
-          var objs = []
-          stream3.on('data',function(buffer){
-              objs.push(buffer);
-              // console.error(buffer);
-            });
-            stream3.on('end',function(){
-                res.send({ ok: true, rs: objs })
-            });
-        } catch (e) {
-          console.error(e.message)
-          return res.send({ ok: false, rs: ress.statusCode, body: result })
-        }
-      })
+      var json = JSON.parse(parser.toJson(xml.join("")));
+      try {
+        var stream = resultsParser.parseJSON(json,"MX", data.sentence)
+        // stream.on("data", function(buffer){
+        //   console.error("stream",buffer)
+        // })
+        var stream2 = resultsUniquer.oneTool.uniqueFromJSON(stream, "MX", data.sentence, {
+          m: "all",
+          s: true,
+          md5: true,
+          t: true
+        })
+        // stream2.on("data", function(buffer){
+        //   // console.error("stream2",buffer)
+        // })
+        var stream3 = resultsConllU.oneTool.toConlluFromInStream(stream2, "MX", data.sentence, {})
+        var objs = []
+        stream3.on('data', function(buffer) {
+          objs.push(buffer);
+          // console.error(buffer);
+        });
+        stream3.on('end', function() {
+          res.send({ ok: true, rs: objs })
+        });
+      } catch (e) {
+        console.error(e)
+        return res.send({ ok: false, rs: ress.statusCode + 1, body: json })
+      }
+
     })
   })
   // console.log(getXML(data.sentence))
@@ -102,9 +99,9 @@ function getXML(sentence) {
             <req_variable name="PRC1" value="true" />
             <req_variable name="PRC2" value="true" />
             <req_variable name="PRC3" value="true" />
-            <req_variable name="STT" value="false" />
-            <req_variable name="VOX" value="false" />
-            <req_variable name="BW" value="false" />
+            <req_variable name="STT" value="true" />
+            <req_variable name="VOX" value="true" />
+            <req_variable name="BW" value="true" />
             <req_variable name="SOURCE" value="false" />
             <req_variable name="NER" value="false" />
             <req_variable name="BPC" value="false" />

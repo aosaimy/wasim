@@ -84,7 +84,14 @@ export class ProjectsPage {
 	          duration: 3000,
 	          position: "top"
 	        }).present()
-  	})
+  	}).catch(error=>{
+        this.toastCtrl.create({
+            message: error,
+            duration: 3000,
+            position: "top"
+          }).present()
+
+    })
 
   }
   ionViewDidLoad() {

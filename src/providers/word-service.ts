@@ -26,7 +26,7 @@ export class WordService {
 	  }
 	  var that = this
 	  // don't have the data yet
-	  return new Promise(resolve => {
+	  return new Promise((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
 	    // then on the response, it'll map the JSON data to a parsed JS object.
 	    // Next, we process the data and resolve the promise with the new data.
@@ -41,18 +41,20 @@ export class WordService {
 	        	return resolve([])
 	        }
 	        var doc = new ConlluDocument(config)
-	        var parsed = doc.parse(data.rs.join("\n"),x=>{
-	        	return console.warn("parsing Conllu error",x)
+	        var parsed = doc.parse(data.rs.join("\n").trim(),x=>{
+	        	return console.warn("Parsing Conllu Error of MA Results:",x)
 	        },true);
 
 	        // console.log(parsed)
 	        // data = data;
 	        var result : ConlluElement[][] = []
+          if(parsed.sentences.length == 0)
+            return reject("No Analysis is returned. Check the server.")
 	        parsed.sentences[0].elements
             	.forEach(e=>{
             		if(e.parent)
             		 	return
-        		 	var wid = e.children.length > 0 ? e.children[0].miscs["WID"] : e.miscs["WID"];
+        		 	var wid = e.children.length > 0 ? e.children[0]._miscs["WID"] : e._miscs["WID"];
             		 if(!Array.isArray(result[wid]))
             		 	result[wid] = []
             		 result[wid].push(e)

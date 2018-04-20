@@ -1,21 +1,15 @@
 <ion-header>
-
   <ion-navbar>
     <ion-title>ترميز الملف: {{pageid}}</ion-title>
-
     <ion-buttons end>
       <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="help"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
-
-
 </ion-header>
-
-
 <ion-content padding>
-<!-- <ion-list> -->
+  <!-- <ion-list> -->
   <!-- <ion-item *ngFor="">
     <ion-avatar item-left>
       <h1></h1>
@@ -24,37 +18,35 @@
     <h3>Don't Know What To Do!</h3>
     <p>I've had a pretty messed up day. If we just...</p>
   </ion-item> -->
-
-<ion-grid (window:keydown)="keyboardShortcuts($event)" (window:click)="mouseClick($event)">
-  <ion-row>
-      <ion-col style="display:none; margin: 0">
+  <ion-grid (window:keydown)="keyboardShortcuts($event)" (window:click)="mouseClick($event)" style="height: 100%;">
+    <ion-row>
+<!--       <ion-col style="display:none; margin: 0">
         <div id="vis"></div>
         <ion-textarea id="parsed" rows="10" cols="80"></ion-textarea>
       </ion-col>
-      <ion-col col-12>
+ -->      <ion-col col-12>
         <ion-row>
           <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>
-
-
-          <!-- <button class='topbar_button' ion-button tabindex="-1" (click)="syncConllU()"><ion-icon name="sync"></ion-icon></button> -->
-          <button class='topbar_button' ion-button tabindex="-1" (click)="showStats()"><ion-icon name="print"></ion-icon></button>
-          <button class='topbar_button' ion-button tabindex="-1" (click)="tag_morphofeatures()"><ion-icon name="apps"></ion-icon></button>
-
-          <button class='topbar_button' [disabled]="undoArr.length==0" ion-button tabindex="-1" (click)="undo()"><ion-icon name="undo"></ion-icon></button>
-          <button class='topbar_button' [disabled]="redoArr.length==0" ion-button tabindex="-1" (click)="redo()"><ion-icon name="redo"></ion-icon></button>
-
-          <button class='topbar_button' ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button>
-
-          <button class='topbar_button' ion-button tabindex="-1" (click)="tag_ma()"><ion-icon name="menu"></ion-icon></button>
-          <button class='topbar_button' ion-button tabindex="-1" (click)="mark_misc('UNCLEAR')"><ion-icon name="warning"></ion-icon></button>
-
-          <button class='topbar_button' ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button>
-
-          <button class='topbar_button' ion-button tabindex="-1" (click)="save()"><ion-icon name="cloud-upload"></ion-icon></button>
-          <button class='topbar_button' ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden"><ion-icon name="sync"></ion-icon></button>
-
+          <button class='topbar_button' ion-button tabindex="-1" (click)="syncConllU()">
+            <ion-icon name="sync"></ion-icon>
+          </button>
+          <button *ngIf="config?.debug" class='topbar_button' icon-left ion-button tabindex="-1" (click)="showStats()">
+            <ion-icon name="print"></ion-icon>Stats</button>
+          <button class='topbar_button' [disabled]="undoArr.length==0" icon-left ion-button tabindex="-1" (click)="undo()">
+            <ion-icon name="undo"></ion-icon> Undo
+          </button>
+          <button class='topbar_button' [disabled]="redoArr.length==0" icon-left ion-button tabindex="-1" (click)="redo()">
+            <ion-icon name="redo"></ion-icon> Redo
+          </button>
+          <!-- <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button> -->
+          <!-- <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button> -->
+          <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="saveFile()">
+            <ion-icon name="cloud-upload"></ion-icon> Save
+          </button>
+          <button class='topbar_button' icon-left right ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden">
+            Hide ConllU
+          </button>
         </ion-row>
-
         <!-- <ion-row>
           <div *ngFor="let tag of sentenceTags;" class="tag" title="{{tag.desc}}" >
               {{tag.tag}}
@@ -62,103 +54,119 @@
           </div>
         </ion-row> -->
       </ion-col>
-
-  </ion-row>
-  <ion-row>
-    <ion-col col-2>
-      <ion-list *ngIf="highlight.element">
-<!--         <ion-item>
+    </ion-row>
+    <ion-row style="height: inherit;">
+      <ion-col col-2>
+        <ion-row style="height: 95%;">
+          <ion-list *ngIf="highlight.element">
+            <!--         <ion-item>
           <ion-label color="primary" stacked>Lemma</ion-label>
           <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>
-        </ion-item>
+        </ion-item>-->
+            <ion-item>
+              <button icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">
+                <ion-icon name="apps"></ion-icon>Features</button>
+              <button icon-left ion-button tabindex="-1" (click)="tag_ma()">
+                <ion-icon name="menu"></ion-icon>Analyser</button>
+            </ion-item>
+            <!--           <ion-item>
+            <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="mark_misc('UNCLEAR')">
+              <ion-icon name="warning"></ion-icon>Unclear</button>
+            <ion-badge item-end>{{highlight.element.id}}</ion-badge>
+          </ion-item>
  -->
-        <ion-item *ngIf="highlight.element.parent">
-          <ion-label color="primary" stacked>Inflected Word Form</ion-label>
-          <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{
+            <ion-item *ngIf="highlight.element.parent">
+              <ion-label color="primary" stacked>Inflected Word Form</ion-label>
+              <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
-        </ion-item>
-       <ion-item>
+            </ion-item>
+            <!--        <ion-item>
           <ion-label color="primary" stacked>Token form</ion-label>
           <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
         </ion-item>
-
-       <ion-item>
-          <ion-label color="primary" stacked>XPOS Tag</ion-label>
-          <ion-select [(ngModel)]="highlight.element.xpostag">
-            <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.desc}}</ion-option>
-          </ion-select>
-        </ion-item>
-
-       <ion-item>
-          <ion-label color="primary" stacked>UPOS Tag</ion-label>
-          <ion-select [(ngModel)]="highlight.element.upostag">
-            <ion-option *ngFor="let tag of config.allutags;" [value]="tag">{{tag}}</ion-option>
-          </ion-select>
-        </ion-item>
-
-       <ion-item>
-          <ion-label color="primary" stacked>Lemma</ion-label>
-          <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{
+ -->
+            <ion-item (click)="mark_misc('UNCLEAR')">
+              <ion-label>Unclear?</ion-label>
+              <ion-checkbox [(ngModel)]="highlight.element._miscs['UNCLEAR']"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary" stacked>Lemma</ion-label>
+              <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{
               rtl:configService.isRtl(project)}"></ion-input>
-        </ion-item>
-
-        <ion-item *ngFor="let feat of highlight.element.features; let i=index">
-            <ion-label color="primary" stacked>{{feat.key}}</ion-label>
-         <ion-select [(ngModel)]="feat.value" interface="popover">
-            <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e">{{e}}</ion-option>
-          </ion-select>
-
-            <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->
-        </ion-item>
-      </ion-list>
-      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialPos" [project]="project" [hash]="hash"> </guider>
-      <guider *ngIf="highlight.element" [element]="highlight.element?.form" type="specialSeg" [project]="project" [hash]="hash"> </guider>
-    </ion-col>
-    <ion-col id="sentences" *ngIf="config" >
-      <!-- <p>Here's a validating visualizer. Visualization:</p> -->
-      <!-- <pre>{{documentJson}}</pre> -->
-      <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{
+            </ion-item>
+            <ion-item *ngFor="let feat of highlight.element.features; let i=index">
+              <ion-label color="primary" stacked>{{feat.key}}</ion-label>
+              <ion-select [(ngModel)]="feat.value" interface="popover">
+                <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>
+              </ion-select>
+              <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary" stacked>XPOS Tag</ion-label>
+              <ion-select [(ngModel)]="highlight.element.xpostag" tabindex="2">
+                <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary" stacked>UPOS Tag</ion-label>
+              <ion-select [(ngModel)]="highlight.element.upostag">
+                <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+          <guider *ngIf="highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>
+          <guider *ngIf="highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>
+        </ion-row>
+      </ion-col>
+      <ion-col id="sentences" *ngIf="config">
+        <!-- <p>Here's a validating visualizer. Visualization:</p> -->
+        <!-- <pre>{{documentJson}}</pre> -->
+        <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{
               rtl:configService.isRtl(project)}">
           <div>{{sent.tag}}</div>
-          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element"
-            [ngClass]="{
+          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element" [ngClass]="{
               isCompounds:elem.upostag=='_',
               highlight: elem == highlight.element,
               rtl:configService.isRtl(project),
-              unclear: elem.miscs['UNCLEAR'],
+              unclear: elem._miscs['UNCLEAR'],
               newline2: i%config.rowlength==0,
-              isSeg: elem.isSeg > 0 }"
-            (click)="highlight.element = elem; highlight.sentence = sent"
-          >
-              <span class="form">{{getForm(elem)}}</span>
-              <span class="postag">{{config.useUD ? elem.upostag : elem.xpostag}}</span>
-              <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>
-              <!-- <span *ngFor="let feat of elem.features()">
+              isSeg: elem.isSeg > 0 }" (click)="events.publish('highlight:change',elem)">
+            <input *ngIf="editable && elem == highlight.element" class="formInput" value="{{elem.form}}" [autofocus] (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />
+            <span *ngIf="!editable || elem != highlight.element">
+              <span class="form" #spanForm>{{elem.getForm()}}</span>
+            <span class="postag">{{config.useUD ? config.tags['U:'+elem.upostag]?.desc : config.tags['X:'+elem.xpostag]?.desc}}</span>
+            <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>
+            </span>
+            <!-- <span *ngFor="let feat of elem.features()">
                 <span class="featname">{{feat[0]}}</span>
                 <span class="featname">{{feat[1]}}</span>
               </span> -->
           </div>
-      </div>
-
-    </ion-col>
-    <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">
-      <ion-row>
-        <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>
+        </div>
+      </ion-col>
+      <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">
+        <!--         <ion-row *ngIf="editingMode" style="height: 95%;">
+          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>
         </ion-row>
-        <ion-row>
-        <h2>Error log:</h2>
-        <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">
-        </ion-textarea>
-      </ion-row>
-    </ion-col>
-  </ion-row>
+ -->
+        <ion-row *ngIf="log.length>0">
+          <ion-item>Error log:</ion-item>
+          <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">
+          </ion-textarea>
+        </ion-row>
+        <ion-row style="height: 95%; position: relative">
+         <pre style="counter-reset: line;">
+<!--       --><div contenteditable="true" class="conllu-row" [ngClass]="{
+              highlight:highlight.sentence?.id=='S'+r.sentid && highlight.element?.id == r.elemid}" *ngFor="let r of conlluRawSpans; let i = index" (blur)="onConlluRawSpansChanged(r,i, $event)"><div class='actions' contenteditable="false"><button tabindex="-1" ion-button small icon-only color="light" (click)="removeConlluRawRow(r,i,$event)"><ion-icon name="remove"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="addConlluRawRow(r,i,$event)"><ion-icon name="add"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="highlightConlluRawRow(r,i,$event)"><ion-icon name="checkmark"></ion-icon></button></div><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]=='#'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>
+          <button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>
 
-
-<!-- no need to show the intermediate data representation -->
-
-<!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->
-
-</ion-grid>
-<!-- </ion-list> -->
+<!-- --></pre>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+    <!-- no need to show the intermediate data representation -->
+    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->
+  </ion-grid>
+  <!-- </ion-list> -->
 </ion-content>

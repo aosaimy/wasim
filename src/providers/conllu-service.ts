@@ -92,7 +92,7 @@ export class ConlluService {
   	udpipe(project:string,hash:string, sentence:string,newFilename:string, language: string) {
 	  var that = this
 	  // don't have the data yet
-	  return new Promise((resolve,reject) => {
+	  return new Promise<{ok:boolean, filename: string, firstline: string, error: string}>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
 	    // then on the response, it'll map the JSON data to a parsed JS object.
 	    // Next, we process the data and resolve the promise with the new data.
@@ -108,7 +108,7 @@ export class ConlluService {
 	     	newFilename: newFilename,
 	     })
 	      .map(res => res.json())
-	      .subscribe((data: {ok:boolean, filename: string, error: string}) => {
+	      .subscribe((data) => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
 	        if(data.ok)
@@ -118,7 +118,7 @@ export class ConlluService {
 	      });
 	  });
 	}
-	save(project:string, hash: string, pageid: string, data: string) {
+	save(project:string, hash: string, pageid: string, file: string) {
 	  var that = this
 	  // don't have the data yet
 	  return new Promise<any>((resolve,reject) => {
@@ -138,16 +138,17 @@ export class ConlluService {
 				"project": project,
 				"hash": hash,
 				"pageid": pageid,
-				"data" : data
+				"data" : file
 			})
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
-	        console.log(data)
-	        // data = data;
-	        if(data.ok)
+	        if(data.ok){
+            this.data[project+"-"+pageid] = file
+            this.projects[project].files.find(x=>x.filename==pageid).firstline = file.split("\n")[0]
         		resolve(data);
+          }
         	else
         		reject(data.error)
 	      });

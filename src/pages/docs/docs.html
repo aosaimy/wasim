@@ -15,9 +15,11 @@
             <ion-col col-12>
                 <ion-list>
                     <ion-item *ngFor="let i of list">
-                        {{i}}
-                        <button ion-button outline item-end icon-left (click)="goto(i)">اذهب</button>
-                        <button ion-button outline item-end icon-left (click)="remove(i)">احذف</button>
+                        {{i.filename}}
+                        <ion-note>{{i.firstline}}</ion-note>
+                        <button ion-button outline item-end icon-left (click)="goto(i.filename)">اذهب</button>
+                        <a ion-button outline item-end icon-left href="{{myconfig.get('server')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">تحميل</a>
+                        <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">احذف</button>
                     </ion-item>
                 </ion-list>
             </ion-col>

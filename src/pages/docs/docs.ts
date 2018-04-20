@@ -25,10 +25,10 @@ export class DocsPage {
   public hash = ""
   public newFilename = ""
   public text = ""
-  public list = []
+  public list : {filename:string, firstline:string}[]= []
   public config :string = ""
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
   	public navParams: NavParams,
     private conlluService: ConlluService,
     private myconfig: Config,
@@ -47,9 +47,9 @@ export class DocsPage {
     this.uploader.onSuccessItem = function (item: any) {
     	that.list.push(item.file.name)
     }
-    
-  	
-  	conlluService.getList(this.project,this.hash).then((result : {ok:boolean,files:string[],error:string}) =>{
+
+
+  	conlluService.getList(this.project,this.hash).then((result) =>{
   		if(result.ok)
   			this.list = result.files
   		else
@@ -68,11 +68,11 @@ export class DocsPage {
   }
 
   goto(id){
-  	this.navCtrl.push(AnnotatePage,{
-  		project: this.project,
-  		hash: this.hash,
-		id: id,
-  	})
+    this.navCtrl.push(AnnotatePage,{
+      project: this.project,
+      hash: this.hash,
+    id: id,
+    })
   }
   remove(id){
   	this.conlluService.remove(this.project,this.hash,id).then(s=>{
@@ -82,14 +82,14 @@ export class DocsPage {
   }
   udpipe(sentence){
 	    var that = this
-	  	this.conlluService.udpipe(this.project,this.hash,sentence,this.newFilename,this.configService.getConfig(this.project).language).then((result:{ok:boolean, filename: string, error: string})=>{
-	  			that.list.push(result.filename)
+	  	this.conlluService.udpipe(this.project,this.hash,sentence,this.newFilename,this.configService.getConfig(this.project).language).then((result)=>{
+	  			that.list.push({filename:result.filename,firstline:result.firstline})
 	  	}).catch(err=>{
         this.toastCtrl.create({
             message: err,
             duration: 3000,
             position: "top"
-          }).present() 
+          }).present()
       })
   }
   configErrors=""
@@ -109,7 +109,7 @@ export class DocsPage {
       console.dir(e)
       this.configErrors = e.message
     }
-    
+
   }
 
   ionViewDidLoad() {
@@ -119,7 +119,7 @@ export class DocsPage {
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
   }
- 
+
   public fileOverAnother(e:any):void {
     this.hasAnotherDropZoneOver = e;
   }

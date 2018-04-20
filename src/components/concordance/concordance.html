@@ -1,0 +1,17 @@
+<div style="text-align: center">
+<div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">
+  <div>{{element?.sentence.tag}}</div>
+  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword() || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{
+              isCompounds: elem.upostag=='_',
+              highlight: elem == element,
+              rtl:config.isRtl,
+              unclear: elem._miscs['UNCLEAR'],
+              isSeg: elem.isSeg > 0 }">
+    <span>
+          <span class="form">{{elem.getForm()}}</span>
+          <span class="postag">{{config.useUD ? config.tags['U:'+elem.upostag]?.desc : config.tags['X:'+elem.xpostag]?.desc}}</span>
+          <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>
+    </span>
+  </div>
+</div>
+</div>

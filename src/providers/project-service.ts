@@ -24,11 +24,11 @@ export class ProjectService {
 	  }
 	  var that = this
 	  // don't have the data yet
-	  return new Promise(resolve => {
+	  return new Promise((resolve,reject) => {
 	     this.http.post(this.myconfig.get("server")+"projects_list",{
 				"security": security
 			})
-	      .map(res => res.json())
+	     .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
@@ -38,7 +38,11 @@ export class ProjectService {
 	        	that.list = data;
 	        }
         	resolve(data);
-	      });
+	      },error=>{
+          if(error.status != 200)
+          reject("Server is not working properly. url="+this.myconfig.get("server"))
+        })
+
 	  });
 	}
 	create(security:string,project: string) {

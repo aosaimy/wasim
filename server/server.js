@@ -12,6 +12,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var md5 = require('md5');
 var multer = require('multer');
+var firstline = require('firstline')
 var fs = require('fs-extra');
 var path = require('path');
 // var util = require('util');
@@ -63,7 +64,7 @@ var dls = {
             app.use("/", express.static(path.join(__dirname, 'public')));
             app.use(function(req, res, next) {
 
-              var allowedOrigins = [config.wasim_client_url, 'http://localhost', 'http://wasim.al-osaimy.com'];
+              var allowedOrigins = [config.wasim_client_url, 'http://localhost','http://localhost:8101','http://wasim.localhost','http://wasim-api.localhost', 'http://wasim.al-osaimy.com'];
               var origin = req.headers.origin;
               if(allowedOrigins.indexOf(origin) > -1){
                     // Website you wish to allow to connect
@@ -136,6 +137,25 @@ var dls = {
         },
     },
     requestsGet: {
+        conllu_download: function (request, res) {
+            var r = request.query;
+            var argv = r//.argv
+            if(!/^[_0-9a-zA-Z]+$/.test(argv.project))
+                return res.json({ok:false,error: "project must be alphanumbers"})
+            if(md5(argv.project+config.salt) !== argv.hash){
+                return res.json({ok:false,error: "project hash is not correct"})
+            }
+            if(! fs.existsSync(path.join(config.wasim,user,argv.project))){
+                return res.json({ok:false,error: "project name does not exist"})
+            }
+            if(! fs.existsSync(path.join(config.wasim,user,argv.project,argv.file))){
+                return res.json({ok:false,error: "file name does not exist"})
+            }
+            var file = fs.readFileSync(path.join(config.wasim,user,argv.project,argv.file),"utf8")
+            res.setHeader('Content-Disposition', 'attachment; filename="'+argv.project+'-'+argv.file+'"');
+            res.setHeader('content-type', 'text/conllu; charset=utf-8');
+            return res.end(file)
+        },
     },
     requests: {
         conllu: function(request, res) {
@@ -186,12 +206,11 @@ var dls = {
             }
             fs.mkdirSync(path.join(config.wasim,user,argv.project));
             var git = require('simple-git')(path.join(config.wasim,user,argv.project)).init()
-            if(config.remote)
-                git.addRemote("origin","git@al-osaimy.com:wasim.org/"+argv.project+".git",function(){
+            if(config.remote_repo)
+                git.addRemote("origin",config.remote_repo,function(){
                     //TODO
                 })
-            else
-                res.json({ok:true,project:argv.project, hash: md5(argv.project+config.salt)})
+            res.json({ok:true,project:argv.project, hash: md5(argv.project+config.salt)})
         },
 
         projects_remove: function (request, res) {
@@ -223,7 +242,13 @@ var dls = {
                 // for (let i=0; i<items.length; i++) {
                     // console.log(items[i]);
                 // }
-                return res.json({ok:true,files: items.filter(x=>!/^\./.test(x))})
+                items = items.filter(x=>!/^\./.test(x))
+                Promise.all(items.map(x=>firstline(path.join(config.wasim,user,argv.project,x)))).then(y=>{
+                  return res.json({
+                    ok:true,
+                    files: items.map((x,i)=>new Object({filename:x,firstline:y[i]}))
+                  })
+                })
             });
 
         },
@@ -287,7 +312,7 @@ var dls = {
               res.send({ok:true})
 
                var git = require('simple-git')(path.join(config.wasim,user,argv.project)).add(path.join(config.wasim,user,argv.project,argv.pageid)).commit("Automatic Save from Wasim")
-               if(config.remote)
+               if(config.remote_repo)
                     git.push("origin","master")
             });
         },
@@ -310,7 +335,7 @@ var dls = {
               res.send({ok:true})
 
               var git = require('simple-git')(path.join(config.wasim,user,argv.project)).rm(path.join(config.wasim,user,argv.project,argv.pageid)).commit("Automatic Remove from Wasim")
-              if(config.remote)
+              if(config.remote_repo)
                     git.push("origin","master")
 
 
@@ -361,7 +386,8 @@ var dls = {
                       try{
                           var result = JSON.parse(response.join(''))
                           fs.writeFile(path.join(config.wasim,user,argv.project,argv.newFilename), result.result)
-                          return res.json({ok:true, filename: argv.newFilename})
+                          let firstline = result.result.split("\n")[0]
+                          return res.json({ok:true, filename: argv.newFilename, firstline:firstline})
                       }
                       catch(e){
                         console.error("error", e, response);
@@ -429,7 +455,7 @@ var dls = {
             }
             var c = fs.readFileSync(path.join(config.wasim,user,argv.project,".config.json"),"utf8")
             try{
-                return res.json({ok:true,config:JSON.parse(c)})
+                return res.json({ok:true,config:json_comments.parse(c)})
             }
             catch(e){
                 console.error(path.join(config.wasim,user,argv.project,".config.json", "is not proper JOSN formatted"))

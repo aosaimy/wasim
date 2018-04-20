@@ -1,63 +1,93 @@
 ma-selectize-popover-page {
-	.title {
-	    background-color: grey;
-    color: white;
-    font-size: 1.5vw;
+  .title {
+    // color: white;
+    font-size: 1.2vw;
     direction: rtl;
     padding: 0.5vw;
-	}
-	.counter{
-		border: 2px white solid;
-	    padding: 0 5px;
-	    margin-left: 5px;
-	}
-	.elements {
-		    list-style: none;
-		}
-	.elements .element {
-	    float: right;
-	    position: relative;
-	    padding: 0.7em 1em 0.7em 1em;
-	    border: 1px blue solid;
-	    border-radius: 8px;
-	    margin: 2px;
-	    text-align: center;
-	    font-family: KawkabMonoLight;
-	    min-width: 4em;
-	    font-size: 1.25vw;
-	}
-	.elements li:first-child .element {
-		margin-right: 0pt;
-	}
-	.elements li:first-child .element:before {
-	    content: "";
-	    position: absolute;
-	    right: 0px;
-	    font-size: 18pt;
-	}
-	.elements .element {
-		margin-right: 20px;
-	}
-	.elements .element .form {
-		float: right;
-		margin-left: 1em;
-	}
-	.elements .element .pos {
-		float: left;
-	}
-	.elements .element:before {
-	    content: "+";
-	    position: absolute;
-	    right: -20px;
-	    font-size: 18pt;
-	}
-	.selectize-dropdown-content {
-	    max-height: 45vh !important;
-	}
-	.morphfeats{
-	    font-size: 0.5em
-	}
-	.selected { 
-		// background-color: #ffffe5
-	}
+    float: right;
+    text-align: center;
+    min-width: 30%;
+  }
+  .counter {
+    border: 2px green solid;
+    padding: 0 5px;
+    margin-left: 5px;
+    float: right;
+    border-radius: 50%;
+    width: 3vw;
+    height: 2vw;
+    text-align: center;
+  }
+  .elements {
+    list-style: none;
+    margin: 0;
+  }
+  .elements .element {
+    float: right;
+    position: relative;
+    padding: 0.7em 1em 0.7em 1em;
+    border: 1px blue solid;
+    border-radius: 8px;
+    margin: 2px;
+    text-align: center;
+    font-family: KawkabMonoLight;
+    min-width: 4em;
+    font-size: 1.25vw;
+  }
+  .elements .element:first-child {
+    margin-right: 0pt;
+  }
+  .elements .element:first-child:before {
+    content: "";
+    position: absolute;
+    right: 0px;
+    font-size: 18pt;
+  }
+  .elements .element {
+    margin-right: 20px;
+  }
+  .elements .element .form {
+    float: right;
+    margin-left: 0.2em;
+  }
+  .by{
+    direction: ltr;
+    color: green;
+  }
+  .elements .element .pos {
+    // float: left;
+    color: green;
+    margin-left: 0.2em;
+    font-family: initial;
+  }
+  .elements .element:before {
+    content: "+";
+    position: absolute;
+    right: -20px;
+    font-size: 18pt;
+  }
+  .selectize-control {
+    // height: 94.9vh !important;
+  }
+  .selectize-dropdown-content {
+    // max-height: 90% !important;
+  }
+  .morphfeats {
+    font-size: 0.5em
+  }
+  .selected {
+    // background-color: #ffffe5
+  }
+  .selectize-dropdown-content>div {
+    // background-color: #eee;
+    color: #495c68;
+    border-bottom: 2px #ddd solid;
+  }
+  .lemma {
+    color: #495c68;
+    // font-size: small;
+    font-family: KawkabMonoLight;
+    float:right;
+    min-width: 10em
+  }
 }

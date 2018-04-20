@@ -15,17 +15,25 @@ Format: http://universaldependencies.github.io/docs/format.html
 Author: Sampo Pyysalo
 License: MIT (http://opensource.org/licenses/MIT)
 */
-import { Word, WordAnalysis } from "../../providers/word-service"
-import { Events} from 'ionic-angular';
+
+var errors = []
+function reportError(error){
+  if(errors.indexOf(error)<0){
+    console.error(error)
+    errors.push(error)
+  }
+}
 
 export class ConlluDocument {
+
 
     /*
      * ConllU.ConlluDocument: represents CoNLL-U document
      */
     sentences: ConlluSentence[] = []
     config : { alltags : any} =null
-    constructor(config, public events: Events=null) {
+    // constructor(config, public events: Events=null) {
+    constructor(config) {
         this.config = config
         this.reset();
     }
@@ -33,15 +41,38 @@ export class ConlluDocument {
         var f = this.config.alltags.find(x=> x.tag == from || x.mapFrom.indexOf(from)>=0)
         if(f)
             return f.tag
-        console.error("tag is not mapped to Xpostag: ",from)
+        reportError("tag is not mapped to Xpostag: "+from)
         return from
     }
+
+    fixSentenceIds(){
+      this.sentences.forEach((s,i)=>{
+        // console.log(s)
+        let id_i = s.comments.findIndex(c=>{
+          return c.indexOf("# sent_id") == 0
+        })
+        if (id_i>=0)
+          s.comments[id_i] = "# sent_id = "+(i+1)
+        else
+          s.comments.push("# sent_id = "+(i+1))
+        s.id = 'S'+(i+1)
+
+        let text_i = s.comments.findIndex(c=>{
+          return c.indexOf("# text") == 0
+        })
+        if (text_i>=0)
+          s.comments[text_i] = "# text = "+s.getText()
+        else
+          s.comments.push("# text = "+s.getText())
+      })
+    }
+
 
     mapTagToUpostag(from,from_ud){
         var f = this.config.alltags.find(x=>x.tag == from)
         if(f)
             return f.mapToConllU
-        console.error("tag is not mapped to Upostag: ",from)
+        reportError("tag is not mapped to Upostag: "+from)
         return from_ud
     }
 
@@ -140,7 +171,7 @@ export class ConlluDocument {
         var sId = 'S' + (this.sentences.length + 1);
         var currentSentence = new ConlluSentence(sId,[],[],this)//, currentSentence.elements, currentSentence.comments);
 
-        for (var idx = 0; idx < lines.length; idx++) {
+        for (let idx = 0; idx < lines.length; idx++) {
             var line = lines[idx], that = this;
 
             var logLineError = function(message) {
@@ -168,7 +199,7 @@ export class ConlluDocument {
                 if (currentSentence.elements.length !== 0) {
                     currentSentence.refix()
                     this.sentences.push(currentSentence)
-                    var sId = 'S' + (this.sentences.length + 1);
+                    let sId = 'S' + (this.sentences.length + 1);
                     currentSentence = new ConlluSentence(sId,[],[],this)//, currentSentence.elements, currentSentence.comments);
                     // this.sentences.push(sentence);
                 } else {
@@ -189,7 +220,7 @@ export class ConlluDocument {
             var element = new ConlluElement(fields, idx, line, currentSentence);
 
             var issues = element.validate();
-            for (var j = 0; j < issues.length; j++) {
+            for (let j = 0; j < issues.length; j++) {
                 logLineError(issues[j]);
             }
             if (issues.length !== 0) {
@@ -230,11 +261,11 @@ export class ConlluDocument {
             this.sentences.push(currentSentence)
         }
 
-        for (var i = 0; i < this.sentences.length; i++) {
+        for (let i = 0; i < this.sentences.length; i++) {
             var sentence: ConlluSentence = this.sentences[i];
 
-            var issues = sentence.validate();
-            for (var j = 0; j < issues.length; j++) {
+            let issues = sentence.validate();
+            for (let j = 0; j < issues.length; j++) {
                 this.logError(issues[j]);
             }
             if (issues.length !== 0) {
@@ -267,15 +298,15 @@ export class ConlluDocument {
             'styles',
             'sentlabels'
         ];
-        for (var i = 0; i < categories.length; i++) {
+        for (let i = 0; i < categories.length; i++) {
             mergedBratData[categories[i]] = [];
         }
         mergedBratData['text'] = '';
-        for (var i = 0; i < this.sentences.length; i++) {
+        for (let i = 0; i < this.sentences.length; i++) {
             var sentence = this.sentences[i];
 
             var issues = sentence.validate();
-            for (var j = 0; j < issues.length; j++) {
+            for (let j = 0; j < issues.length; j++) {
                 this.logError(issues[j]);
             }
             if (issues.length !== 0) {
@@ -294,7 +325,7 @@ export class ConlluDocument {
             }
             mergedBratData['text'] += bratData['text'];
             textOffset += bratData['text'].length;
-            for (var j = 0; j < categories.length; j++) {
+            for (let j = 0; j < categories.length; j++) {
                 var c = categories[j];
                 mergedBratData[c] = mergedBratData[c].concat(bratData[c]);
             }
@@ -337,48 +368,57 @@ export class ConlluSentence {
         // this.refix()
     };
 
-    refix(){
-        var from: number, to: number;
+    refix(keepParentRelations=false){
+      // Fix the id, isSeg, parent, children according to the ID values.
+      // Needed after editing elements of one sentence.
+      // param: keepParentRelations: when true will respect parent relation. Only Id, children and isSeg is updated.
+        var from: number=-1, to: number=-2;
         var parent: ConlluElement;
+
+        var counter = 1;
         this.elements = this.elements.map(e => {
-            // if (e.upostag == "_") {
-            if (e.isMultiword()) {
+          if (e.isMultiword()) {
+              if(!keepParentRelations){
+                // isSeg is updated later
                 from = parseInt(e.id.split("-")[0])
                 to = parseInt(e.id.split("-")[1])
+                if(from==to)
+                  return null
                 e.isSeg = -(to - from) - 1
                 parent = e
-                parent.children.length = 0
-                return e
-            }
-            else if (parseInt(e.id) >= from && parseInt(e.id) <= to) {
-                e.isSeg = parseInt(e.id) - from
-                e.parent = parent
-                parent.children.push(e)
-            }
-            return e
-        });
+              }
+              e.parent = null
+              e.children.length = 0
+              return e
+          }
+          else{
+              e.id = "" + counter++;
+              if (!keepParentRelations){
+               if(parseInt(e.id) >= from && parseInt(e.id) <= to) {
+                  e.isSeg = parseInt(e.id) - from
+                  if(!keepParentRelations)
+                    e.parent = parent
+                  e.parent.children.push(e)
+                  e.parent.id = e.parent.children[0].id + "-" + (parseInt(e.parent.children[0].id) + e.parent.children.length-1)
+                }
+              }
+              else if (e.parent){
+                e.parent.children.push(e)
 
+                e.isSeg = parseInt(e.id) - parseInt(e.parent.children[0].id)
+                e.parent.isSeg = -(parseInt(e.parent.children[e.parent.children.length-1].id) - parseInt(e.parent.children[0].id)) - 1
+
+                if(-e.parent.isSeg != e.parent.children.length)
+                  console.error("Not the same",-e.parent.isSeg, e.parent.children.length)
+
+                e.parent.id = e.parent.children[0].id + "-" + (parseInt(e.parent.children[0].id) + e.parent.children.length-1)
+              }
+          }
+          return e
+        }).filter(e=>e!=null);
     }
-    reorder(){
-        var from: number, to: number;
-        var parent: ConlluElement;
-        var counter : number = 1
-        var range : number = 0
-        this.elements = this.elements.map(e => {
-            if (e.isMultiword()) {
-                from = parseInt(e.id.split("-")[0])
-                to = parseInt(e.id.split("-")[1])
-                range = to - from
-                e.id = counter + "-" + (counter+range)
-                return e
-            }
-            // else if (parseInt(e.id) >= from && parseInt(e.id) <= to) {
-            else{
-                e.id = ""+counter++
-                return e
-            }
-        });
-        this.refix()
+    getText(){
+        return this.tokens().map(e => e.form).join(" ");
     }
 
     toConllU = function(lines: string[]) {
@@ -400,7 +440,7 @@ export class ConlluSentence {
     dependencies = function() {
         var dependencies = [];
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
             dependencies = dependencies.concat(element.dependencies());
         }
@@ -425,9 +465,9 @@ export class ConlluSentence {
         // included in a multiword token range.
         var multiwords = this.multiwords();
         var inRange = {};
-        for (var i = 0; i < multiwords.length; i++) {
+        for (let i = 0; i < multiwords.length; i++) {
             var mw = multiwords[i];
-            for (var j = mw.rangeFrom(); j <= mw.rangeTo(); j++) {
+            for (let j = mw.rangeFrom(); j <= mw.rangeTo(); j++) {
                 inRange[j] = true;
             }
         }
@@ -441,7 +481,7 @@ export class ConlluSentence {
     bratWords = function(includeEmpty) {
         var words = this.words(includeEmpty);
 
-        for (var i = 0; i < words.length; i++) {
+        for (let i = 0; i < words.length; i++) {
             if (Util.isRtl(words[i].form)) {
                 words[i] = Util.deepCopy(words[i]);
                 words[i].form = Util.rtlFix(words[i].form);
@@ -456,7 +496,7 @@ export class ConlluSentence {
     bratTokens = function() {
         var tokens = this.tokens();
 
-        for (var i = 0; i < tokens.length; i++) {
+        for (let i = 0; i < tokens.length; i++) {
             tokens[i] = Util.deepCopy(tokens[i]);
             tokens[i].form = Util.rtlFix(tokens[i].form);
         }
@@ -488,7 +528,7 @@ export class ConlluSentence {
 
         // create an annotation for each word
         var words = this.bratWords(includeEmpty);
-        for (var i = 0; i < words.length; i++) {
+        for (let i = 0; i < words.length; i++) {
             var length = words[i].form.length;
             spans.push([this.id + '-T' + words[i].id, words[i].upostag,
             [[offset, offset + length]]]);
@@ -506,11 +546,11 @@ export class ConlluSentence {
         // create attributes for word features
         var attributes = [],
             aidseq = 1;
-        for (var i = 0; i < words.length; i++) {
+        for (let i = 0; i < words.length; i++) {
             var word = words[i],
                 tid = this.id + '-T' + word.id;
             var nameVals = word.features;
-            for (var j = 0; j < nameVals.length; j++) {
+            for (let j = 0; j < nameVals.length; j++) {
                 var name = nameVals[j].key,
                     value = nameVals[j].value;
                 attributes.push([this.id + '-A' + aidseq++, name, tid, value]);
@@ -526,7 +566,7 @@ export class ConlluSentence {
         var dependencies = this.dependencies();
         var relations = [];
 
-        for (var i = 0; i < dependencies.length; i++) {
+        for (let i = 0; i < dependencies.length; i++) {
             var dep = dependencies[i];
             relations.push([this.id + '-R' + i, dep[2],
             [['arg1', this.id + '-T' + dep[1]],
@@ -543,7 +583,7 @@ export class ConlluSentence {
 
         // TODO: better visualization for LEMMA, XPOSTAG, and MISC.
         var comments = [];
-        for (var i = 0; i < words.length; i++) {
+        for (let i = 0; i < words.length; i++) {
             var word = words[i],
                 tid = this.id + '-T' + word.id,
                 label = 'AnnotatorNotes';
@@ -566,7 +606,7 @@ export class ConlluSentence {
         var styles = [],
             wildcards = [];
 
-        for (var i = 0; i < this.comments.length; i++) {
+        for (let i = 0; i < this.comments.length; i++) {
             var comment = this.comments[i];
 
             var m = comment.match(/^(\#\s*visual-style\s+)(.*)/);
@@ -627,16 +667,16 @@ export class ConlluSentence {
         // styles have already been set, and then add the style to
         // everything that hasn't.
         var setStyle: any = {};
-        for (var i = 0; i < styles.length; i++) {
+        for (let i = 0; i < styles.length; i++) {
             setStyle[styles[i][0].concat([styles[i][1]])] = true;
         }
-        for (var i = 0; i < wildcards.length; i++) {
-            var reference = wildcards[i][0],
+        for (let i = 0; i < wildcards.length; i++) {
+            let reference = wildcards[i][0],
                 key = wildcards[i][1],
                 value = wildcards[i][2];
             if (reference === 'nodes') {
                 var words = this.words(includeEmpty);
-                for (var j = 0; j < words.length; j++) {
+                for (let j = 0; j < words.length; j++) {
                     var r = this.id + '-T' + words[j].id;
                     if (!setStyle[r.concat(key)]) {
                         styles.push([r, key, value]);
@@ -645,7 +685,7 @@ export class ConlluSentence {
                 }
             } else if (reference === 'arcs') {
                 var deps = this.dependencies();
-                for (var j = 0; j < deps.length; j++) {
+                for (let j = 0; j < deps.length; j++) {
                     var rr = [this.id + '-T' + deps[j][1],
                     this.id + '-T' + deps[j][0],
                     deps[j][2]];
@@ -655,7 +695,7 @@ export class ConlluSentence {
                     }
                 }
             } else {
-                console.error('internal error');
+                reportError('internal error');
             }
         }
 
@@ -668,7 +708,7 @@ export class ConlluSentence {
     bratLabel = function() {
         var label = null;
 
-        for (var i = 0; i < this.comments.length; i++) {
+        for (let i = 0; i < this.comments.length; i++) {
             var comment = this.comments[i];
 
             var m = comment.match(/^(\#\s*sentence-label\b)(.*)/);
@@ -707,7 +747,7 @@ export class ConlluSentence {
     elementById = function() {
         var elementById = {};
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             elementById[this.elements[i].id] = this.elements[i];
         }
 
@@ -739,7 +779,7 @@ export class ConlluSentence {
         var initialIssueCount = issues.length;
         var elementById = {};
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
             if (elementById[element.id] !== undefined) {
                 this.addError('non-unique ID "' + element.id + '"',
@@ -758,7 +798,7 @@ export class ConlluSentence {
         var initialIssueCount = issues.length;
         var expectedId = 1;
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
 
             if (element.isMultiword() || element.isEmptyNode()) {
@@ -783,7 +823,7 @@ export class ConlluSentence {
         var initialIssueCount = issues.length;
         var expectedId = 1;
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
 
             if (element.isMultiword() && element.rangeFrom() !== expectedId) {
@@ -805,7 +845,7 @@ export class ConlluSentence {
         var previousWordId = '0';    // TODO check https://github.com/UniversalDependencies/docs/issues/382
         var nextEmptyNodeId = 1;
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
 
             if (element.isWord()) {
@@ -832,7 +872,7 @@ export class ConlluSentence {
         var initialIssueCount = issues.length;
         var elementById = this.elementById();
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
 
             // validate HEAD
@@ -843,7 +883,7 @@ export class ConlluSentence {
 
             // validate DEPS
             var elemDeps = element.dependencies(true);
-            for (var j = 0; j < elemDeps.length; j++) {
+            for (let j = 0; j < elemDeps.length; j++) {
                 var head = elemDeps[j][1];
                 if (head !== '0' && elementById[head] === undefined) {
                     this.addError('invalid ID "' + head + '" in DEPS',
@@ -888,7 +928,7 @@ export class ConlluSentence {
         var elementById = {},
             filtered = [];
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
             if (elementById[element.id] === undefined) {
                 elementById[element.id] = element;
@@ -922,7 +962,7 @@ export class ConlluSentence {
 
         var elementById = this.elementById();
 
-        for (var i = 0; i < this.elements.length; i++) {
+        for (let i = 0; i < this.elements.length; i++) {
             var element = this.elements[i];
 
             // repair HEAD if not valid
@@ -937,7 +977,7 @@ export class ConlluSentence {
             }
             var deparr = element.deps.split('|'),
                 filtered = [];
-            for (var j = 0; j < deparr.length; j++) {
+            for (let j = 0; j < deparr.length; j++) {
                 var dep = deparr[j];
                 var m = dep.match(Util.dependencyRegex);
                 if (m) {
@@ -949,7 +989,7 @@ export class ConlluSentence {
                         this.error = true;
                     }
                 } else {
-                    console.error('internal error: repairReferences(): ' +
+                    reportError('internal error: repairReferences(): ' +
                         'invalid DEPS');
                 }
             }
@@ -982,26 +1022,36 @@ export class ConlluElement {
         }
         this._xpostag = this.sentence.document.mapTagToXpostag(argv)
         this.upostag = this.sentence.document.mapTagToUpostag(this._xpostag,this.upostag)
+        // remove feats
+         var tag = this.sentence.document.config.alltags.find(x=>x.tag==this._xpostag)
+         if(!tag)
+             return
+         else if(Array.isArray(tag.features)){
+           this.features = this.features.filter(x=>tag.features.indexOf(x.key)>=0)
+           // this.features = tag.features.map(x=>this.features.find(y=>y.key==x)||x).map(x=>typeof x =="string" ?{key:x,value:"_"}:x)
+           // console.log(this.features)
+         }
+
     }
     // private feats : string = "";
     head = "";
     deprel = "";
     deps = "";
-    miscs = {};
+    _miscs = {};
     set misc(args) {
-        this.miscs = {}
+        this._miscs = {}
         if(args == undefined)
             return
         if (args == "_")
             return
         args.split("|").forEach(text => {
             var arr = text.split("=")
-            this.miscs[arr[0]] = arr[1]
+            this._miscs[arr[0]] = arr[1]
         })
     }
     get misc() {
-        return Object.keys(this.miscs).map(key => {
-            return this.miscs[key] ? key + "=" + this.miscs[key] : undefined
+        return Object.keys(this._miscs).map(key => {
+            return this._miscs[key] ? key + "=" + this._miscs[key] : undefined
         }).filter(x=>x!=undefined).sort().join("|") || "_"
     }
     lineidx = "";
@@ -1009,7 +1059,7 @@ export class ConlluElement {
     isSeg: number = -1;
     parent: ConlluElement = null;
     children: ConlluElement[] = [];
-    features: any[] = [];
+    features: {key:string, value:string}[] = [];
 
     set feats(args) {
         this.features = []
@@ -1022,7 +1072,7 @@ export class ConlluElement {
         //     this.features.push({key:arr[0],value:arr[1]})
         // })
         var featarr = args.split('|');
-        for (var i = 0; i < featarr.length; i++) {
+        for (let i = 0; i < featarr.length; i++) {
             var feat = featarr[i];
             var m = feat.match(Util.featureRegex);
             if (!m) {
@@ -1030,9 +1080,9 @@ export class ConlluElement {
             }
             var name = m[1], valuestr = m[2];
             var values = valuestr.split(',');
-            for (var j = 0; j < values.length; j++) {
+            for (let j = 0; j < values.length; j++) {
                 var value = values[j];
-                var m = value.match(Util.featureValueRegex);
+                let m = value.match(Util.featureValueRegex);
                 if (!m) {
                     continue;
                 }
@@ -1055,8 +1105,8 @@ export class ConlluElement {
         this.form = fields[1];
         this.lemma = fields[2];
         this.upostag = fields[3];
-        this.xpostag = fields[4];
         this.feats = fields[5];
+        this.xpostag = fields[4];
         this.head = fields[6];
         this.deprel = fields[7];
         this.deps = fields[8];
@@ -1065,7 +1115,7 @@ export class ConlluElement {
         this.line = line;
     };
 
-    setFeature = function (key,value){
+    setFeature(key,value){
         var i = this.features.findIndex(x=>x.key==key)
         if(i>=0)
             if(value)
@@ -1075,29 +1125,47 @@ export class ConlluElement {
         else
             this.features.push({key:key,value:value})
     }
-    copyme = function(from,to){
+    copy = function(from){
+        this.form = from.form
+        this.lemma = from.lemma
+        this.upostag = from.upostag
+        this.xpostag = from.xpostag
+        this.feats = from.feats
+        this.head = from.head
+        this.deprel = from.deprel
+        this.deps = from.deps
+        this.misc = from.misc
+     }
+    copyMorphInfo = function(from){
+        this.upostag = from.upostag
+        this.xpostag = from.xpostag
+        this.feats = from.feats
+        this.head = from.head
+        this.deprel = from.deprel
+        this.deps = from.deps
+        this.misc = from.misc
      }
      morphFeatsMissing = function(){
-         var config = this.sentence.document.config.alltags.find(x=>x.tag==this.xpostag)
-         if(!config){
-             // console.error("tag was not found!", this.xpostag)
+         var tag = this.sentence.document.config.alltags.find(x=>x.tag==this.xpostag)
+         if(!tag){
+             // reportError("tag was not found!", this.xpostag)
              return []
          }
-         else if(!config.mf){
-             console.error("tag has no list of possible morph feats!", this.xpostag, config)
+         else if(!tag.features){
+             reportError("tag has no list of possible morph feats!"+ this.xpostag)
              return []
          }
          else
-             return config.mf.filter(x=>!this.features.find(y=>y.key==x))
+             return tag.features.filter(x=>!this.features.find(y=>y.key==x))
      }
     changeWith = function(el){
         if(el.parent){
-            console.error("ERROR: changeWith cannot be used with a child element")
+            reportError("ERROR: changeWith cannot be used with a child element")
             el = el.parent
         }
         // parent vs. parent
         var i = this.sentence.elements.findIndex(x=>x==this)
-          if(el.children.length > 0){
+        if(el.children.length > 0){
               // Array.prototype.splice.apply(this.sentence.elements,[i,1,el].concat(el.children))
               var c = el.cloneParent()
               // c now has elements where first is parent and rest is children
@@ -1105,29 +1173,32 @@ export class ConlluElement {
               parent.analysis = this.analysis
               c.forEach(e=>{
                   e.sentence = this.sentence;
-                  e.miscs["FROM_MA"]=true
+                  if(e!=parent)
+                    e.parent = parent;
+                  e._miscs["FROM_MA"]=true
               })
-              if(this.sentence.document.events){
-                  this.sentence.document.events.publish('highligh:change', c[1]);
-                  this.sentence.document.events.publish("stats",{action:"changeWith",elements:c})
-              }
+              // if(this.sentence.document.events){
+              //     this.sentence.document.events.publish('highlight:change', c[1]);
+              //     this.sentence.document.events.publish("stats",{action:"changeWith",elements:c})
+              // }
 
               Array.prototype.splice.apply(this.sentence.elements,[i,1+this.children.length].concat(c))
+              this.sentence.refix(true)
+              return c[1]
           }
           else {
-              var c = el.clone()
+              let c = el.clone()
               c.analysis = this.analysis
               c.sentence = this.sentence
-              c.miscs["FROM_MA"]=true
+              c._miscs["FROM_MA"]=true
               this.sentence.elements.splice(i,1+this.children.length,c)
-              if(this.sentence.document.events){
-                  this.sentence.document.events.publish('highligh:change', c);
-                  this.sentence.document.events.publish("stats",{action:"changeWith",element:c})
-              }
+              // if(this.sentence.document.events){
+              //     this.sentence.document.events.publish('highlight:change', c);
+              //     this.sentence.document.events.publish("stats",{action:"changeWith",element:c})
+              // }
+              this.sentence.refix(true)
+              return c
           }
-
-          this.sentence.reorder()
-          // console.log(this.sentence.elements)
     }
     clone = function(){
         var e = new ConlluElement([this.id,this.form,
@@ -1186,6 +1257,35 @@ export class ConlluElement {
         }
     };
 
+    getForm() {
+    // console.log(elem)
+    if (!this.parent)
+      return this.form
+
+    var prev : ConlluElement = this.parent.children[this.isSeg - 1]
+    var prevStr = ""
+    if (prev) {
+      prevStr = prev.form.replace(/[ًٌٍَُِّْ]*$/, "")
+      prevStr = prevStr.charAt(prevStr.length - 1)
+    }
+    var next : ConlluElement = this.parent.children[this.isSeg + 1]
+    var nextStr  = ""
+    if (next)
+      nextStr = next.form.charAt(0)
+    var meLast = this.form.replace(/[ًٌٍَُِّْ]*$/, "")
+    meLast = meLast.charAt(meLast.length - 1)
+    var meFirst = this.form.charAt(0)
+
+    if (-this.parent.isSeg == this.isSeg + 1)
+      return (Util.isTatweel(prevStr, meFirst) ? "ـ" : "") + this.form
+    else if (this.isSeg == 0)
+      return this.form + (Util.isTatweel(meLast, nextStr) ? "ـ" : "")
+    else
+      return (Util.isTatweel(prevStr, meFirst) ? "ـ" : "") +
+        this.form
+        + (Util.isTatweel(meLast, nextStr) ? "ـ" : "")
+  }
+
     validateId = function(id, issues) {
         issues = (issues !== undefined ? issues : []);
 
@@ -1201,7 +1301,7 @@ export class ConlluElement {
         } else if (id.match(/^(\d+)-(\d+)$/)) {
             var m = id.match(/^(\d+)-(\d+)$/);
             if (!m) {
-                console.error('internal error');
+                reportError('internal error');
                 return false;
             }
             var start = parseInt(m[1], 10),
@@ -1215,7 +1315,7 @@ export class ConlluElement {
         } else if (id.match(/^(\d+)\.(\d+)$/)) {
             m = id.match(/^(\d+)\.(\d+)$/);
             if (!m) {
-                console.error('internal error');
+                reportError('internal error');
                 return false;
             }
             var iPart = parseInt(m[1], 10),
@@ -1284,7 +1384,7 @@ export class ConlluElement {
         var featarr = feats.split('|');
         var featmap = {};
         var prevName = null;
-        for (var i = 0; i < featarr.length; i++) {
+        for (let i = 0; i < featarr.length; i++) {
             var feat = featarr[i];
             var m = feat.match(Util.featureRegex);
             if (!m) {
@@ -1302,9 +1402,9 @@ export class ConlluElement {
             prevName = name;
             var values = valuestr.split(',');
             var valuemap = {}, validValues = [];
-            for (var j = 0; j < values.length; j++) {
+            for (let j = 0; j < values.length; j++) {
                 var value = values[j];
-                var m = value.match(Util.featureValueRegex);
+                let m = value.match(Util.featureValueRegex);
                 if (!m) {
                     issues.push('invalid FEATS value: "' + value + '"');
                     continue;
@@ -1371,7 +1471,7 @@ export class ConlluElement {
         var deparr = deps.split('|');
         var prevHead = null;
         // TODO: don't short-circuit on first error
-        for (var i = 0; i < deparr.length; i++) {
+        for (let i = 0; i < deparr.length; i++) {
             var dep = deparr[i];
             var m = dep.match(/^(\d+(?:\.\d+)?):(\S+)$/);
             if (!m) {
@@ -1441,13 +1541,13 @@ export class ConlluElement {
         }
         if (this.deps != '_') {
             var deparr = this.deps.split('|');
-            for (var i = 0; i < deparr.length; i++) {
+            for (let i = 0; i < deparr.length; i++) {
                 var dep = deparr[i];
                 var m = dep.match(Util.dependencyRegex);
                 if (m) {
                     elemDeps.push([this.id, m[1], m[2]]);
                 } else {
-                    console.error('internal error: dependencies(): invalid DEPS',
+                    reportError('internal error: dependencies(): invalid DEPS '+
                         this.deps);
                 }
             }
@@ -1538,7 +1638,7 @@ export class ConlluElement {
         }
 
         if (!this.validateFeats(this.feats)) {
-            log('repair: blanking invalid FEATS');
+            log('repair: blanking invalid FEATS '+this.toConllU());
             this.feats = '_';
         }
 
@@ -1580,7 +1680,7 @@ export class ConlluElement {
             fields = fields.slice(0, 10);
         } else {
             logger('repair: filling in empty ("_") for missing fields');
-            for (var m = 0; m < 10 - fields.length; m++) {
+            for (let m = 0; m < 10 - fields.length; m++) {
                 fields.push('_');
             }
         }
@@ -1673,16 +1773,29 @@ export class ConlluElement {
         return JSON.parse(JSON.stringify(o));
     };
 
+    static isTatweel(first, second) {
+      if (!first || !second)
+        return false
+      if (first == "ـ" && second == "ـ")
+        return false
+      if ("دذاءؤرىةإأآو_".indexOf(first) >= 0)
+        return false
+      else if ("ء_".indexOf(second) >= 0)
+        return false
+      else {
+        return true
+      }
+    }
     /*
      * Regular expressions for various parts of the format.
      * See https://github.com/UniversalDependencies/docs/issues/33
      */
 
     // match single (feature, value[s]) pair in FEATS
-    static featureRegex = /^([A-Z0-9][a-zA-Z0-9]*(?:\[[a-z0-9]+\])?)=([A-Z0-9][a-zA-Z0-9]*(?:,[A-Z0-9][a-zA-Z0-9]*)*)$/;
+    static featureRegex = /^([A-Z0-9][a-zA-Z0-9]*(?:\[[a-z0-9]+\])?)=(_|[A-Z0-9][a-zA-Z0-9]*(?:,[A-Z0-9][a-zA-Z0-9]*)*)$/;
 
     // match single feature value in FEATS
-    static featureValueRegex = /^[A-Z0-9][a-zA-Z0-9]*$/;
+    static featureValueRegex = /^([A-Z0-9][a-zA-Z0-9]*|_)$/;
 
     // match single (head, deprel) pair in DEPS
     static dependencyRegex = /^(\d+(?:\.\d+)?):(.*)$/;

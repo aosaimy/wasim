@@ -1,6 +1,7 @@
 import { SimpleChanges, Component, Input } from '@angular/core';
 import { Events, ToastController, ViewController, NavParams } from 'ionic-angular';
 import { GuidelinesService } from '../../providers/guidelines-service';
+import { ConfigJSON } from '../../providers/config-service';
 
 /**
  * Generated class for the GuiderComponent component.
@@ -14,26 +15,26 @@ import { GuidelinesService } from '../../providers/guidelines-service';
 })
 
 export class GuiderComponent {
-  @Input() element :string
+  @Input() element
   @Input() type : string
   showDetails : boolean = false
   @Input() project : string = ""
   @Input() hash : string = ""
+  @Input() config : ConfigJSON
   constructor(private navParams: NavParams,
     public guidelinesService: GuidelinesService,
     public events: Events,
     public toastCtrl: ToastController,
     public viewCtrl: ViewController) {
-      // this.guidelinesService.load(this.project,this.hash).then(x=>{
-      this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
-          
+      // this.config = navParams.data.config
+      this.guidelinesService.load(navParams.data.project,navParams.data.hash).then(x=>{
+      // this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
         }).catch(x=>{
             this.toastCtrl.create({
               message: 'No guider is found: ' + x,
               duration: 3000,
               position: "top"
             }).present()
-
         })
   }
   toggle(e){
@@ -48,8 +49,15 @@ export class GuiderComponent {
   show(){
      return this.options && this.options.length > 0
   }
+  assign(element,option){
+    element.xpostag = option.value
+     // console.log(element,option)
+  }
   ngOnChanges(changes: SimpleChanges) {
-    this.options= this.guidelinesService.get(this.type,this.element).options
+    this.options= this.guidelinesService.get(this.type,this.element.form).options
+    if(this.options)
+      this.options.forEach(e=>e.showDetails=true)
+
     if(this.show())
       this.events.publish("stats",{action:"showGuider",elements:this.element})
   }

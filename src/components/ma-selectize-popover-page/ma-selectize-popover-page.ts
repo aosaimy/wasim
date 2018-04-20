@@ -1,6 +1,8 @@
 import { ConlluElement } from '../../pages/annotate/conllu';
 import { Component, Input, ViewChild } from '@angular/core';
-import { ViewController , NavParams } from 'ionic-angular';
+import { Events, ViewController , NavParams } from 'ionic-angular';
+import { ConfigJSON } from '../../providers/config-service';
+import { ConcordanceComponent } from '../../components/concordance/concordance';
 
 @Component({
   selector: 'ma-selectize-popover-page',
@@ -10,7 +12,7 @@ export class MASelectizePopoverPageComponent {
 
   element: ConlluElement = null;
   myconfig = {}
-  config = null
+  config : ConfigJSON = null
   options = []
   // @ViewChild('myinput') myinput: FormGroup;
   @ViewChild('myselectize') myselectize: any;
@@ -22,25 +24,31 @@ export class MASelectizePopoverPageComponent {
 
   constructor(private navParams: NavParams,
     // public data: Data,
+    public events: Events,
     public viewCtrl: ViewController) {
 
     this.config = navParams.data.config
     this.element = navParams.data.element
-    console.log(this.element.analysis)
     if(this.element.analysis)
       this.options = this.element.analysis
           .map((e,i)=>new Object({
             value: e.id,
             counter: i,
-            title: i + ":" +e.lemma,
-            // score: e.miscs["SCORE"],
+            title: i,
+            // score: e._miscs["SCORE"],
             lemma: (e.children.length > 0 ? e.children.map(ee=>ee.lemma).join("") : e.lemma),
             elements: (e.children.length > 0 ? e.children : [e]),
-            forsearch: (e.children.length > 0 ? e.children : [e]).map(e=>e.form+" "+e.xpostag+" "+e.upostag).join(" "),
+            forsearch: (e.children.length > 0 ? e.children : [e]).map(e=>
+              e.form+" "+
+                this.config.getXPosTag(e.xpostag).desc+" "+
+                this.config.getUPosTag(e.upostag).desc+" "+
+                e.features.map(e=>this.config.getFeature(e.key+"="+e.value).desc).join(" ")
+              ).join(" "),
             o: e,
           }))
-     else
+     else{
        this.options = []
+     }
     this.myconfig = this.selectize_config()
   }
   ngAfterViewInit() {
@@ -49,6 +57,11 @@ export class MASelectizePopoverPageComponent {
       this.myselectize.selectize.focus()
       this.myselectize.selectize.okayToClose = true
     },500);
+    var allpop = (document.querySelector(".popover-content") as HTMLElement).offsetHeight
+    var inp = (document.querySelector(".selectize-input") as HTMLElement).offsetHeight
+    var ll = document.querySelector(".selectize-dropdown-content") as HTMLElement
+    ll.style.height = allpop - inp + "px"
+    ll.style["max-height"] = allpop - inp + "px"
   }
 
   selectize_config = function(){
@@ -79,17 +92,25 @@ export class MASelectizePopoverPageComponent {
         },
         render: {
             option: function(item, escape) {
+              var lemma = item.lemma.replace(/±.*/,"")
                 return '<div>' +
+                    '<div class="counter">' + escape(item.counter+1) + '</div>' +
                     '<div class="title">' +
-                        '<span class="counter">' + escape(item.counter) + '</span>' +
-                        '<span class="by">' + escape(item.lemma) + '</span>' +
+                        '<div class="lemma">[' + lemma.replace(/(^_|_$)/,"") + ']</div>' +
+                        '<div class="by">' + item.lemma.replace(/.*±/,"").split(";").map(meaning=>"<span class='meaning'>"+escape(meaning)+"</span>").join(" ") + '</div>' +
                     '</div>' +
-                    '<ul class="elements">' + 
+                    '<div class="elements">' +
                     item.elements.map(e=>{
-                      return "<li><div class='element'><div class='form'>"+e.form+"</div><div class='pos'>"+e.xpostag+"</div><div class='morphfeats'>"+
-                      e.features.map(e=>`<span class='morphfeat ${e.key}'>`+e.value+"</span>")+"</div></div></li>"
+                      return "<div class='element'><span class='form'>"+e.form+"</span><span class='pos'>"+that.config.getXPosTag(e.xpostag).desc+"</span><span class='morphfeats'>"+
+                      e.features.map(e=>{
+                        // if(!that.config.features[e.key+"="+e.value]){
+                        //   console.error(e.key+"="+e.value, "not defined")
+                        //   return e.key+"="+e.value
+                        // }
+                        return `<span class='morphfeat ${e.key}'>`+that.config.getFeature(e.key+"="+e.value).desc+"</span>"
+                      }).join(" ")+"</span></div>"
                     }).join("")
-                    + '</ul>' +
+                    + '</div>' +
                 '</div>';
             }
         },
@@ -99,12 +120,15 @@ export class MASelectizePopoverPageComponent {
         // lockOptgroupOrder: true,
         // hideSelected: true,
         // closeAfterSelect: false,
-        openOnFocus: true,
+        // openOnFocus: true,
         onItemAdd: function(value, $item) {
           var el = that.element.analysis.find(val=>{
             return value == val.id
           })
-         that.element.changeWith(el);
+         let c = that.element.changeWith(el);
+        that.events.publish('highlight:change', c);
+        that.events.publish("stats",{action:"changeWith",element:c.parent || c})
+
          that.viewCtrl.dismiss()
         },
         create: false

@@ -8,12 +8,14 @@ import { ConlluService } from '../providers/conllu-service';
 import { ConfigService } from '../providers/config-service';
 import { GuidelinesService } from '../providers/guidelines-service';
 import { ProjectService } from '../providers/project-service';
-import { AnnotatePage } from '../pages/annotate/annotate';
+import { AnnotatePage,AutofocusDirective } from '../pages/annotate/annotate';
 import { SelectizePopoverPageComponent } from '../components/selectize-popover-page/selectize-popover-page';
 import { MASelectizePopoverPageComponent } from '../components/ma-selectize-popover-page/ma-selectize-popover-page';
+// import { SegmentorPopoverPageComponent } from '../components/segmentor-popover-page/segmentor-popover-page';
 import { TagsSelectorComponent } from '../components/tags-selector/tags-selector';
 import { GetFormPopoverComponent } from '../components/get-form-popover/get-form-popover';
 import { GuiderComponent } from '../components/guider/guider';
+import { ConcordanceComponent } from '../components/concordance/concordance';
 import { HelpPopoverComponent } from '../components/help-popover/help-popover';
 // import { HighlightComponent } from '../components/highlight/highlight';
 import { DocsPage } from '../pages/docs/docs';
@@ -62,13 +64,16 @@ export const deepLinkConfig: DeepLinkConfig = {
     GetFormPopoverComponent,
     SelectizePopoverPageComponent,
     MASelectizePopoverPageComponent,
+    // SegmentorPopoverPageComponent,
     TagsSelectorComponent,
     HelpPopoverComponent,
     DocsPage,
     ProjectsPage,
     FileSelectDirective,
     FileDropDirective,
-    GuiderComponent
+    GuiderComponent,
+    ConcordanceComponent,
+    AutofocusDirective
   ],
   imports: [
     BrowserModule,
@@ -85,6 +90,7 @@ export const deepLinkConfig: DeepLinkConfig = {
     GetFormPopoverComponent,
     SelectizePopoverPageComponent,
     MASelectizePopoverPageComponent,
+    //SegmentorPopoverPageComponent,
     HelpPopoverComponent,
     AnnotatePage
   ],

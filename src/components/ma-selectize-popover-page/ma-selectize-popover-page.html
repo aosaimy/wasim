@@ -1,4 +1,4 @@
-<div style='height: 50vh;'>
-	<button ion-button (click)="viewCtrl.dismiss()"><ion-icon name="close"></ion-icon></button>
+<div>
+  <concordance [element]="element" [config]="config"></concordance>
 	<ng-selectize #myselectize [config]="myconfig"></ng-selectize>
 </div>

@@ -1,0 +1,94 @@
+concordance {
+  .element {
+    position: relative;
+    display: inline-block;
+    padding: 0.7em 1em 1.4em 1em;
+    border: 1px blue solid;
+    border-radius: 8px;
+    margin: 2px;
+    text-align: center;
+    font-family: KawkabMonoLight;
+    min-width: 4em;
+    font-size: 1.25vw;
+    height: 4.75vw;
+    min-height: 4em;
+  }
+  .sentence {
+    text-align: center;
+  }
+  .sentence.rtl {
+    text-align: center;
+    direction: rtl
+  }
+  .element.highlight {
+    background-color: rgba(255, 255, 0, 1); // span.postag {
+    //     // top: -1em;
+    //     font-size: 0.8vw;
+    //     color: green;
+    // }
+  }
+  .element.unclear.highlight {
+    background-color: orange;
+  }
+  .element.unclear {
+    background-color: rgba(255, 0, 0, 0.5);
+    ;
+  }
+  .element.isSeg {
+    margin-right: 20px;
+  }
+  .formInput {
+    background-color: rgba(25, 255, 255, 0.2);
+    border-color: rgba(0, 0, 0, 0);
+    min-width: 50px!important;
+    max-width: 99.99%!important;
+    transition: width 0.25s;
+    text-align: center;
+  }
+  .element.isSeg:before {
+    content: "+";
+    position: absolute;
+    right: -20px;
+    font-size: 18pt;
+  }
+
+  span.postag {
+    // top: -1em;
+    font-size: 0.7vw;
+    color: green;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    direction: ltr;
+    position: absolute;
+  }
+  span.mf_missing {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 0.5em;
+    color: red;
+  }
+
+
+  .element.isCompound {
+    background-color: rgba(1, 1, 1, 0.06);
+    display: none
+  }
+  .element.isCompound .postag {
+    display: none;
+  }
+  .sentence:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .sentence:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .element.newline {
+    clear: both;
+  }
+}
