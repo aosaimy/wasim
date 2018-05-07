@@ -2,6 +2,9 @@
   <ion-navbar>
     <ion-title>ترميز الملف: {{pageid}}</ion-title>
     <ion-buttons end>
+      <button right ion-button icon-only (click)="search($event)" tabindex="-1">
+        <ion-icon name="search"></ion-icon>
+      </button>
       <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">
         <ion-icon name="help"></ion-icon>
       </button>
@@ -18,7 +21,7 @@
     <h3>Don't Know What To Do!</h3>
     <p>I've had a pretty messed up day. If we just...</p>
   </ion-item> -->
-  <ion-grid (window:keydown)="keyboardShortcuts($event)" (window:click)="mouseClick($event)" style="height: 100%;">
+  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">
     <ion-row>
 <!--       <ion-col style="display:none; margin: 0">
         <div id="vis"></div>
@@ -43,8 +46,8 @@
           <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="saveFile()">
             <ion-icon name="cloud-upload"></ion-icon> Save
           </button>
-          <button class='topbar_button' icon-left right ion-button tabindex="-1" (click)="isConlluHidden=!isConlluHidden">
-            Hide ConllU
+          <button class='topbar_button' icon-left right ion-button tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">
+            {{config.isConlluHidden? "Show":"Hide"}} ConllU
           </button>
         </ion-row>
         <!-- <ion-row>
@@ -63,12 +66,10 @@
           <ion-label color="primary" stacked>Lemma</ion-label>
           <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>
         </ion-item>-->
-            <ion-item>
-              <button icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">
+              <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">
                 <ion-icon name="apps"></ion-icon>Features</button>
-              <button icon-left ion-button tabindex="-1" (click)="tag_ma()">
+              <button  color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">
                 <ion-icon name="menu"></ion-icon>Analyser</button>
-            </ion-item>
             <!--           <ion-item>
             <button class='topbar_button' icon-left ion-button tabindex="-1" (click)="mark_misc('UNCLEAR')">
               <ion-icon name="warning"></ion-icon>Unclear</button>
@@ -115,37 +116,33 @@
               </ion-select>
             </ion-item>
           </ion-list>
-          <guider *ngIf="highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>
-          <guider *ngIf="highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>
+          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>
+          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>
         </ion-row>
       </ion-col>
       <ion-col id="sentences" *ngIf="config">
-        <!-- <p>Here's a validating visualizer. Visualization:</p> -->
-        <!-- <pre>{{documentJson}}</pre> -->
-        <div *ngFor="let sent of doc?.sentences" class="sentence" [ngClass]="{
-              rtl:configService.isRtl(project)}">
+        <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{
+              rtl:configService.isRtl(project)}" >
+              <!-- [hidden]=""> -->
           <div>{{sent.tag}}</div>
-          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements | notmultitag ; let i = index" class="element" [ngClass]="{
+          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element {{elem.upostag}}" [ngClass]="{
               isCompounds:elem.upostag=='_',
-              highlight: elem == highlight.element,
-              rtl:configService.isRtl(project),
+              highlight: highlight.element != null && (elem == highlight.element || elem.parent == highlight.element),
+              copied: copyElement != null && (elem == copyElement || elem.parent == copyElement),
+              rtl:config.isRtl,
               unclear: elem._miscs['UNCLEAR'],
               newline2: i%config.rowlength==0,
-              isSeg: elem.isSeg > 0 }" (click)="events.publish('highlight:change',elem)">
-            <input *ngIf="editable && elem == highlight.element" class="formInput" value="{{elem.form}}" [autofocus] (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />
-            <span *ngIf="!editable || elem != highlight.element">
+              isSeg: elem.isSeg > 0 }" (click)="events.publish('highlight:change',elem,true,false)" [hidden]="elem.isMultiword">
+            <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />
+            <ng-template #other_content>
               <span class="form" #spanForm>{{elem.getForm()}}</span>
             <span class="postag">{{config.useUD ? config.tags['U:'+elem.upostag]?.desc : config.tags['X:'+elem.xpostag]?.desc}}</span>
             <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>
-            </span>
-            <!-- <span *ngFor="let feat of elem.features()">
-                <span class="featname">{{feat[0]}}</span>
-                <span class="featname">{{feat[1]}}</span>
-              </span> -->
+            </ng-template>
           </div>
         </div>
       </ion-col>
-      <ion-col col-4 id="conlluColumn" [hidden]="isConlluHidden">
+      <ion-col col-4 id="conlluColumn" *ngIf="!config.isConlluHidden">
         <!--         <ion-row *ngIf="editingMode" style="height: 95%;">
           <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>
         </ion-row>
@@ -156,12 +153,7 @@
           </ion-textarea>
         </ion-row>
         <ion-row style="height: 95%; position: relative">
-         <pre style="counter-reset: line;">
-<!--       --><div contenteditable="true" class="conllu-row" [ngClass]="{
-              highlight:highlight.sentence?.id=='S'+r.sentid && highlight.element?.id == r.elemid}" *ngFor="let r of conlluRawSpans; let i = index" (blur)="onConlluRawSpansChanged(r,i, $event)"><div class='actions' contenteditable="false"><button tabindex="-1" ion-button small icon-only color="light" (click)="removeConlluRawRow(r,i,$event)"><ion-icon name="remove"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="addConlluRawRow(r,i,$event)"><ion-icon name="add"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="highlightConlluRawRow(r,i,$event)"><ion-icon name="checkmark"></ion-icon></button></div><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]=='#'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>
-          <button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>
-
-<!-- --></pre>
+          <conllu-editor [filename]="project+'-'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]"></conllu-editor>
         </ion-row>
       </ion-col>
     </ion-row>

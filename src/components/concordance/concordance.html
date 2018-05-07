@@ -1,7 +1,7 @@
 <div style="text-align: center">
 <div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">
   <div>{{element?.sentence.tag}}</div>
-  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword() || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{
+  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{
               isCompounds: elem.upostag=='_',
               highlight: elem == element,
               rtl:config.isRtl,

@@ -64,6 +64,7 @@ exports.post = function(request, res) {
   // console.log(getXML(data.sentence))
   req.on('error', function(error) {
     // Error handling here
+    res.send({ ok: false, error: error })
     console.error(error);
   });
   req.write(getXML(data.sentence))

@@ -1,0 +1,18 @@
+{
+    "abobander": {
+        "password": "123",
+        "projects": [
+            "fourty"
+        ]
+    },
+    "admin": {
+        "password": "admin",
+        "projects": [
+            "eric",
+            "experiments",
+            "fourty",
+            "hadiths",
+            "testproject"
+        ]
+    }
+}

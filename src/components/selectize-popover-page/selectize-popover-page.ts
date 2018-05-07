@@ -1,5 +1,5 @@
-import { ConlluElement } from '../../pages/annotate/conllu';
-import { Component, Input, ViewChild } from '@angular/core';
+import { ConlluElement } from 'conllu-dao';
+import { Component, ViewChild } from '@angular/core';
 import { ViewController , NavParams } from 'ionic-angular';
 import { ConfigJSON } from '../../providers/config-service';
 
@@ -72,11 +72,12 @@ export class SelectizePopoverPageComponent {
               this.addItem(item.feature+"="+item.val.tag)
           })
         },
-        // onDropdownClose : function(e){
+        onDropdownClose : function(e){
+          // this.open() // USE ONLY for debugging
         //   console.log(e)
         //   // if(this.shouldclose)
         //     // that.viewCtrl.dismiss()
-        // },
+        },
         optgroupValueField: 'id',
         optgroupLabelField: 'name',
         optgroupField: 'feature',

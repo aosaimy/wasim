@@ -1,5 +1,6 @@
 import { Injectable, Pipe } from '@angular/core';
-import { ConlluElement } from '../pages/annotate/conllu';
+import { ConlluElement } from 'conllu-dao';
+
 
 /*
   Generated class for the NotMultiTag pipe.
@@ -17,6 +18,6 @@ export class NotMultiTag {
     Takes a value and makes it lowercase.
    */
   transform(list: ConlluElement[]): any[] {
-    return list.filter(item => !item.isMultiword());
+    return list.filter(item => !item.isMultiword);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Config } from 'ionic-angular';
-import { Http , Headers, RequestOptionsArgs } from '@angular/http';
-import { RequestOptions, Request, RequestMethod} from '@angular/http';
+// import { Config } from 'ionic-angular';
+import { ConfigurationService } from "ionic-configuration-service";
+import { Http , Headers, RequestOptionsArgs,RequestOptions, Request, RequestMethod } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 /*
@@ -13,46 +13,97 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ProjectService {
 
+  options = new RequestOptions({ withCredentials: true });
   constructor(public http: Http,
-  	public myconfig: Config) {
+  	public myconfig: ConfigurationService) {
   }
   data = {}
-  list : {ok:boolean,projects:string[],error:string}= {ok:false,projects:[],error:"Not laoded yet."}
-	getList(security:string) {
-	  if (this.list.ok) {
-	    return Promise.resolve(this.list);
-	  }
-	  var that = this
+  username : null|string = null
+  _list : {ok:boolean,projects:string[],error:string}= {ok:false,projects:[],error:"Not laoded yet."}
+  list() {
+    if (this._list.ok) {
+      return Promise.resolve(this._list);
+    }
+    // don't have the data yet
+    return new Promise((resolve,reject) => {
+       this.http.post(this.myconfig.getValue("server")+"projects_list",{
+        },this.options)
+
+       .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          console.log(data)
+          // data = data;
+          if(data.ok){
+            this.username = data.username
+            this._list = data;
+            resolve(data);
+          }
+          else
+            reject(data.error)
+        },error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+        })
+
+    });
+  }
+  login(username,password) {
+    // don't have the data yet
+    return new Promise((resolve,reject) => {
+       this.http.post(this.myconfig.getValue("server")+"users_login",{username:username,password:password
+        },this.options)
+       .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          console.log(data)
+          // data = data;
+          if(data.ok){
+            this.username = username;
+            resolve(data);
+          }
+          else
+            reject(data.error)
+        },error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+        })
+    });
+  }
+	logout() {
 	  // don't have the data yet
+    this.username = null
+    this._list = {ok:false,projects:[],error:"Not laoded yet."}
 	  return new Promise((resolve,reject) => {
-	     this.http.post(this.myconfig.get("server")+"projects_list",{
-				"security": security
-			})
+	     this.http.post(this.myconfig.getValue("server")+"users_logout",{
+        },this.options)
 	     .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
-	        console.log(data)
+	        // console.log(data)
 	        // data = data;
 	        if(data.ok){
-	        	that.list = data;
+            resolve(data);
 	        }
-        	resolve(data);
+          else
+            reject(data.error)
 	      },error=>{
           if(error.status != 200)
-          reject("Server is not working properly. url="+this.myconfig.get("server"))
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
         })
-
 	  });
 	}
-	create(security:string,project: string) {
-	  var that = this
+	create(project: string) {
+	  // var this = this
 	  // don't have the data yet
 	  return new Promise(resolve => {
-	     this.http.post(this.myconfig.get("server")+"projects_create",{
-				"security": security,
+	     this.http.post(this.myconfig.getValue("server")+"projects_create",{
+				// "security": security,
 				"project": project,
-			})
+        },this.options)
 	      .map(res => res.json())
 	      .subscribe((data:{ok:boolean,hash:string,project:string,error:string}) => {
 	        // we've got back the raw data, now generate the core schedule data

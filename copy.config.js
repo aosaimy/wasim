@@ -23,6 +23,11 @@ module.exports = {
     // Very important, the dest folder to reference from index.html
     dest: '{{WWW}}/assets/css/'
   },
+  copySettings: {
+    src: ['{{ROOT}}/ionic.config.json'],
+    dest: '{{WWW}}/assets'
+  },
+
   // // End Custom Script
   // copyIndexContent: {
   //   src: ['{{SRC}}/index.html', '{{SRC}}/manifest.json', '{{SRC}}/service-worker.js'],

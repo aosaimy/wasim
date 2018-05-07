@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Events, ToastController, ViewController , NavParams } from 'ionic-angular';
-import { ConfigService } from '../../providers/config-service';
+import { Events } from 'ionic-angular';
+import { ConfigJSON } from '../../providers/config-service';
 
 /**
  * Generated class for the TagsSelectorComponent component.
@@ -20,26 +20,22 @@ export class TagsSelectorComponent {
 	// alltags: { tag: string, desc: string, count: number, fn?: number }[] = this.config.alltags
 	// @Input() configService :ConfigService
   // @Input("config") config //= {"asda":"asd"}
-  public config
-  // @Input() hash : string = ""
-
-  allTags = []
-  constructor(private navParams: NavParams,
-    // public data: Data,
-    // private configService: ConfigService,
-    private events: Events,
-    public toastCtrl: ToastController,
-    public viewCtrl: ViewController) {
-    this.tagsRow = 0;
-  }
-  ngOnInit(){
-    this.allTags = this.config.alltags
+  @Input("config") public _config : ConfigJSON
+  set config(argv){
+    this._config = argv
     this.currentTags = this.getTags()
   }
+  get config(){
+    return this._config
+  }
+  // @Input() hash : string = ""
+
+  constructor(private events: Events) {
+    this.tagsRow = 0;
+  }
   getTags() {
-    var counter = 1;
-    return this.allTags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map(x => {
-      x.fn = counter++;
+    return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map((x,i) => {
+      x.fn = i+1;
       return x
     });
   }
@@ -50,7 +46,6 @@ export class TagsSelectorComponent {
       this.tagsRow = 0
       this.currentTags = this.getTags()
     }
-
   }
   selectTag(tag){
     this.events.publish("changeTag",tag);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Config } from 'ionic-angular';
+import { ConfigurationService } from "ionic-configuration-service";
 import { Http , Headers, RequestOptionsArgs } from '@angular/http';
 import { RequestOptions, Request, RequestMethod} from '@angular/http';
 // import { Sentence} from '../pages/annotate/conllu';
@@ -15,17 +15,17 @@ import 'rxjs/add/operator/map';
 export class ConlluService {
 
   constructor(public http: Http,
-  	public myconfig: Config) {
+  	public myconfig: ConfigurationService) {
   }
   data = {}
+  options = new RequestOptions({ withCredentials: true });
   load(project:string, hash: string, pageid: string) {
 	  if (this.data[project+"-"+pageid]) {
 	    // already loaded data
 	    return Promise.resolve(this.data[project+"-"+pageid]);
 	  }
-	  var that = this
 	  // don't have the data yet
-	  return new Promise((resolve,reject) => {
+	  return new Promise<string>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
 	    // then on the response, it'll map the JSON data to a parsed JS object.
 	    // Next, we process the data and resolve the promise with the new data.
@@ -38,7 +38,7 @@ export class ConlluService {
 	 //    	// 'body': JSON.stringify()
 		// }
 
-	     this.http.post(this.myconfig.get("server")+"conllu_get",{
+	     this.http.post(this.myconfig.getValue("server")+"conllu_get",{
 				"project": project,
 				"hash": hash,
 				"file": pageid,
@@ -48,15 +48,16 @@ export class ConlluService {
 				// 	// "align": true,
 				// 	"strict": true
 				// }
-			})
+			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
 	        // data = data;
 	        if(data.ok){
-	        	that.data[project+"-"+pageid] = data.file;
-	        	resolve(that.data[project+"-"+pageid]);
+            //TODO view only if data.mode == "readonly"
+	        	this.data[project+"-"+pageid] = data.file;
+	        	resolve(this.data[project+"-"+pageid]);
 	        }
 	        else{
             console.error(data.error)
@@ -70,13 +71,12 @@ export class ConlluService {
 	  if (!force_update && this.projects[project]) {
 	    return Promise.resolve(this.projects[project]);
 	  }
-	  var that = this
 	  // don't have the data yet
 	  return new Promise(resolve => {
-	     this.http.post(this.myconfig.get("server")+"conllu_list",{
+	     this.http.post(this.myconfig.getValue("server")+"conllu_list",{
 				"project": project,
 				"hash": hash,
-			})
+			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
@@ -90,7 +90,6 @@ export class ConlluService {
 	  });
 	}
   	udpipe(project:string,hash:string, sentence:string,newFilename:string, language: string) {
-	  var that = this
 	  // don't have the data yet
 	  return new Promise<{ok:boolean, filename: string, firstline: string, error: string}>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
@@ -98,7 +97,7 @@ export class ConlluService {
 	    // Next, we process the data and resolve the promise with the new data.
 
 
-	     this.http.post(this.myconfig.get("server")+'conllu_udpipe', {
+	     this.http.post(this.myconfig.getValue("server")+'conllu_udpipe', {
 	     	tokenizer: true,
 	     	tagger: true,
 			"project": project,
@@ -106,7 +105,7 @@ export class ConlluService {
 	     	sentence: sentence,
 	     	model: language,
 	     	newFilename: newFilename,
-	     })
+	     },this.options)
 	      .map(res => res.json())
 	      .subscribe((data) => {
 	        // we've got back the raw data, now generate the core schedule data
@@ -119,7 +118,6 @@ export class ConlluService {
 	  });
 	}
 	save(project:string, hash: string, pageid: string, file: string) {
-	  var that = this
 	  // don't have the data yet
 	  return new Promise<any>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
@@ -134,19 +132,20 @@ export class ConlluService {
 	 //    	// 'body': JSON.stringify()
 		// }
 
-	     this.http.post(this.myconfig.get("server")+'conllu_save',{
+	     this.http.post(this.myconfig.getValue("server")+'conllu_save',{
 				"project": project,
 				"hash": hash,
 				"pageid": pageid,
 				"data" : file
-			})
+			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
 	        if(data.ok){
             this.data[project+"-"+pageid] = file
-            this.projects[project].files.find(x=>x.filename==pageid).firstline = file.split("\n")[0]
+            if(this.projects[project])
+              this.projects[project].files.find(x=>x.filename==pageid).firstline = file.split("\n")[0]
         		resolve(data);
           }
         	else
@@ -155,7 +154,6 @@ export class ConlluService {
 	  });
 	}
 	remove(project:string, hash: string, pageid: string) {
-	  var that = this
 	  // don't have the data yet
 	  return new Promise<any>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
@@ -170,11 +168,11 @@ export class ConlluService {
 	 //    	// 'body': JSON.stringify()
 		// }
 
-	     this.http.post(this.myconfig.get("server")+'conllu_remove',{
+	     this.http.post(this.myconfig.getValue("server")+'conllu_remove',{
 				"project": project,
 				"hash": hash,
 				"pageid": pageid,
-			})
+			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data

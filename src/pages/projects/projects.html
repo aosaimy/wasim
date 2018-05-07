@@ -1,31 +1,19 @@
-<!--
-  Generated template for the ProjectsPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
   <ion-navbar>
     <ion-title>المشاريع</ion-title>
+    <ion-buttons end>
+      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">
+        <ion-icon name="log-out"></ion-icon>
+      </button>
+      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">
+        <ion-icon name="contact"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding rtl>
-   <ion-card *ngIf="!validSecurity">
-   <ion-card-header>تسجيل الدخول كمدير</ion-card-header>
-   <ion-card-content>
-     <ion-item>
-      <ion-label fixed>رمز الدخول</ion-label>
-      <ion-input type="password" [(ngModel)]="security"></ion-input>
-      </ion-item>
-        <button ion-button (click)="securityChanged()">الدخول</button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card *ngIf="validSecurity">
+  <ion-card>
   <ion-item-divider>
     المشاريع الحالية
   </ion-item-divider>
@@ -33,7 +21,7 @@
     	<ion-item *ngFor="let p of projects">
     		{{p.project}}
     		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>
-    		<button ion-button outline item-end icon-left (click)="remove(p)">احذف</button>
+    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">احذف</button>
     	</ion-item>
   	</ion-list>
 	<ion-item *ngIf='projects.length === 0'>لا يوجد أي مشروع</ion-item>
@@ -46,5 +34,4 @@
 		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>
 	</ion-item>
   </ion-card>
-
 </ion-content>

@@ -90,4 +90,11 @@ ma-selectize-popover-page {
     float:right;
     min-width: 10em
   }
+  .doctrue:before{
+    content: "\00a0\00a0";
+    background-color: #6f42c1;
+  }
+  // .docfalse{
+  //   background-color: green
+  // }
 }

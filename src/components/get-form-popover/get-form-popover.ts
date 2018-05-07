@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
-import { ConlluElement } from '../../pages/annotate/conllu';
-import { ToastController, RadioGroup, PopoverController, ViewController, NavController, NavParams } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { ConlluElement } from 'conllu-dao';
+import { ViewController, NavParams } from 'ionic-angular';
 
 /**
  * Generated class for the GetFormPopoverComponent component.

@@ -63,7 +63,7 @@ export class DocsPage {
     this.configService.load(this.project, this.hash).then(s=>{
       this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
     }).catch(x=>{
-      this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
+      // this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
     })
   }
 
@@ -74,10 +74,10 @@ export class DocsPage {
     id: id,
     })
   }
-  remove(id){
-  	this.conlluService.remove(this.project,this.hash,id).then(s=>{
+  remove(filename){
+  	this.conlluService.remove(this.project,this.hash,filename).then(s=>{
   		if(s.ok)
-  			this.list.splice(this.list.findIndex(x=>x==id),1)
+  			this.list.splice(this.list.findIndex(x=>x.filename==filename),1)
   	})
   }
   udpipe(sentence){

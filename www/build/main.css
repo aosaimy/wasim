@@ -25776,6 +25776,117 @@ concordance .element.newline {
   clear: both;
 }
 
+conllu-editor {
+  overflow-x: scroll;
+}
+
+conllu-editor .conllu-cell {
+  min-width: 5em;
+  display: inline-block;
+}
+
+conllu-editor .conllu-cell-0 {
+  color: #005cc5;
+  min-width: 2em;
+}
+
+conllu-editor .conllu-cell-1 {
+  color: #d73a49;
+}
+
+conllu-editor .conllu-cell-2 {
+  color: #6f42c1;
+}
+
+conllu-editor .conllu-cell-3 {
+  color: #005cc5;
+}
+
+conllu-editor .conllu-cell-4 {
+  color: #d73a49;
+}
+
+conllu-editor .conllu-cell-5 {
+  color: #6f42c1;
+}
+
+conllu-editor .conllu-cell-6 {
+  color: #735c0f;
+}
+
+conllu-editor .conllu-cell-7 {
+  color: #005cc5;
+}
+
+conllu-editor .conllu-cell-8 {
+  color: #6f42c1;
+}
+
+conllu-editor .begins-with-true {
+  color: #888;
+}
+
+conllu-editor .conllu-row {
+  width: 2500px;
+  position: relative;
+}
+
+conllu-editor pre .conllu-row:before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  padding-right: 0.3em;
+  border-right: 1px solid #ddd;
+  margin-right: .3em;
+  color: #888;
+}
+
+conllu-editor pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+conllu-editor .conllu-row.highlight {
+  background-color: #fff;
+}
+
+conllu-editor .conllu-row .actions {
+  padding-right: 1em;
+  display: none;
+}
+
+conllu-editor .conllu-row .actions button {
+  font-size: 0.9rem;
+}
+
+conllu-editor .conllu-row:hover::before {
+  background-color: yellow;
+}
+
+conllu-editor .conllu-row:hover .actions {
+  display: inline;
+}
+
+conllu-editor .downloadButton {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  display: none;
+}
+
+conllu-editor pre:hover .downloadButton {
+  display: inline;
+}
+
 help-popover {
   width: 50%;
 }
@@ -25872,6 +25983,11 @@ ma-selectize-popover-page .lemma {
   min-width: 10em;
 }
 
+ma-selectize-popover-page .doctrue:before {
+  content: "\00a0\00a0";
+  background-color: #6f42c1;
+}
+
 /* -*- Mode: CSS; tab-width: 2; indent-tabs-mode: nil; -*- */
 /* vim:set ft=css ts=2 sw=2 sts=2 autoindent: */
 .myNewClass .selectize-dropdown {
@@ -25955,8 +26071,68 @@ page-annotate .element {
   min-height: 4em;
 }
 
+page-annotate .element.copied {
+  border: 1px blue dashed;
+}
+
 page-annotate .element.rtl {
   float: right;
+}
+
+page-annotate .element.ADJ {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+page-annotate .element.ADP {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+page-annotate .element.ADV {
+  background-color: rgba(245, 241, 213, 0.4);
+}
+
+page-annotate .element.CCONJ {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+
+page-annotate .element.DET {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+
+page-annotate .element.NOUN {
+  background-color: rgba(217, 206, 196, 0.4);
+}
+
+page-annotate .element.NUM {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+page-annotate .element.PART {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+page-annotate .element.PRON {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+
+page-annotate .element.PROPN {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+
+page-annotate .element.PUNCT {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+page-annotate .element.SCONJ {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+page-annotate .element.VERB {
+  background-color: rgba(217, 215, 134, 0.4);
+}
+
+page-annotate .element.X {
+  background-color: rgba(184, 189, 192, 0.4);
 }
 
 page-annotate .element.highlight {
@@ -26729,113 +26905,6 @@ ion-input.form_input {
   text-align: center;
   direction: rtl;
   line-height: 3em;
-}
-
-.conllu-cell {
-  min-width: 5em;
-  display: inline-block;
-}
-
-.conllu-cell-0 {
-  color: #005cc5;
-  min-width: 2em;
-}
-
-.conllu-cell-1 {
-  color: #d73a49;
-}
-
-.conllu-cell-2 {
-  color: #6f42c1;
-}
-
-.conllu-cell-3 {
-  color: #005cc5;
-}
-
-.conllu-cell-4 {
-  color: #d73a49;
-}
-
-.conllu-cell-5 {
-  color: #6f42c1;
-}
-
-.conllu-cell-6 {
-  color: #735c0f;
-}
-
-.conllu-cell-7 {
-  color: #005cc5;
-}
-
-.conllu-cell-8 {
-  color: #6f42c1;
-}
-
-.begins-with-true {
-  color: #888;
-}
-
-.conllu-row {
-  width: 2500px;
-  position: relative;
-}
-
-pre .conllu-row:before {
-  counter-increment: line;
-  content: counter(line);
-  display: inline-block;
-  width: 2em;
-  border-right: 1px solid #ddd;
-  margin-right: .5em;
-  color: #888;
-}
-
-pre {
-  display: block;
-  padding: 9.5px;
-  margin: 0 0 10px;
-  font-size: 13px;
-  line-height: 1.42857143;
-  color: #333;
-  word-break: break-all;
-  word-wrap: break-word;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.conllu-row.highlight {
-  background-color: #fff;
-}
-
-.conllu-row .actions {
-  padding-right: 1em;
-  display: none;
-}
-
-.conllu-row .actions button {
-  font-size: 0.9rem;
-}
-
-.conllu-row:hover::before {
-  background-color: yellow;
-}
-
-.conllu-row:hover .actions {
-  display: inline;
-}
-
-.downloadButton {
-  position: absolute;
-  top: 2px;
-  right: 5px;
-  display: none;
-}
-
-pre:hover .downloadButton {
-  display: inline;
 }
 
 page-docs {

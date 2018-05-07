@@ -1,27 +1,24 @@
-import { ChangeDetectionStrategy, Renderer, Component, Output, ChangeDetectorRef, Input, ViewChild, EventEmitter } from '@angular/core';
-import { Directive, ElementRef } from "@angular/core";
-import { Events, ToastController, RadioGroup, AlertController, LoadingController, PopoverController, ViewController, NavController, NavParams } from 'ionic-angular';
-import {
-  FormControl,
-} from '@angular/forms';
+import { Renderer, Component, Output, Input, ViewChild, EventEmitter, Directive } from '@angular/core';
+import { Events, ToastController, RadioGroup, AlertButton, AlertController, LoadingController, PopoverController, NavController, NavParams } from 'ionic-angular';
+// import { InAppBrowser } from '@ionic-native/in-app-browser';
 
-import { Http } from '@angular/http';
 import { WordService } from '../../providers/word-service';
 import { ConlluService } from '../../providers/conllu-service';
-import { ConfigService } from '../../providers/config-service';
-import { GuidelinesService } from '../../providers/guidelines-service';
+import { ConfigService, ConfigJSON} from '../../providers/config-service';
+// import { GuidelinesService } from '../../providers/guidelines-service';
 import { SelectizePopoverPageComponent } from '../../components/selectize-popover-page/selectize-popover-page';
 import { MASelectizePopoverPageComponent } from '../../components/ma-selectize-popover-page/ma-selectize-popover-page';
 // import { SegmentorPopoverPageComponent } from '../../components/segmentor-popover-page/segmentor-popover-page';
 import { TagsSelectorComponent } from '../../components/tags-selector/tags-selector';
 // import { HighlightComponent } from '../../components/highlight/highlight';
-import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
-import { GuiderComponent } from '../../components/guider/guider';
+// import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
+// import { GuiderComponent } from '../../components/guider/guider';
 import { HelpPopoverComponent } from '../../components/help-popover/help-popover';
 import { DocsPage } from '../docs/docs';
 import { ProjectsPage } from '../projects/projects';
-import { ConlluDocument, ConlluSentence, ConlluElement } from './conllu';
+import { ConlluDocument, ConlluSentence, ConlluElement } from 'conllu-dao'
 import 'rxjs/add/operator/map'
+
 
 /*
   Generated class for the Annotate page.
@@ -39,9 +36,10 @@ export class AnnotatePage {
   /*
   Tags bar
   */
-  @Output() public myEventEmitted: EventEmitter<any> = new EventEmitter();
+  // @Output() public myEventEmitted: EventEmitter<any> = new EventEmitter();
   tagsRow = 0;
-  config = null
+  done=false
+  config = new ConfigJSON()
   // sentenceTags: { tag: string, desc: string, fn: number }[] = null
 
   @ViewChild('lemma') lemmaGroup: RadioGroup;
@@ -54,27 +52,48 @@ export class AnnotatePage {
   hash = ""
   pageid = ""
   editable = false
-  isConlluHidden = false
+  // isConlluHidden = false
   copyElement = null
   @ViewChild('myTags') myTags: TagsSelectorComponent;
+  // @ViewChild('conllu-editor') conlluEditor: ConlluEditorComponent;
 
   highlight: Highlight = new Highlight(this.events);
 
-  conlluRaw = `1-3 وعنها   _   _   _   _   _   _   _   _
+  _conlluRaw = `1-3 وعنها   _   _   _   _   _   _   _   _
 1   وَ  _   conj    conj    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-0
 2   عَنها   عَن_1   prep    prep    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-1
 3   _   _   3fs_pron    3fs_pron    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-2
 `
-  conlluRawSpans : {sentid: number,elemid: string,elems: string[]}[] = this.getConlluRaw()
+  get conlluRaw(){
+    return this._conlluRaw
+  }
+  set conlluRaw(argv){
+    this._conlluRaw = argv
+    this.log = ""
+    // console.log("Here",this.conlluRaw)
+    let that = this
+
+    this.doc.parse(this.conlluRaw, function(s) {
+      that.log = that.log + s + '\n';
+    }, false)//.toBrat(logger, true);
+    // if(typeof highlightRef  == "string")
+      // this.highlightElement(highlightRef)
+
+    if(this.config.askMA)
+      this.askMA()
+    if(this.config.askMemMA)
+      this.askMemMA()
+    // console.log(JSON.parse(JSON.stringify(this.doc)))
+    this.highlightElement(this.highlight.ref)
+  }
   stats = new Stats(this.events)
 
   constructor(public navCtrl: NavController,
     private popoverCtrl: PopoverController,
     public navParams: NavParams,
     // public data: Data,
-    public http: Http,
-    private cdr: ChangeDetectorRef,
-    private renderer:Renderer,
+    // public http: Http,
+    public renderer:Renderer,
     public events: Events,
     private wordservice: WordService,
     private conlluService: ConlluService,
@@ -91,26 +110,30 @@ export class AnnotatePage {
 
     if (!navParams.data.project){
       //TODO change
+      console.log("invalid params: ",navParams.data)
       navCtrl.setRoot(ProjectsPage)
     }
     else{
       this.project = navParams.data.project;
       this.hash = navParams.data.hash;
-      navCtrl.insert(1,DocsPage,{
-        project : this.project,
-        hash : this.hash
-      })
+      if(navCtrl.getViews().length==0)
+        navCtrl.insert(1,DocsPage,{
+          project : this.project,
+          hash : this.hash
+        })
     }
 
     // on highlight change, scroll the ConllU Raw view and the main words view to proper location
-    this.events.subscribe("highlight:change", (element)=>{
-        setTimeout(() => {
-          let highlight_element : any = document.querySelector("pre > .highlight");
-          if(highlight_element){
-            document.querySelector("pre").scrollTo(0, highlight_element.offsetTop-100)
-          }
-        })
+    this.events.subscribe("highlight:change", (element,scrollToConllRaw=true,scrollToElement=true)=>{
+      // if(scrollToConllRaw)
+        // setTimeout(() => {
+        //   let highlight_element : any = document.querySelector("pre > .highlight");
+        //   if(highlight_element){
+        //     document.querySelector("pre").scrollTo(0, highlight_element.offsetTop-100)
+        //   }
+        // })
 
+      if(scrollToElement)
         setTimeout(() => {
           var sa: any = document.querySelector("#sentences")
           var ea: any = document.querySelector("#sentences .element.highlight")
@@ -127,26 +150,27 @@ export class AnnotatePage {
       this.pageid = navParams.data.id;
     }
 
-    this.configService.load(this.project, this.hash).then(s=>{
+    Promise.all([this.configService.load(this.project, this.hash),this.conlluService.load(this.project, this.hash, this.pageid)])
+    .then(arr=>{
       loading.dismiss();
-      this.config = this.configService.getConfig(this.project)
+      this.config = arr[0]//this.configService.getConfig(this.project)
+      if(this.myTags)
+        this.myTags.config = this.config
       this.doc = new ConlluDocument(this.config)
-    }).catch(s=>{
-      this.config = this.configService.getConfig(this.project)
-      this.undoArr = new Array(this.config.undoSize || 5)
-      this.isConlluHidden = this.config.isConlluHidden || false
-      this.toastCtrl.create({
-          message: 'Config loading Error: ' + s.error,
-          duration: 3000,
-          position: "top"
-        }).present()
-      console.error('Config loading Error: ' + s.error)
-    })
+      this.conlluRaw = arr[1].trim();
+      this.done = /(\n|^)# done/.test(this.conlluRaw)
+      let match = this.conlluRaw.match(/^# (?:done|notdone).*\|highlight=([^\|\n]*)/)
 
-    this.conlluService.load(this.project, this.hash, this.pageid).then(s => {
-      this.conlluRaw = s.trim();
-      this.conlluRawSpans = this.getConlluRaw()
-      this.onConlluRawChanged();
+      setTimeout(()=>{
+        if(navParams.data.position){
+          console.log("here",navParams.data.position)
+          this.highlightElement(navParams.data.position.replace("-",":"))
+        }
+        else if(match)
+          this.highlightElement(match[1])
+        else
+          this.highlightElement('S1:1')
+      })
     }).catch(x=>{
       this.toastCtrl.create({
           message: 'Conllu File loading Error: ' + x,
@@ -155,6 +179,7 @@ export class AnnotatePage {
         }).present()
       console.error('Conllu File loading Error: ' + x)
       console.trace(x)
+      loading.dismiss()
     });
   }
   logme(x){console.log(x)}
@@ -164,28 +189,6 @@ export class AnnotatePage {
     // this.renderer.invokeElementMethod(document.querySelector(".highlight"), 'focus', []);
   }
   preventKeyboard = false
-  presentGetFormPopover() {
-    let el = this.highlight.element.parent || this.highlight.element
-    if(el.analysis){
-      var popover = this.popoverCtrl.create(MASelectizePopoverPageComponent, {
-        element: el,
-        config: this.config
-      },{cssClass:"selectizePopover"})
-      popover.present({});
-      this.preventKeyboard = true
-      popover.onDidDismiss(()=>{
-        this.preventKeyboard = false
-        this.saveForUndo()
-      })
-    }
-    else{
-     this.toastCtrl.create({
-        message: 'No Analysis Found for this word: ' + el.form,
-        duration: 3000,
-        position: "top"
-      }).present()
-    }
-  }
   // presentSegmentorFormPopover() {
   //   var popover = this.popoverCtrl.create(SegmentorPopoverPageComponent, {
   //     element: this.highlight.element,
@@ -200,6 +203,242 @@ export class AnnotatePage {
   //   })
   // }
   showAlertMessage = false;
+
+  addNote(event=null) {
+    if(event)
+      event.preventDefault()
+    let prompt = this.alertCtrl.create({
+      title: 'Note',
+      message: "Please enter the note to be saved on the element. Old message is: "+(this.highlight.element._miscs["NOTE"] || "Nothing"),
+      inputs: [
+        {
+          name: 'note',
+          placeholder: 'Title',
+          value: this.highlight.element._miscs["NOTE"]
+        },
+      ],
+      buttons: [
+        {
+          text: 'Save',
+          handler: data => {
+            this.highlight.element._miscs["NOTE"] = data.note.replace(/ /g,"_")
+            this.syncConllU()
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+  highlightElement(highlightRef='S1:1') {
+    highlightRef = highlightRef.replace(/^(S[0-9]+:[0-9]+)-[0-9]+$/,"$1")
+    if(!/^S[0-9]+:[0-9]+$/.test(highlightRef)){
+      console.error("HighlightRef is not standard",highlightRef)
+      highlightRef = 'S1:1'
+    }
+
+    let elem = this.doc.getElement(highlightRef)
+    if(elem)
+      this.events.publish('highlight:change', elem)
+    else{
+      console.error("highlighted non existing element",highlightRef)
+      this.highlightElement()
+    }
+  }
+  search(event=null) {
+    if(event)
+      event.preventDefault()
+    let prompt = this.alertCtrl.create({
+      title: 'Search',
+      message: "Show previous taggings in corpus",
+      inputs: [
+        {
+          name: 'form',
+          placeholder: 'Word Form'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Search',
+          handler: data => {
+            this.wordservice.askMemMA(data.form,this.config)
+           .then((elements: ConlluElement[][]) => {
+             this.viewElementsPopup(elements[0],null)
+            }).catch(s=>{
+             this.toastCtrl.create({
+                message: 'Error: ' + s,
+                duration: 3000,
+                position: "top"
+              }).present()
+            console.error('Error: ' + s)
+           })
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+  searchResults = []
+  last_cretiera : any = {}
+
+  find(event=null){
+    if(event)
+      event.preventDefault()
+    let prompt = this.alertCtrl.create({
+      title: 'Find',
+      message: "Find an element within this document",
+      inputs: [
+        {
+          name: 'form',
+          placeholder: 'Word Form',
+          value: this.last_cretiera.form
+        },
+        {
+          name: 'xpos',
+          placeholder: 'XPOS tag',
+          value: this.last_cretiera.xpos
+        },
+        {
+          name: 'upos',
+          placeholder: 'UPOS tag',
+          value: this.last_cretiera.upos
+        },
+        {
+          name: 'feats',
+          placeholder: 'Feat=Val',
+          value: this.last_cretiera.feats
+        },
+        {
+          name: 'misc',
+          placeholder: 'Misc=Val',
+          value: this.last_cretiera.misc
+        },
+
+        {
+          name: 'lemma',
+          placeholder: 'Lemma',
+          value: this.last_cretiera.lemma
+        },
+      ],
+    });
+    if(this.copyElement)
+      prompt.addButton({
+          text: 'Find and Replace All',
+          role: 'destructive',
+          handler: cretiera => {
+              this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
+              if(!this.copyElement){
+                 this.toastCtrl.create({
+                  message: 'No copied element',
+                  duration: 1000
+                }).present()
+              }
+              else {
+                this.searchResults = this.doc.find(cretiera)
+                this.searchResults.forEach(e=>{
+                  if(e==this.copyElement || e.parent==this.copyElement)
+                    return
+                  if(this.copyElement.isMultiword){
+                    let c= e.changeWith(this.copyElement)
+                    c._miscs["FROM"]="PASTE"
+                  }
+                   else
+                     e.copy(this.copyElement)
+                })
+              }
+          }
+        })
+    prompt.addButton({
+      text: 'Find All',
+      handler: cretiera => {
+          this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
+          this.searchResults = this.doc.find(cretiera)
+          if(this.searchResults.length === 0){
+            this.toastCtrl.create({
+              message: 'No results were found',
+              duration: 1000
+            }).present()
+          }
+          else {
+            this.viewElementsPopup(this.searchResults,null)
+          }
+      }
+    });
+    prompt.addButton({
+      text: 'Find All (Unique)',
+      handler: cretiera => {
+          this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
+          let uniq = {}
+          this.searchResults = this.doc.find(cretiera).filter(e=>{
+            if(uniq[e.toConllU(false)]===undefined){
+              uniq[e.toConllU(false)] = true
+              return true
+            }
+            return false
+          })
+          if(this.searchResults.length === 0){
+            this.toastCtrl.create({
+              message: 'No results were found',
+              duration: 1000
+            }).present()
+          }
+          else {
+            this.viewElementsPopup(this.searchResults,null)
+          }
+      }
+    });
+    prompt.addButton({
+      text: 'Find Next',
+      handler: cretiera => {
+          this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
+          this.searchResults = this.doc.find(cretiera)
+          if(this.searchResults.length === 0){
+            this.toastCtrl.create({
+              message: 'No results were found',
+              duration: 1000
+            }).present()
+          }
+          else {
+            if(this.highlight.element)
+              this.highlight.element = this.doc.sentences[0].elements[0]
+            this.find_next(event)
+          }
+      }
+    });
+    prompt.present();
+  }
+
+  wasReversed = false
+  find_next(event=null,backward=false){
+    if(event)
+      event.preventDefault()
+    if(this.highlight.element==null)
+      return
+    if(backward && !this.wasReversed || !backward && this.wasReversed){
+      this.wasReversed = ! this.wasReversed
+      this.searchResults.reverse() // warning in-place
+    }
+    let r = this.searchResults.find(e=>{
+      if(!backward && e.sentence._id < this.highlight.element.sentence._id)
+        return false
+      if(!backward && e.sentence._id == this.highlight.element.sentence._id && parseInt(e._id) <= parseInt(this.highlight.element._id))
+        return false
+      if(backward && e.sentence._id > this.highlight.element.sentence._id)
+        return false
+      if(backward && e.sentence._id == this.highlight.element.sentence._id && parseInt(e._id) >= parseInt(this.highlight.element._id))
+        return false
+      return true
+    })
+    if(!r)
+        return this.toastCtrl.create({
+          message: 'No more results were found',
+          duration: 1000
+        }).present()
+    // if(r.isMultiword)
+    //   r = r.children[0]
+
+    this.events.publish('highlight:change', r);
+  }
+
   ionViewCanLeave() {
     if(this.showAlertMessage) {
         let alertPopup = this.alertCtrl.create({
@@ -240,7 +479,7 @@ export class AnnotatePage {
 
       this.preventKeyboard = true
       popover.present({
-      });
+      })
       popover.onDidDismiss(x=>{
         this.preventKeyboard = false
         this.saveForUndo()
@@ -264,14 +503,14 @@ export class AnnotatePage {
     },{cssClass:"helpPopover"});
 
     popover.present({
-    });
+    })
   }
   mouseClick(e) {
     this.events.publish("stats",{action:"mouse",element:e})
   }
   keyboardShortcuts(e) {
+    console.log(e)
     var highlighNode : any = document.querySelector(".highlight")
-    // console.log(e)
     if (e.target != document.querySelector("body")
       && e.target && e.target.className.indexOf("element") == -1
       // && e.target && e.target.parentNode && highlighNode && e.target.parentNode.parentNode != highlighNode.parentNode.parentNode
@@ -283,11 +522,13 @@ export class AnnotatePage {
       }
       return
     }
-
     if (this.preventKeyboard)
       return
     if(!this.config)
       return false
+    if(e.code == "Escape")
+      this.copyElement = false
+
     var action = this.config.keyboardShortcuts
       .filter(v=>{
         return (v.code == e.code) &&
@@ -319,8 +560,7 @@ export class AnnotatePage {
         }
         this.undoArr.push(this.conlluRaw)
         this.conlluRaw = x;
-        this.conlluRawSpans = this.getConlluRaw()
-        this.onConlluRawChanged()
+
         if(e) e.preventDefault();
   }
   undo(e=null){
@@ -331,15 +571,28 @@ export class AnnotatePage {
         }
         this.redoArr.push(this.conlluRaw)
         this.conlluRaw = x;
-        this.conlluRawSpans = this.getConlluRaw()
-        this.onConlluRawChanged()
+
         if(e) e.preventDefault();
   }
   copy(e=null){
-        this.copyElement = this.highlight.element
+    if(e)
+      e.preventDefault()
+      this.copyElement = this.highlight.element
+  }
+  copyParent(e=null){
+    if(e)
+      e.preventDefault()
+    this.copyElement = this.highlight.element.parent
   }
   paste(e=null){
-      if(this.copyElement)
+      if(!this.copyElement)
+        return
+      if(this.copyElement.isMultiword){
+          let c= this.highlight.element.changeWith(this.copyElement)
+          c._miscs["FROM"]="PASTE"
+          this.events.publish('highlight:change', c);
+      }
+      else
           this.highlight.element.copy(this.copyElement)
   }
   pasteMorphInfo(e=null){
@@ -347,6 +600,7 @@ export class AnnotatePage {
           this.highlight.element.copyMorphInfo(this.copyElement)
   }
   new_sentence(e=null){
+      //TODO: this should be moved to conllu.ts
             if (!this.highlight.element)
           return;
         this.showAlertMessage = true;
@@ -369,13 +623,13 @@ export class AnnotatePage {
             return
           after = this.doc.sentences[sindex + 1].elements
 
-          let counter = this.highlight.sentence.words(false).length + 1;
           after.forEach(e => {
             e.sentence = this.highlight.sentence
           })
           this.highlight.sentence.elements = this.highlight.sentence.elements.concat(after);
           this.doc.sentences.splice(sindex + 1, 1)
           this.highlight.sentence.refix(true)
+          this.doc.fixSentenceIds()
         }
         else {
           // sentence should be splitted
@@ -384,7 +638,7 @@ export class AnnotatePage {
           //re count the second sentence
           let counter = 1;
           after.forEach(e => {
-            if (!e.isMultiword())
+            if (!e.isMultiword)
               e.id = "" + counter++;
             else {
               var arr = e.id.split("-")
@@ -399,6 +653,7 @@ export class AnnotatePage {
         this.saveForUndo()
       }
   clone(e=null){
+      //TODO: this should be moved to conllu.ts
     if (!this.highlight.element)
           return
     //TODO FIX many things
@@ -424,10 +679,9 @@ export class AnnotatePage {
       el.parent.children = [el,this.highlight.element]
       this.highlight.element.parent = parent
     }
-
     // var counter = 1;
     // this.highlight.sentence.elements.forEach(e => {
-    //   if (!e.isMultiword())
+    //   if (!e.isMultiword)
     //     e.id = "" + counter++;
     //   else {
     //     var arr = e.id.split("-")
@@ -443,9 +697,9 @@ export class AnnotatePage {
     this.saveForUndo()
   }
   delete(e) {
+      //TODO: this should be moved to conllu.ts
     if (!this.highlight.element)
           return;
-    var sindex = this.doc.sentences.indexOf(this.highlight.sentence)
     var eindex = this.highlight.sentence.elements.indexOf(this.highlight.element)
 
     //cannot delete whole word
@@ -467,7 +721,7 @@ export class AnnotatePage {
 
     var counter = 1;
     this.highlight.sentence.elements.forEach(e => {
-      if (!e.isMultiword())
+      if (!e.isMultiword)
         e.id = "" + counter++;
       else {
         var arr = e.id.split("-")
@@ -479,9 +733,61 @@ export class AnnotatePage {
     this.saveForUndo()
    }
 
-  tag_ma(e) {
-      this.presentGetFormPopover();
+  tag_ma(analyses: ConlluElement[] =[],e) {
+      let el = this.highlight.element.parent || this.highlight.element
+      if(analyses.length==0)
+        analyses=el.analysis//.filter((e,i)=>! this.viewMode || e._miscs["DOCID"]!==this.pageid && e._miscs["DOCID"]!==undefined)
+
+      if(analyses){
+        var popover = this.popoverCtrl.create(MASelectizePopoverPageComponent, {
+          element: el,
+          analyses: analyses,
+          hash: this.hash,
+          mode: "change",
+          project: this.project,
+          config: this.config
+        },{cssClass:"selectizePopover"})
+        popover.present({})
+        this.preventKeyboard = true
+        popover.onDidDismiss(()=>{
+          this.preventKeyboard = false
+          this.saveForUndo()
+        })
+      }
+      else{
+       this.toastCtrl.create({
+          message: 'No Analysis Found for this word: ' + el.form,
+          duration: 3000,
+          position: "top"
+        }).present()
+      }
       this.events.publish("stats",{action:"tag_ma",element:this.highlight.element})
+      this.showAlertMessage = true;
+  }
+  viewElementsPopup(analyses : ConlluElement[] = [], e=null) {
+      if(analyses.length !== 0){
+        var popover = this.popoverCtrl.create(MASelectizePopoverPageComponent, {
+          analyses: analyses,
+          hash: this.hash,
+          project: this.project,
+          mode: "view",
+          config: this.config
+        },{cssClass:"selectizePopover"})
+        popover.present({})
+        this.preventKeyboard = true
+        popover.onDidDismiss(()=>{
+          this.preventKeyboard = false
+          // this.saveForUndo()
+        })
+      }
+      else{
+       this.toastCtrl.create({
+          message: 'No Analysis Found. ',
+          duration: 3000,
+          position: "top"
+        }).present()
+      }
+      // this.events.publish("stats",{action:"tag_ma",element:this.highlight.element})
       this.showAlertMessage = true;
   }
   segment(e=null) {
@@ -489,8 +795,8 @@ export class AnnotatePage {
     this.preventKeyboard = false
   }
   blurFormEditor(ev,elem){
-    // this.preventKeyboard = false
-    // this.editable = false
+    this.preventKeyboard = false
+    this.editable = false
     this.resize(ev)
   }
   resize(ev) {
@@ -500,6 +806,8 @@ export class AnnotatePage {
   keyupFormEditor(ev,elem){
     this.resize(ev)
     if (ev.code == "Backspace") {
+      //TODO: this should be moved to conllu.ts
+      // TODO: name it: concat? merge?
       if(ev.target.selectionStart == 0 && ev.target.value == elem.form){
         let cindex =elem.parent.children.indexOf(elem)
         if(cindex==0)
@@ -579,16 +887,14 @@ export class AnnotatePage {
           }
         })
       }
-      this.preventKeyboard = false
-      this.editable = false
+      // this.preventKeyboard = false
+      // this.editable = false
       elem.sentence.refix(true);
       this.saveForUndo()
-      // ev.target.blur()
+      ev.target.blur()
     }
   }
   doAction(action,params,e) {
-    var that = this;
-    var x;
     switch (action) {
       case "nav":
       // console.log("doAction")
@@ -605,6 +911,30 @@ export class AnnotatePage {
 
       case "copy":
         this.copy(e)
+        break
+
+      case "copyParent":
+        this.copyParent(e)
+        break
+
+      case "addNote":
+        this.addNote(e)
+        break
+
+      case "search":
+        this.search(e)
+        break
+
+      case "find":
+        this.find(e)
+        break
+
+      case "find_next":
+        this.find_next(e)
+        break
+
+      case "find_prev":
+        this.find_next(e,true)
         break
 
       case "paste":
@@ -628,7 +958,25 @@ export class AnnotatePage {
         break;
 
       case "tag_ma":
-        this.tag_ma(e)
+        this.tag_ma([],e)
+        break;
+
+      case "tag_ma_previous":
+        let el2 = this.highlight.element.parent || this.highlight.element
+        let analyses = [].concat.apply([], this.doc.sentences
+          .filter(s=>s._id <= el2.sentence._id)
+          .map(s=>s.tokens()
+             .filter(e=>
+               // parseInt(e.id.split("-")[0]) < parseInt(el2.id) &&
+               e!=el2 &&
+               e.form.replace(/[ًٌٍَُِّْ]/g,"") == el2.form.replace(/[ًٌٍَُِّْ]/g,""))))
+        this.tag_ma(analyses,e)
+        e.preventDefault()
+        break;
+
+      case "edit_memMa":
+        let el = this.highlight.element.parent || this.highlight.element
+        this.viewElementsPopup(el.analysis.filter((e,i)=>e._miscs["DOCID"]!==undefined && e._miscs["DOCID"]!==this.pageid),e)
         break;
 
       case "segment":
@@ -685,9 +1033,32 @@ export class AnnotatePage {
 
       case "validateConllu":
           if(e) e.preventDefault();
-          // var that = this
           var doc = new ConlluDocument(this.config);
           doc.parse(this.doc.toConllU(),function(s){this.log = this.log + s + '\n'},true)
+          break;
+
+      case "validate":
+          if(e) e.preventDefault();
+          let issues = this.doc.validate()
+          if(issues.length > 0 )
+            this.toastCtrl.create({
+              message: 'Several issues were found',
+              duration: 3000,
+              position: "top"
+            }).present()
+          else
+            this.toastCtrl.create({
+              message: 'No issues were found',
+              duration: 3000,
+              position: "top"
+            }).present()
+
+
+          break;
+
+      case "showCommands":
+          if(e) e.preventDefault();
+          this.showCommands(e)
           break;
 
       default:
@@ -695,15 +1066,37 @@ export class AnnotatePage {
         break;
     }
   }
+  showCommands(e){
+    console.log("showCommands")
+    let alert = this.alertCtrl.create();
+    alert.setTitle('List of Commands');
 
+    this.config.keyboardShortcuts.forEach((e,i)=>{
+      alert.addInput({
+        type: 'radio',
+        label: e.keys.length + e.keys.join("+")+" || "+e.action + (e.params && e.params.length >0 ? " {"+e.params.join()+"} ":""),
+        value: i+"",
+        checked: i==0
+      });
+    })
+
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: index => {
+        this.doAction(this.config.keyboardShortcuts[index].action,this.config.keyboardShortcuts[index].params,null);
+      }
+    });
+    alert.present();
+  }
   nav(direction,ev=null){
     if (!this.highlight.element)
       return;
     let x = null
     if(direction=="word_left")
-      x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == parseInt(this.highlight.element.id) + 1)[0]
+      x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == parseInt(this.highlight.element.id) + 1)
     else if(direction=="word_right")
-      x = this.highlight.sentence.elements.filter(x => !x.isMultiword() && parseInt(x.id) == (parseInt(this.highlight.element.id) - 1))[0]
+      x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == (parseInt(this.highlight.element.id) - 1))
 
     if (x) {
       this.events.publish('highlight:change', x);
@@ -716,17 +1109,27 @@ export class AnnotatePage {
       else if(direction=="word_up")
         y = this.doc.sentences[sindex - 1]
 
-      if (y) {
-        // this.highlight.sentence = y
-        this.events.publish('highlight:change', y.elements.filter(x => !x.isMultiword())[0])
+      if (!y)
+        return;
+
+      if(y.elements.length!=0){
+          this.events.publish('highlight:change', y.elements.filter(x => !x.isMultiword)[0])
+          return
       }
+
+      this.highlight.sentence = y
+      this.nav(direction)
     }
     if(ev)
       ev.preventDefault();
   }
   saveFile(e=null,askToMarkIsDone=true){
     if(e) e.preventDefault();
-    if(askToMarkIsDone){
+    // this.navCtrl.getActive().
+    if(askToMarkIsDone && this.done){
+      this.doc.sentences[0].comments.unshift("# update "+this.stats.getLine(this.highlight.element))
+      this.saveFile(null,false)
+    } else if(askToMarkIsDone){
       let alertPopup = this.alertCtrl.create({
           title: 'Mark as done?',
           message: 'Do you want to mark it as done?',
@@ -746,16 +1149,15 @@ export class AnnotatePage {
               }]
       });
       alertPopup.present()
-    }
-    else{
-      this.conlluRaw = this.doc.toConllU()
-      this.conlluRawSpans = this.getConlluRaw()
+    } else{
+      this._conlluRaw = this.doc.toConllU()
       this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(s => {
         this.toastCtrl.create({
-          message: 'File was successfully saved',
+          message: 'File was successfully saved. Status:'+(s.isDone? "Done" : "Not Done"),
           duration: 3000,
           position: "top"
         }).present()
+        this.stats.start = new Date()
         this.showAlertMessage = false;
       }).catch(reason => {
         this.toastCtrl.create({
@@ -767,23 +1169,9 @@ export class AnnotatePage {
       })
     }
   }
-  getConlluRaw(e=null){
-    var sentid = 1
-    return this.conlluRaw.split("\n").map(e=>{
-      if(e=="")
-        sentid++
-      var elemid = e.split("\t")[0]
-      elemid = /^[0-9-]/.test(elemid.trim()) ? elemid.trim() : "comment"
-      return {
-        sentid:sentid,
-        elemid: elemid,
-        elems: e.split("\t").map(ee=>ee+="\t")
-      }
-    })
-  }
+
   syncConllU(e=null){
-    this.conlluRaw = this.doc.toConllU()
-    this.conlluRawSpans = this.getConlluRaw()
+    this._conlluRaw = this.doc.toConllU()
     this.toastCtrl.create({
       message: 'Conll-U representation has been updated.',
       duration: 3000,
@@ -799,144 +1187,42 @@ export class AnnotatePage {
     this.undoArr.push(this.conlluRaw)
     if(newConllRaw){
       this.conlluRaw = newConllRaw
-      this.onConlluRawChanged()
     }
     else
-      this.conlluRaw = this.doc.toConllU()
-    this.conlluRawSpans = this.getConlluRaw()
+      this._conlluRaw = this.doc.toConllU()
     if(this.undoArr.length > this.config.undoSize)
       this.undoArr.shift()
-  }
-  onConlluRawSpansChanged(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    setTimeout(() => {
-      e.target.childNodes.forEach(e=>{
-        if(e.innerText)
-          e.innerText = e.innerText.trim()+"\t"
-      })
-      // r[index]=e.target.innerText
-      let conlluRaw = this.conlluRaw.split("\n").map((rr,i)=>{
-        return i==row_index? e.target.innerText : rr
-      }).join("\n")
-      // console.log(this.conlluRaw)
-      if(document.activeElement.classList.contains("conllu-row"))
-        return
-      this.saveForUndo(conlluRaw)
-    })
-  }
-  removeConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    setTimeout(() => {
-      // r[index]=e.target.innerText
-      let conlluRaw = this.conlluRaw.split("\n").filter((rr,i)=>{
-        return i!=row_index
-      }).join("\n")
-      // if(document.activeElement.classList.contains("conllu-row"))
-      //   return
-      this.saveForUndo(conlluRaw)
-    })
-  }
-  addConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    setTimeout(() => {
-      // r[index]=e.target.innerText
-      var ar = this.conlluRaw.split("\n")
-      ar.splice(row_index,0,"# ")
-      let conlluRaw = ar.join("\n")
-      // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-      // console.log(this.conlluRaw)
-      // console.log(document.activeElement)
-      // if(document.activeElement.classList.contains("conllu-row"))
-        // return
-      this.saveForUndo(conlluRaw)
-    })
-  }
-  highlightConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
-    // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-    // console.log(this.conlluRaw)
-    let sent = this.doc.sentences.find(e=>e.id == 'S'+r.sentid)
-    if(!sent)
-      return
-    let elem = sent.elements.find(e=>e.id == r.elemid)
-    if(!elem)
-      elem = sent.elements[0]
-    if(elem.isMultiword())
-      elem=elem.children[0]
-    this.events.publish('highlight:change', elem)
-  }
-  downloadConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
-    // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-    // console.log(this.conlluRaw)
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.conlluRaw);
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", this.project+"-"+this.pageid);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
   }
   // onConlluRawSpansChanged(c,r,row_index,index,e = null) {
   //   r[index]=e.target.innerText
   //   this.conlluRaw = this.conlluRaw.split("\n").map((rr,i)=>{
   //     return i==row_index? r.join("\t") : rr
   //   }).join("\n")
-  //   this.onConlluRawChanged()
+  //
   // }
-  onConlluRawChanged(e = null) {
-    this.log = ""
-    // console.log("Here",this.conlluRaw)
-    let that = this
-
-    if (e){
-      this.conlluRaw = e.target.value
-    }
-    let ref = this.conlluRaw.match(/^# (?:done|notdone).*\|highlight=([^\|\n]*)/)
-    this.doc.parse(this.conlluRaw, function(s) {
-      that.log = that.log + s + '\n';
-    }, false)//.toBrat(logger, true);
-
-    let hasHighlight = function(ref){
-      if(!ref)
-        return false
-      ref = ref[1].split(":")
-      let sent = this.doc.sentences.find(x=>x.id==ref[0])
-      if(!sent)
-        return false
-       let elem = sent.elements.find(x=>x.id==ref[1])
-      if(!elem)
-        return false
-      this.events.publish('highlight:change', elem)
-      return true
-    }
-    if(!hasHighlight.call(this,ref)){
-      let sentence = this.doc.sentences[0]
-      if (sentence && this.doc.sentences[0].elements.filter(x => !x.isMultiword()).length > 0){
-        this.events.publish('highlight:change', this.doc.sentences[0].elements.filter(x => !x.isMultiword())[0])
-        // this.highlight.element = this.doc.sentences[0].elements.filter(x => !x.isMultiword())[0]
-      }
-    }
-
-    this.askMA()
-    // console.log(JSON.parse(JSON.stringify(this.doc)))
-  }
-  maResult = null
+  // maResult = null
   askMA(){
-    // console.log("asda")
-    if(!this.maResult){
-      this.maResult = new Array(this.doc.sentences.length)
-      this.doc.sentences.forEach((s,i) =>{
-        //TODO REMOVE
-        // if(i!=0)
-        //   return
-         this.wordservice.load(s.tokens().map(e => e.form).join(" "),this.config)
-           .then((elements: ConlluElement[][]) => {
-             this.maResult[i] = elements
-             this.assignMA(s,i)
-           })
-                      .catch(s=>{
+
+      Promise.all(this.doc.sentences.map((s,i) =>
+            this.wordservice.askMA(s.tokens().map(e => e.form).join(" "),this.config)
+             .then((elements: ConlluElement[][]) => {
+               var counter = 1
+              s.elements.forEach(e => {
+                if(e.parent)
+                  return
+                // if(!this.maResult[i])
+                //   return console.error(i,this.maResult)
+                if(!e.analysis)
+                  e.analysis = []
+                if(elements[counter])
+                  e.analysis = e.analysis.concat(elements[counter] || [])
+                // else
+                  // console.log("askMA",e,elements,counter)
+                counter++;
+              })
+            })
+       ))
+      .catch(s=>{
              this.toastCtrl.create({
                 message: 'Error: ' + s,
                 duration: 3000,
@@ -944,23 +1230,32 @@ export class AnnotatePage {
               }).present()
             console.error('Error: ' + s)
            })
-      }
-
-      )
-
-    }
-    else
-      this.doc.sentences.forEach((s,i) => this.assignMA(s,i))
   }
-  assignMA(s,i){
-      var counter = 1
-      s.elements.forEach(e => {
-        if(e.parent)
-          return
-        if(!this.maResult[i])
-          return console.error(i,this.maResult)
-        e.analysis = this.maResult[i][counter]
-        counter++;
+
+  askMemMA(){
+      this.doc.sentences.forEach((s,i) =>{
+         this.wordservice.askMemMA(s.tokens().map(e => e.form).join(" "),this.config)
+           .then((elements: ConlluElement[][]) => {
+             var counter = 0
+            s.elements.forEach(e => {
+              if(e.parent)
+                return
+              // if(!this.maResult[i])
+              //   return console.error(i,this.maResult)
+              if(elements[counter])
+                e.analysis = elements[counter].concat(e.analysis || [])
+              // else if(!Array.isArray(elements[counter]))
+                // console.log("askMemMA",e,elements,counter)
+              counter++;
+            })
+            }).catch(s=>{
+             this.toastCtrl.create({
+                message: 'Error: ' + s,
+                duration: 3000,
+                position: "top"
+              }).present()
+            console.error('Error: ' + s)
+           })
       })
   }
 
@@ -973,6 +1268,7 @@ export class AnnotatePage {
 export class Highlight {
   sentence: ConlluSentence = null
   element: ConlluElement = null
+  ref: string = "S1:1"
 
   constructor(public events:Events){
     this.events.subscribe("highlight:change", (element)=>{
@@ -980,14 +1276,9 @@ export class Highlight {
         console.trace("Published an event highlight:change but element is undefined")
         return
       }
-
         this.element = element
         this.sentence = element.sentence
-    })
-    this.events.subscribe("changeTag", (tag)=>{
-        this.element.xpostag = tag.tag
-        this.element.upostag = tag.mapToConllU
-
+        this.ref = "S"+this.sentence._id+":"+this.element._id
     })
   }
 }
@@ -1006,7 +1297,9 @@ export class Stats {
   getLine(element: ConlluElement){
     var a = this.getStatsFromAll()
     var d = new Date()
-    return ["from="+this.start,
+    return [
+    "Time="+this.secondsToHms(Math.abs(d.getTime() - this.start.getTime())),
+    "from="+this.start,
     "to="+d,
     "T="+Math.abs(d.getTime() - this.start.getTime()),
     "stats="+Object.keys(a).map(s=>s+"="+a[s]).join("|"),
@@ -1024,6 +1317,16 @@ export class Stats {
     this.all.forEach(e=>cats[e.action]=cats[e.action]+1 || 1)
     return cats;
   }
+  secondsToHms(d) {
+    d = Number(d)/1000;
+    console.log(d)
+
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+}
   getAll(){
     var cache = [];
     var x= JSON.parse(JSON.stringify(this.all, function(key, value) {
@@ -1040,36 +1343,4 @@ export class Stats {
     cache = null; // Enable garbage collection
     return x
   }
-}
-
-
-
-
-@Directive({
-    selector: "[autofocus]"
-})
-export class AutofocusDirective
-{
-    private focus = true;
-
-    constructor(private el: ElementRef)
-    {
-    }
-
-    ngOnInit()
-    {
-        if (this.focus)
-        {
-            //Otherwise Angular throws error: Expression has changed after it was checked.
-            window.setTimeout(() =>
-            {
-                this.el.nativeElement.focus(); //For SSR (server side rendering) this is not safe. Use: https://github.com/angular/angular/issues/15008#issuecomment-285141070)
-            });
-        }
-    }
-
-    @Input() set autofocus(condition: boolean)
-    {
-        this.focus = condition !== false;
-    }
 }
