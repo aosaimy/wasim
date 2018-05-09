@@ -4,6 +4,9 @@ Wasim
 ## Introduction
 Wasim is a web-based tool for semi-automatic morphosyntactic annotation of inflectional languages resources. It features high flexibility in segmenting tokens, editing, diacritizing, and labelling tokens and segments. 
 
+If you use this tool in your research, please cite the following article, where you can find more information regard the tool:
+`A. Alosaimy and E. Atwell, “Web-based Annotation Tool for Inflectional Language Resources Major features,” in 11th Edition of its Language Resources and Evaluation Conference, 2018.`
+
 ## Motivation
 Text annotation of highly inflectional languages (including Arabic) requires key functionality which we could not see in a survey of existing tools. 
 
@@ -44,4 +47,5 @@ $ ionic start myApp
 More info on this can be found on the Ionic [Getting Started](http://ionicframework.com/docs/v2/getting-started/) page.
 
 ## Licence
+
 The source-code is released under the MIT license. 
