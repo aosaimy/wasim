@@ -15,9 +15,19 @@ Text annotation of highly inflectional languages (including Arabic) requires key
 Wasim has been tested on four case studies and these features proved to be useful.
 
 ## Demo
-You can use use wasim via a demo project [here](http://a.al-osaimy.com/wasim/index.html#/nav/n4/docs/test/85a86bea0cff860c343e5c9b83381e2e).
+You can use use wasim via a demo project [here](http://wasim-app.al-osaimy.com/#/docs/temp/92694396fc7f1d510e44931e31f6c379).
 
-## Using this project (for developers)
+You can create projects using the username: demo, password: demo [http://wasim-app.al-osaimy.com](http://wasim-app.al-osaimy.com)
+
+## Using to this project
+
+If you only want to use the project, you have to need a client (front end) and a server (back end):
+
+1. Frontend: Please use this repo [wasim-www](https://github.com/aosaimy/wasim-www). You will need to upload the folder to your server in public. You will need to edit configuration file (assests/ionic.config.json), especially the url to backend server.
+
+2. Backend: Please use this repo [wasim-backend](https://github.com/aosaimy/wasim-backend). You will need to download it, install packages, configure it, and run it in your server. 
+
+## Contributing to this project (for developers)
 
 You'll need the Ionic CLI with support for v2 apps:
 
