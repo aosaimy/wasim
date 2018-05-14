@@ -2,10 +2,10 @@ import { enableProdMode, Component, ViewChild } from '@angular/core';
 import { Nav, Platform, Config } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { ProjectsPage } from '../pages/projects/projects';
-
-// import { Data } from './data';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfigurationService } from "ionic-configuration-service";
+import { Storage } from "@ionic/storage";
 
 // Enable production mode unless running locally
 // if (!/localhost/.test(document.location.host)) {
@@ -26,14 +26,22 @@ export class MyApp {
     // public data: Data,
     public _config: Config,
     public statusbar: StatusBar,
+    private translateService: TranslateService,
+    private storage: Storage,
+    private myconfig: ConfigurationService,
     public splashscreen: SplashScreen) {
     this.initializeApp();
+    const browserLang = this.translateService.getBrowserLang();
+    const lang = this.myconfig.getValue<string>('lang')
+    const langs = this.myconfig.getValue<string[]>('langs')
+    this.translateService.addLangs(langs);
+    this.translateService.setDefaultLang("en");
+    storage.get("lang").then(s=>this.translateService.use(s)).catch(()=>{
+      this.translateService.use(lang ? lang : browserLang);
+    })
 
-    // used for an example of ngFor and navigation
+
     this.pages = [
-      // { title: 'Page One', component: Page1 },
-      // { title: 'Page Two', component: Page2 },
-      // { title: 'Sections', component: SectionPage },
     ];
 
   }

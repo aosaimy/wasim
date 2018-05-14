@@ -1,7 +1,7 @@
 import { SimpleChanges, Component, Input } from '@angular/core';
 import { Events, ToastController, ViewController, NavParams } from 'ionic-angular';
 import { GuidelinesService } from '../../providers/guidelines-service';
-import { ConfigJSON } from '../../providers/config-service';
+import { ConfigJSON } from '../../providers/config-json.class';
 
 /**
  * Generated class for the GuiderComponent component.
@@ -17,7 +17,6 @@ import { ConfigJSON } from '../../providers/config-service';
 export class GuiderComponent {
   @Input() element
   @Input() type : string
-  showDetails : boolean = false
   @Input() project : string = ""
   @Input() hash : string = ""
   @Input() config : ConfigJSON
@@ -56,7 +55,7 @@ export class GuiderComponent {
   ngOnChanges(changes: SimpleChanges) {
     this.options= this.guidelinesService.get(this.type,this.element.form).options
     if(this.options)
-      this.options.forEach(e=>e.showDetails=true)
+      this.options.forEach(e=>e.showDetails=false)
 
     if(this.show())
       this.events.publish("stats",{action:"showGuider",elements:this.element})

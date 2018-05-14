@@ -3,7 +3,7 @@ import { ConlluElement } from 'conllu-dao';
 import { Component, ViewChild } from '@angular/core';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Events, ViewController, NavController, NavParams } from 'ionic-angular';
-import { ConfigJSON } from '../../providers/config-service';
+import { ConfigJSON } from '../../providers/config-json.class';
 // import { ConcordanceComponent } from '../../components/concordance/concordance';
 
 @Component({

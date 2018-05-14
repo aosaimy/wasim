@@ -1,10 +1,11 @@
-import { Renderer, Component, Output, Input, ViewChild, EventEmitter, Directive } from '@angular/core';
+import { NgZone, Renderer, Component, Input, ViewChild, EventEmitter, Directive } from '@angular/core';
 import { Events, ToastController, RadioGroup, AlertButton, AlertController, LoadingController, PopoverController, NavController, NavParams } from 'ionic-angular';
 // import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 import { WordService } from '../../providers/word-service';
 import { ConlluService } from '../../providers/conllu-service';
-import { ConfigService, ConfigJSON} from '../../providers/config-service';
+import { ConfigService} from '../../providers/config-service';
+import { TagsJSON, ConfigJSON} from '../../providers/config-json.class';
 // import { GuidelinesService } from '../../providers/guidelines-service';
 import { SelectizePopoverPageComponent } from '../../components/selectize-popover-page/selectize-popover-page';
 import { MASelectizePopoverPageComponent } from '../../components/ma-selectize-popover-page/ma-selectize-popover-page';
@@ -15,6 +16,7 @@ import { TagsSelectorComponent } from '../../components/tags-selector/tags-selec
 // import { GuiderComponent } from '../../components/guider/guider';
 import { HelpPopoverComponent } from '../../components/help-popover/help-popover';
 import { DocsPage } from '../docs/docs';
+import { TranslateService } from '@ngx-translate/core';
 import { ProjectsPage } from '../projects/projects';
 import { ConlluDocument, ConlluSentence, ConlluElement } from 'conllu-dao'
 import 'rxjs/add/operator/map'
@@ -29,23 +31,23 @@ import 'rxjs/add/operator/map'
 @Component({
   selector: 'page-annotate',
   templateUrl: 'annotate.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.Default
 })
 export class AnnotatePage {
 
   /*
   Tags bar
   */
-  // @Output() public myEventEmitted: EventEmitter<any> = new EventEmitter();
   tagsRow = 0;
   done=false
+  conlluEditorType = "info"
   config = new ConfigJSON()
   // sentenceTags: { tag: string, desc: string, fn: number }[] = null
 
   @ViewChild('lemma') lemmaGroup: RadioGroup;
 
   // conllu : ConllU = new ConllU().Document();
-  log = "";
+  log :string[] = [];
   doc= null;
   documentJson = {}
   project = ""
@@ -54,10 +56,9 @@ export class AnnotatePage {
   editable = false
   // isConlluHidden = false
   copyElement = null
-  @ViewChild('myTags') myTags: TagsSelectorComponent;
   // @ViewChild('conllu-editor') conlluEditor: ConlluEditorComponent;
 
-  highlight: Highlight = new Highlight(this.events);
+  highlight: Highlight = new Highlight(this.events,this.zone);
 
   _conlluRaw = `1-3 وعنها   _   _   _   _   _   _   _   _
 1   وَ  _   conj    conj    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-0
@@ -69,16 +70,15 @@ export class AnnotatePage {
   }
   set conlluRaw(argv){
     this._conlluRaw = argv
-    this.log = ""
+    this.log = []
     // console.log("Here",this.conlluRaw)
     let that = this
 
-    this.doc.parse(this.conlluRaw, function(s) {
-      that.log = that.log + s + '\n';
+    this.doc.parse(this._conlluRaw, function(s) {
+      that.log.push(s);
     }, false)//.toBrat(logger, true);
     // if(typeof highlightRef  == "string")
       // this.highlightElement(highlightRef)
-
     if(this.config.askMA)
       this.askMA()
     if(this.config.askMemMA)
@@ -94,10 +94,12 @@ export class AnnotatePage {
     // public data: Data,
     // public http: Http,
     public renderer:Renderer,
+    public zone: NgZone,
     public events: Events,
     private wordservice: WordService,
     private conlluService: ConlluService,
     private configService: ConfigService,
+    private translateService: TranslateService,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
     public toastCtrl: ToastController) {
@@ -154,8 +156,7 @@ export class AnnotatePage {
     .then(arr=>{
       loading.dismiss();
       this.config = arr[0]//this.configService.getConfig(this.project)
-      if(this.myTags)
-        this.myTags.config = this.config
+      this.currentTags = this.getTags()
       this.doc = new ConlluDocument(this.config)
       this.conlluRaw = arr[1].trim();
       this.done = /(\n|^)# done/.test(this.conlluRaw)
@@ -173,11 +174,11 @@ export class AnnotatePage {
       })
     }).catch(x=>{
       this.toastCtrl.create({
-          message: 'Conllu File loading Error: ' + x,
+          message: this.translateService.instant('Conllu File loading Error: ') + this.translateService.instant(x),
           duration: 3000,
           position: "top"
         }).present()
-      console.error('Conllu File loading Error: ' + x)
+      console.error('Conllu File loading Error: ', x)
       console.trace(x)
       loading.dismiss()
     });
@@ -204,22 +205,37 @@ export class AnnotatePage {
   // }
   showAlertMessage = false;
 
+  _info = null
+  get info() {
+    if(this._info)
+      return this._info
+    let obj :any = {}
+    if(!this.doc)
+      return {}
+    obj.sent_no = this.doc.sentences.length
+    obj.elem_no = this.doc.sentences.map(s=>s.elements.length).reduce((p,c)=>p+=c,0)
+    obj.tokens_no = this.doc.sentences.map(s=>s.tokens().length).reduce((p,c)=>p+=c,0)
+    obj.types_no = [].concat(...this.doc.sentences.map(s=>s.tokens().map(e=>e.form))).filter((e,i,arr)=>arr.indexOf(e)==i).length
+    obj.mwe_no = this.doc.sentences.map(s=>s.elements.filter(el=>el.isMultiword).length).reduce((p,c)=>p+=c,0)
+    this._info = obj
+    return obj
+  }
   addNote(event=null) {
     if(event)
       event.preventDefault()
     let prompt = this.alertCtrl.create({
-      title: 'Note',
-      message: "Please enter the note to be saved on the element. Old message is: "+(this.highlight.element._miscs["NOTE"] || "Nothing"),
+      title: this.translateService.instant('Note'),
+      message: this.translateService.instant("Please enter the note to be saved on the element."),
       inputs: [
         {
           name: 'note',
-          placeholder: 'Title',
+          placeholder: this.translateService.instant('Title'),
           value: this.highlight.element._miscs["NOTE"]
         },
       ],
       buttons: [
         {
-          text: 'Save',
+          text: this.translateService.instant('Save'),
           handler: data => {
             this.highlight.element._miscs["NOTE"] = data.note.replace(/ /g,"_")
             this.syncConllU()
@@ -241,35 +257,36 @@ export class AnnotatePage {
       this.events.publish('highlight:change', elem)
     else{
       console.error("highlighted non existing element",highlightRef)
-      this.highlightElement()
+      if(highlightRef!='S1:1')
+        this.highlightElement()
     }
   }
   search(event=null) {
     if(event)
       event.preventDefault()
     let prompt = this.alertCtrl.create({
-      title: 'Search',
-      message: "Show previous taggings in corpus",
+      title: this.translateService.instant('Search'),
+      message: this.translateService.instant("Show previous taggings in corpus"),
       inputs: [
         {
           name: 'form',
-          placeholder: 'Word Form'
+          placeholder: this.translateService.instant('Word Form')
         },
       ],
       buttons: [
         {
-          text: 'Search',
+          text: this.translateService.instant('Search'),
           handler: data => {
             this.wordservice.askMemMA(data.form,this.config)
            .then((elements: ConlluElement[][]) => {
              this.viewElementsPopup(elements[0],null)
             }).catch(s=>{
              this.toastCtrl.create({
-                message: 'Error: ' + s,
+                message: this.translateService.instant('Error: ') + this.translateService.instant(s),
                 duration: 3000,
                 position: "top"
               }).present()
-            console.error('Error: ' + s)
+            console.error('Error: ' , s)
            })
           }
         }
@@ -284,51 +301,51 @@ export class AnnotatePage {
     if(event)
       event.preventDefault()
     let prompt = this.alertCtrl.create({
-      title: 'Find',
-      message: "Find an element within this document",
+      title: this.translateService.instant('Find'),
+      message: this.translateService.instant("Find an element within this document"),
       inputs: [
         {
           name: 'form',
-          placeholder: 'Word Form',
+          placeholder: this.translateService.instant('Word Form'),
           value: this.last_cretiera.form
         },
         {
           name: 'xpos',
-          placeholder: 'XPOS tag',
+          placeholder: this.translateService.instant('XPOS tag'),
           value: this.last_cretiera.xpos
         },
         {
           name: 'upos',
-          placeholder: 'UPOS tag',
+          placeholder: this.translateService.instant('UPOS tag'),
           value: this.last_cretiera.upos
         },
         {
           name: 'feats',
-          placeholder: 'Feat=Val',
+          placeholder: this.translateService.instant('Feat=Val'),
           value: this.last_cretiera.feats
         },
         {
           name: 'misc',
-          placeholder: 'Misc=Val',
+          placeholder: this.translateService.instant('Misc=Val'),
           value: this.last_cretiera.misc
         },
 
         {
           name: 'lemma',
-          placeholder: 'Lemma',
+          placeholder: this.translateService.instant('Lemma'),
           value: this.last_cretiera.lemma
         },
       ],
     });
     if(this.copyElement)
       prompt.addButton({
-          text: 'Find and Replace All',
+          text: this.translateService.instant('Find and Replace All'),
           role: 'destructive',
           handler: cretiera => {
               this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
               if(!this.copyElement){
                  this.toastCtrl.create({
-                  message: 'No copied element',
+                  message: this.translateService.instant('No copied element'),
                   duration: 1000
                 }).present()
               }
@@ -348,13 +365,13 @@ export class AnnotatePage {
           }
         })
     prompt.addButton({
-      text: 'Find All',
+      text: this.translateService.instant('Find All'),
       handler: cretiera => {
           this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
           this.searchResults = this.doc.find(cretiera)
           if(this.searchResults.length === 0){
             this.toastCtrl.create({
-              message: 'No results were found',
+              message: this.translateService.instant('No results were found'),
               duration: 1000
             }).present()
           }
@@ -364,7 +381,7 @@ export class AnnotatePage {
       }
     });
     prompt.addButton({
-      text: 'Find All (Unique)',
+      text: this.translateService.instant('Find All (Unique)'),
       handler: cretiera => {
           this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
           let uniq = {}
@@ -377,7 +394,7 @@ export class AnnotatePage {
           })
           if(this.searchResults.length === 0){
             this.toastCtrl.create({
-              message: 'No results were found',
+              message: this.translateService.instant('No results were found'),
               duration: 1000
             }).present()
           }
@@ -387,13 +404,13 @@ export class AnnotatePage {
       }
     });
     prompt.addButton({
-      text: 'Find Next',
+      text: this.translateService.instant('Find Next'),
       handler: cretiera => {
           this.last_cretiera = JSON.parse(JSON.stringify(cretiera))
           this.searchResults = this.doc.find(cretiera)
           if(this.searchResults.length === 0){
             this.toastCtrl.create({
-              message: 'No results were found',
+              message: this.translateService.instant('No results were found'),
               duration: 1000
             }).present()
           }
@@ -430,7 +447,7 @@ export class AnnotatePage {
     })
     if(!r)
         return this.toastCtrl.create({
-          message: 'No more results were found',
+          message: this.translateService.instant('No more results were found'),
           duration: 1000
         }).present()
     // if(r.isMultiword)
@@ -442,17 +459,17 @@ export class AnnotatePage {
   ionViewCanLeave() {
     if(this.showAlertMessage) {
         let alertPopup = this.alertCtrl.create({
-            title: 'Exit',
-            message: 'Changes are not saved. Are you sure?',
+            title: this.translateService.instant('Exit'),
+            message: this.translateService.instant('Changes are not saved. Are you sure?'),
             buttons: [{
-                    text: 'Exit',
+                    text: this.translateService.instant('Exit'),
                     handler: () => {
                       this.showAlertMessage = false;
                       this.navCtrl.pop();
                     }
                 },
                 {
-                    text: 'Stay',
+                    text: this.translateService.instant('Stay'),
                     handler: () => {
                         // need to do something if the user stays?
                     }
@@ -487,7 +504,7 @@ export class AnnotatePage {
     }
     else{
      this.toastCtrl.create({
-        message: 'No morphological features is needed for this tag: ' + this.config.getXPosTag(this.highlight.element.xpostag).desc,
+        message: this.translateService.instant('No morphological features is needed for this tag: ') + this.config.getXPosTag(this.highlight.element.xpostag).desc,
         duration: 3000,
         position: "top"
       }).present()
@@ -509,7 +526,6 @@ export class AnnotatePage {
     this.events.publish("stats",{action:"mouse",element:e})
   }
   keyboardShortcuts(e) {
-    console.log(e)
     var highlighNode : any = document.querySelector(".highlight")
     if (e.target != document.querySelector("body")
       && e.target && e.target.className.indexOf("element") == -1
@@ -527,10 +543,10 @@ export class AnnotatePage {
     if(!this.config)
       return false
     if(e.code == "Escape")
-      this.copyElement = false
+      this.copyElement = null
 
     var action = this.config.keyboardShortcuts
-      .filter(v=>{
+      .find(v=>{
         return (v.code == e.code) &&
                // (v.key!=undefined && v.key == e.key) &&
                ((v.metaKey==true) == e.metaKey) &&
@@ -539,9 +555,9 @@ export class AnnotatePage {
                ((v.ctrlKey==true) == e.ctrlKey) &&
                true
       })
-    if(action.length == 1){
+    if(action != null){
       this.events.publish("stats",{action:"keyboard",event:e, code:action})
-      this.doAction(action[0].action, action[0].params,e)
+      this.doAction(action.action, action.params,e)
     }
     else
       this.events.publish("stats",{action:"keyboard",event:e})
@@ -756,7 +772,7 @@ export class AnnotatePage {
       }
       else{
        this.toastCtrl.create({
-          message: 'No Analysis Found for this word: ' + el.form,
+          message: this.translateService.instant('No Analysis Found for this word: ') + el.form,
           duration: 3000,
           position: "top"
         }).present()
@@ -782,7 +798,7 @@ export class AnnotatePage {
       }
       else{
        this.toastCtrl.create({
-          message: 'No Analysis Found. ',
+          message: this.translateService.instant('No Analysis Found'),
           duration: 3000,
           position: "top"
         }).present()
@@ -894,7 +910,7 @@ export class AnnotatePage {
       ev.target.blur()
     }
   }
-  doAction(action,params,e) {
+  doAction(action,params,e=null) {
     switch (action) {
       case "nav":
       // console.log("doAction")
@@ -1004,16 +1020,16 @@ export class AnnotatePage {
         break
 
       case "assignXTag":
-          let fn = this.myTags.getTags()[params[0] - 1]
+          let fn = this.getTags()[params[0] - 1]
           if (fn){
             this.highlight.element.xpostag = fn.tag;
-            this.highlight.element.upostag = this.config.alltags.find(x=>x.tag==fn.tag).mapToConllU
+            // this.highlight.element.upostag = this.config.alltags.find(x=>x.tag==fn.tag).mapToConllU
+            this.saveForUndo()
           }
-          this.saveForUndo()
           break
 
       case "showOtherUTags":
-          this.myTags.increaseTagsRow()
+          this.increaseTagsRow()
           break;
 
       case "assignSentenceTag":
@@ -1034,7 +1050,7 @@ export class AnnotatePage {
       case "validateConllu":
           if(e) e.preventDefault();
           var doc = new ConlluDocument(this.config);
-          doc.parse(this.doc.toConllU(),function(s){this.log = this.log + s + '\n'},true)
+          doc.parse(this.doc.toConllU(),function(s){this.log.push(s)},true)
           break;
 
       case "validate":
@@ -1042,13 +1058,13 @@ export class AnnotatePage {
           let issues = this.doc.validate()
           if(issues.length > 0 )
             this.toastCtrl.create({
-              message: 'Several issues were found',
+              message: this.translateService.instant('Several issues were found'),
               duration: 3000,
               position: "top"
             }).present()
           else
             this.toastCtrl.create({
-              message: 'No issues were found',
+              message: this.translateService.instant('No issues were found'),
               duration: 3000,
               position: "top"
             }).present()
@@ -1066,6 +1082,22 @@ export class AnnotatePage {
         break;
     }
   }
+  currentTags :TagsJSON[] = this.getTags()
+  getTags() : TagsJSON[] {
+    return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map((x,i) => {
+      x.fn = i+1;
+      return x
+    });
+  }
+  increaseTagsRow() {
+    this.tagsRow++;
+    this.currentTags = this.getTags()
+    if(this.currentTags.length == 0){
+      this.tagsRow = 0
+      this.currentTags = this.getTags()
+    }
+  }
+
   showCommands(e){
     console.log("showCommands")
     let alert = this.alertCtrl.create();
@@ -1082,7 +1114,7 @@ export class AnnotatePage {
 
     alert.addButton('Cancel');
     alert.addButton({
-      text: 'OK',
+      text: this.translateService.instant('OK'),
       handler: index => {
         this.doAction(this.config.keyboardShortcuts[index].action,this.config.keyboardShortcuts[index].params,null);
       }
@@ -1097,7 +1129,6 @@ export class AnnotatePage {
       x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == parseInt(this.highlight.element.id) + 1)
     else if(direction=="word_right")
       x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == (parseInt(this.highlight.element.id) - 1))
-
     if (x) {
       this.events.publish('highlight:change', x);
     }
@@ -1131,17 +1162,17 @@ export class AnnotatePage {
       this.saveFile(null,false)
     } else if(askToMarkIsDone){
       let alertPopup = this.alertCtrl.create({
-          title: 'Mark as done?',
-          message: 'Do you want to mark it as done?',
+          title: this.translateService.instant('Mark as done?'),
+          message: this.translateService.instant('Do you want to mark it as done?'),
           buttons: [{
-                  text: '(Y)es',
+                  text: this.translateService.instant('Yes'),
                   handler: () => {
                     this.doc.sentences[0].comments.unshift("# done "+this.stats.getLine(this.highlight.element))
                     this.saveFile(null,false)
                   }
               },
               {
-                  text: '(N)o',
+                  text: this.translateService.instant('No'),
                   handler: () => {
                     this.doc.sentences[0].comments.unshift("# notdone "+this.stats.getLine(this.highlight.element))
                     this.saveFile(null,false)
@@ -1153,7 +1184,7 @@ export class AnnotatePage {
       this._conlluRaw = this.doc.toConllU()
       this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(s => {
         this.toastCtrl.create({
-          message: 'File was successfully saved. Status:'+(s.isDone? "Done" : "Not Done"),
+          message: this.translateService.instant('File was successfully saved. Status:'+(s.isDone? "Done" : "Not Done")),
           duration: 3000,
           position: "top"
         }).present()
@@ -1161,11 +1192,11 @@ export class AnnotatePage {
         this.showAlertMessage = false;
       }).catch(reason => {
         this.toastCtrl.create({
-          message: 'Error: ' + reason,
+          message: this.translateService.instant('Error: ') + this.translateService.instant(reason),
           duration: 3000,
           position: "top"
         }).present()
-        console.error('Error: ' + reason)
+        console.error('Error: ' , reason)
       })
     }
   }
@@ -1173,10 +1204,25 @@ export class AnnotatePage {
   syncConllU(e=null){
     this._conlluRaw = this.doc.toConllU()
     this.toastCtrl.create({
-      message: 'Conll-U representation has been updated.',
+      message: this.translateService.instant('Conll-U representation has been updated'),
       duration: 3000,
       position: "top"
     }).present()
+  }
+  download() {
+    //make sure there is a tab after each span
+    // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
+    // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
+    // console.log(this.conlluRaw)
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.conlluRaw);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    let filename = this.pageid
+    if(!/\.conllu$/.test(filename))
+      filename+= ".conllu"
+    downloadAnchorNode.setAttribute("download", filename);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   }
 
   undoArr = []
@@ -1202,6 +1248,14 @@ export class AnnotatePage {
   // }
   // maResult = null
   askMA(){
+    if(this.doc.sentences.length > 100){
+      this.toastCtrl.create({
+                message: this.translateService.instant('Warning: Sentences would not be sent to morphological analyser because sentence number')+" > 100",
+                duration: 3000,
+                position: "top"
+              }).present()
+      return
+    }
 
       Promise.all(this.doc.sentences.map((s,i) =>
             this.wordservice.askMA(s.tokens().map(e => e.form).join(" "),this.config)
@@ -1224,15 +1278,23 @@ export class AnnotatePage {
        ))
       .catch(s=>{
              this.toastCtrl.create({
-                message: 'Error: ' + s,
+                message: this.translateService.instant('Error: ') + this.translateService.instant(s),
                 duration: 3000,
                 position: "top"
               }).present()
-            console.error('Error: ' + s)
+            console.error('Error: ' , s)
            })
   }
 
   askMemMA(){
+    if(this.doc.sentences.length > 100){
+      this.toastCtrl.create({
+                message: this.translateService.instant('Warning: Sentences would not be sent to morphological analyser because sentence number')+" >100",
+                duration: 5000,
+                position: "top"
+              }).present()
+      return
+    }
       this.doc.sentences.forEach((s,i) =>{
          this.wordservice.askMemMA(s.tokens().map(e => e.form).join(" "),this.config)
            .then((elements: ConlluElement[][]) => {
@@ -1250,11 +1312,11 @@ export class AnnotatePage {
             })
             }).catch(s=>{
              this.toastCtrl.create({
-                message: 'Error: ' + s,
+                message: this.translateService.instant('Error: ') + this.translateService.instant(s),
                 duration: 3000,
                 position: "top"
               }).present()
-            console.error('Error: ' + s)
+            console.error('Error: ' , s)
            })
       })
   }
@@ -1270,15 +1332,17 @@ export class Highlight {
   element: ConlluElement = null
   ref: string = "S1:1"
 
-  constructor(public events:Events){
+  constructor(public events:Events, public zone: NgZone){
     this.events.subscribe("highlight:change", (element)=>{
       if(!element){
         console.trace("Published an event highlight:change but element is undefined")
         return
       }
+      zone.run(() =>{
         this.element = element
         this.sentence = element.sentence
         this.ref = "S"+this.sentence._id+":"+this.element._id
+      })
     })
   }
 }

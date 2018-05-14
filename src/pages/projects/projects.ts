@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { ToastController,ViewController,ModalController, NavController, NavParams } from 'ionic-angular';
+import { AlertController, ToastController,ViewController,ModalController, NavController, NavParams } from 'ionic-angular';
 import { ProjectService } from '../../providers/project-service';
 import { DocsPage } from '../docs/docs';
-// import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfigurationService } from "ionic-configuration-service";
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the ProjectsPage page.
@@ -23,19 +25,14 @@ export class ProjectsPage {
 
   constructor(public navCtrl: NavController,
   	public navParams: NavParams,
+    public alertCtrl: AlertController,
     private projectService: ProjectService,
-    // public storage: Storage,
+    private storage: Storage,
+    private myconfig: ConfigurationService,
+    private translateService: TranslateService,
     public modalCtrl: ModalController,
     public toastCtrl: ToastController
   	) {
-  	// this.storage.get("security").then(v=>{
-  	// 	this.security = v
-	  // 	if(this.security){
-  	// 		this.validSecurity = true
-  	// 		this.securityChanged()
-	  // 	}
-
-  	// });
     this.list()
   }
 
@@ -52,7 +49,7 @@ export class ProjectsPage {
   		}
   	}).catch(e=>{
               this.toastCtrl.create({
-            message: e.error,
+            message: this.translateService.instant(e.error),
             duration: 3000,
             position: "top"
           }).present()
@@ -75,6 +72,29 @@ export class ProjectsPage {
      loginModal.onDidDismiss(()=>{this.list()})
 
   }
+  lang(event=null){
+    let prompt = this.alertCtrl.create({
+      title: this.translateService.instant('Language Change'),
+      // message: this.translateService.instant("Please the language code"),
+      inputs: this.translateService.getLangs().map(e=>new Object({
+          name: 'lang',
+          type: 'radio',
+          label: e,
+          checked : e == this.translateService.currentLang,
+          value: e
+      })),
+      buttons: [
+        {
+          text: this.translateService.instant('Change Langugaue'),
+          handler: data => {
+            this.translateService.use(data);
+            this.storage.get("lang").then(e=>console.log(e))
+            this.storage.set("lang",data)
+          }
+        }
+      ]
+    }).present()
+  }
   list(){
   	this.projectService.list().then((result:{ok:boolean,projects:string[],error:string})=>{
 			this.projects = result.projects
@@ -82,14 +102,14 @@ export class ProjectsPage {
 			// this.storage.set("security",this.security);
 			if(result.projects.length == 0){
 				this.toastCtrl.create({
-	          message: "There is no projects created yet. Please create one now.",
+	          message: this.translateService.instant("There is no projects created yet. Please create one now."),
 	          duration: 3000,
 	          position: "top"
 	        }).present()
 			}
   	}).catch(error=>{
         this.toastCtrl.create({
-            message: error,
+            message: this.translateService.instant(error),
             duration: 3000,
             position: "top"
           }).present()
@@ -116,7 +136,7 @@ export class LoginModal {
 
  username = ""
  password = ""
- constructor(public viewCtrl: ViewController, params: NavParams,private projectService: ProjectService,    public toastCtrl: ToastController) {
+ constructor(public viewCtrl: ViewController, params: NavParams,private translateService: TranslateService,private projectService: ProjectService,    public toastCtrl: ToastController) {
    // console.log('UserId', params.get('userId'));
    this.username = this.projectService.username
  }
@@ -127,7 +147,7 @@ export class LoginModal {
     })
       .catch(e=>{
           this.toastCtrl.create({
-            message: e,
+            message: this.translateService.instant(e),
             duration: 3000,
             position: "top"
           }).present()

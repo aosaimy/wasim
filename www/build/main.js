@@ -1,167 +1,13 @@
 webpackJsonp([0],{
 
-/***/ 106:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DocsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__ = __webpack_require__(290);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__annotate_annotate__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(30);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-/**
- * Generated class for the DocsPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-var DocsPage = (function () {
-    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, toastCtrl) {
-        var _this = this;
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.conlluService = conlluService;
-        this.myconfig = myconfig;
-        this.configService = configService;
-        this.toastCtrl = toastCtrl;
-        this.uploader = new __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.get("server") + "conllu_upload" });
-        this.hasBaseDropZoneOver = false;
-        this.hasAnotherDropZoneOver = false;
-        this.project = "";
-        this.hash = "";
-        this.newFilename = "";
-        this.text = "";
-        this.list = [];
-        this.config = "";
-        this.configErrors = "";
-        if (!navParams.data.project) {
-            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__projects_projects__["b" /* ProjectsPage */]);
-        }
-        else {
-            this.project = navParams.data.project;
-            this.hash = navParams.data.hash;
-        }
-        var that = this;
-        this.uploader.authToken = this.project + ":" + this.hash;
-        this.uploader.onSuccessItem = function (item) {
-            that.list.push(item.file.name);
-        };
-        conlluService.getList(this.project, this.hash).then(function (result) {
-            if (result.ok)
-                _this.list = result.files;
-            else
-                _this.toastCtrl.create({
-                    message: result.error,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-        });
-        this.configService.load(this.project, this.hash).then(function (s) {
-            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
-        }).catch(function (x) {
-            // this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
-        });
-    }
-    DocsPage.prototype.goto = function (id) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__annotate_annotate__["a" /* AnnotatePage */], {
-            project: this.project,
-            hash: this.hash,
-            id: id,
-        });
-    };
-    DocsPage.prototype.remove = function (filename) {
-        var _this = this;
-        this.conlluService.remove(this.project, this.hash, filename).then(function (s) {
-            if (s.ok)
-                _this.list.splice(_this.list.findIndex(function (x) { return x.filename == filename; }), 1);
-        });
-    };
-    DocsPage.prototype.udpipe = function (sentence) {
-        var _this = this;
-        var that = this;
-        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
-            that.list.push({ filename: result.filename, firstline: result.firstline });
-        }).catch(function (err) {
-            _this.toastCtrl.create({
-                message: err,
-                duration: 3000,
-                position: "top"
-            }).present();
-        });
-    };
-    DocsPage.prototype.saveConfig = function () {
-        var _this = this;
-        try {
-            this.configService.save(this.project, this.hash, JSON.parse(this.config)).then(function (e) {
-                _this.toastCtrl.create({
-                    message: "Config file has been updated successfully.",
-                    duration: 3000,
-                    position: "top"
-                }).present();
-            }).catch(function (e) {
-                throw ({ message: e });
-            });
-        }
-        catch (e) {
-            console.dir(e);
-            this.configErrors = e.message;
-        }
-    };
-    DocsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad DocsPage');
-    };
-    DocsPage.prototype.fileOverBase = function (e) {
-        this.hasBaseDropZoneOver = e;
-    };
-    DocsPage.prototype.fileOverAnother = function (e) {
-        this.hasAnotherDropZoneOver = e;
-    };
-    return DocsPage;
-}());
-DocsPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>إدارة المشروع: {{project}}</ion-title>\n    </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <ion-grid>\n        <ion-row>\n            <ion-col col-12>\n                <ion-list>\n                    <ion-item *ngFor="let i of list">\n                        {{i.filename}}\n                        <ion-note>{{i.firstline}}</ion-note>\n                        <button ion-button outline item-end icon-left (click)="goto(i.filename)">اذهب</button>\n                        <a ion-button outline item-end icon-left href="{{myconfig.get(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">تحميل</a>\n                        <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">احذف</button>\n                    </ion-item>\n                </ion-list>\n            </ion-col>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-item>\n                    <!-- <ion-label >Text</ion-label> -->\n                    <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n                </ion-item>\n                  <ion-item-divider>\n                  </ion-item-divider>\n                <ion-item>\n                    <ion-label fixed>اسم الملف</ion-label>\n                    <ion-input [(ngModel)]="newFilename"></ion-input>\n                    <button ion-button outline item-end icon-left (click)="udpipe(text)">اذهب</button>\n                </ion-item>\n            </ion-card>\n        </ion-row>\n        <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n            <ion-card>\n                <ion-card-header>\n                    رفع الملفات\n                </ion-card-header>\n                <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n                <ion-list>\n                  <ion-item-divider>\n                    قائمة الملفات\n                  </ion-item-divider>\n\n                    <ion-item *ngFor="let item of uploader.queue">\n                        <ion-avatar item-start>\n                            <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n                            <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n                            <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n                        </ion-avatar>\n                        <h2>{{ item?.file?.name }}</h2>\n                        <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n                        <div *ngIf="uploader.isHTML5">\n                            <div class="progress" style="margin-bottom: 0;">\n                                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n                            </div>\n                        </div>\n                        <ion-row>\n                            <ion-col>\n                                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                                    <ion-icon name="cloud-upload"></ion-icon>\n                                    <div>Upload</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                                    <ion-icon name="undo"></ion-icon>\n                                    <div>Cancel</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.remove()">\n                                    <ion-icon name="trash"></ion-icon>\n                                    <div>Remove</div>\n                                </button>\n                            </ion-col>\n                        </ion-row>\n                    </ion-item>\n                </ion-list>\n                  <ion-item-divider>\n                    رفع ملف/ملفات جديدة\n                  </ion-item-divider>\n                    <button ion-button (click)="uploadbutton.click()" icon-only >\n                        <ion-icon name="cloud-upload"></ion-icon>\n                        <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n                    </button>\n\n            </ion-card>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-card-header>\n                    Configuration File\n                </ion-card-header>\n                <ion-card-content>\n                    <div [hidden]="!configErrors" class="configErrors">{{configErrors}}</div>\n                    <ion-textarea rows="15" [(ngModel)]="config"></ion-textarea>\n                    <button ion-button item-end (click)="saveConfig(i)">حفظ</button>\n                </ion-card-content>\n            </ion-card>\n        </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
-    }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
-        __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["b" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
-], DocsPage);
-
-//# sourceMappingURL=docs.js.map
-
-/***/ }),
-
-/***/ 109:
+/***/ 123:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConlluService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -363,40 +209,215 @@ ConlluService = __decorate([
 
 /***/ }),
 
-/***/ 117:
+/***/ 125:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_json_class__ = __webpack_require__(36);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+// import { Config } from 'ionic-angular';
+
+
+
+
+// import { Sentence} from '../pages/annotate/conllu';
+// import 'rxjs/add/operator/map';
+/*
+  Generated class for the WordService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
+var desc = { "saveFile": "Convert to Conll then Save",
+    "syncConllU": "Convert to Conll",
+    "diactric": "Add a diactric",
+    "nav": "Move next/prev Word",
+    "undo": "Undo last action (move backward in action history)",
+    "redo": "Move forward in action history",
+    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
+    "tag": "Assign current segment a new tag",
+    "tag_ma": "Ask a morphological analyser for help",
+    "tag_morphofeatures": "Assign morphological features",
+    "diac": "Mark the last character with a diacritic",
+    "more": "Show more less-frequent tags" };
+var ConfigService = (function () {
+    function ConfigService(http, myconfig) {
+        this.http = http;
+        this.myconfig = myconfig;
+        this.config = {};
+        this.rtls = ["arabic", "qac"];
+        this.config.default = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */]();
+    }
+    ConfigService.prototype.load = function (project, hash) {
+        var _this = this;
+        if (this.config[project]) {
+            // already loaded data
+            return Promise.resolve(this.config[project]);
+        }
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "get_config", {
+                project: project,
+                hash: hash
+            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    var config = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](data);
+                    config.project = project;
+                    config.hash = hash;
+                    config.keyboardShortcuts.forEach(function (e) {
+                        e.keys = [];
+                        if (e.metaKey)
+                            e.keys.push("⌘");
+                        if (e.shiftKey)
+                            e.keys.push("⇧");
+                        if (e.altKey)
+                            e.keys.push("⎇");
+                        if (!e.code)
+                            e.code = "";
+                        var code = e.code
+                            .replace(/^Key/, "")
+                            .replace("ArrowLeft", "⇦")
+                            .replace("ArrowRight", "⇨")
+                            .replace("Enter", "⏎");
+                        if (code)
+                            e.keys.push(code);
+                        var params = e.params ? e.params.join() : "";
+                        if (e.code.indexOf("Digit") == 0)
+                            params = "";
+                        if (e.code.indexOf("F" + params) == 0)
+                            params = "";
+                        e.desc = desc[e.action + params] || desc[e.action] || e.action;
+                    });
+                    config.alltags.forEach(function (xx, i, arr) {
+                        arr[i].mapFrom = arr[i].mapFrom || [""];
+                    });
+                    if (config.MfVsPos) {
+                        config.alltags.forEach(function (xx, i, arr) {
+                            arr[i].features = Object.keys(config.mf).filter(function (x) { return config.MfVsPos[x].indexOf(config.MfVsPos_upostag ? xx.mapToConllU : xx.tag) >= 0; });
+                        });
+                    }
+                    else {
+                        console.error("config['MF.vs.POS'] is missing");
+                    }
+                    config.allxtags = config.alltags.map(function (x) { return x.tag; });
+                    // config.allutags = data.config.alltags.map(x=>x.mapToConllU).sort().filter(function(el,i,a){return i==a.indexOf(el);}) // sort and unique
+                    config.tags = {};
+                    config.alltags.forEach(function (x) { return config.tags["X:" + x.tag] = x; });
+                    // config.allutags.forEach(x=>config.tags["U:"+x.tag]=x)
+                    config.tags["X:_"] = { tag: "_", desc: "_" };
+                    config.tags["U:_"] = { tag: "_", desc: "_" };
+                    config.features = {};
+                    Object.keys(config.mf).forEach(function (k) { return config.mf[k].forEach(function (v) { return config.features[k + "=" + v.tag] = v; }); });
+                    _this.config[project] = config;
+                    resolve(_this.config[project]);
+                }
+                else
+                    // if(data.default)
+                    // 	that.config.default = data.default
+                    reject(data.error);
+            });
+        });
+    };
+    ConfigService.prototype.save = function (project, hash, config) {
+        var _this = this;
+        config = JSON.parse(JSON.stringify(config));
+        delete config.hash;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "save_config", {
+                project: project,
+                hash: hash,
+                config: config
+            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    resolve();
+                    config.isRtl = _this.isRtl(project);
+                    _this.config[project] = config;
+                }
+                else
+                    reject(data.error);
+            });
+        });
+    };
+    ConfigService.prototype.getConfig = function (project) {
+        return this.config[project] ? this.config[project] : this.config.default;
+    };
+    ConfigService.prototype.isRtl = function (project) {
+        if (this.getConfig(project).isRtl != undefined)
+            return this.getConfig(project).isRtl;
+        return this.rtls.indexOf(this.getConfig(project).language) >= 0;
+    };
+    return ConfigService;
+}());
+ConfigService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
+], ConfigService);
+
+//# sourceMappingURL=config-service.js.map
+
+/***/ }),
+
+/***/ 145:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
 }
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 117;
+webpackEmptyAsyncContext.id = 145;
 
 /***/ }),
 
-/***/ 159:
+/***/ 188:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
 }
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 159;
+webpackEmptyAsyncContext.id = 188;
 
 /***/ }),
 
-/***/ 202:
+/***/ 231:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -532,7 +553,7 @@ ProjectService = __decorate([
 
 /***/ }),
 
-/***/ 207:
+/***/ 236:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -540,20 +561,21 @@ ProjectService = __decorate([
 /* unused harmony export Highlight */
 /* unused harmony export Stats */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_word_service__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_config_service__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_tags_selector_tags_selector__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_help_popover_help_popover__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__docs_docs__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_conllu_dao__ = __webpack_require__(209);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_conllu_dao__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_word_service__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_config_service__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_config_json_class__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_help_popover_help_popover__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_conllu_dao__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_conllu_dao__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -569,14 +591,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 // import { GuidelinesService } from '../../providers/guidelines-service';
 
-
-// import { SegmentorPopoverPageComponent } from '../../components/segmentor-popover-page/segmentor-popover-page';
 
 // import { HighlightComponent } from '../../components/highlight/highlight';
 // import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
 // import { GuiderComponent } from '../../components/guider/guider';
+
 
 
 
@@ -592,28 +614,30 @@ var AnnotatePage = (function () {
     function AnnotatePage(navCtrl, popoverCtrl, navParams, 
         // public data: Data,
         // public http: Http,
-        renderer, events, wordservice, conlluService, configService, loadingCtrl, alertCtrl, toastCtrl) {
+        renderer, zone, events, wordservice, conlluService, configService, translateService, loadingCtrl, alertCtrl, toastCtrl) {
         var _this = this;
         this.navCtrl = navCtrl;
         this.popoverCtrl = popoverCtrl;
         this.navParams = navParams;
         this.renderer = renderer;
+        this.zone = zone;
         this.events = events;
         this.wordservice = wordservice;
         this.conlluService = conlluService;
         this.configService = configService;
+        this.translateService = translateService;
         this.loadingCtrl = loadingCtrl;
         this.alertCtrl = alertCtrl;
         this.toastCtrl = toastCtrl;
         /*
         Tags bar
         */
-        // @Output() public myEventEmitted: EventEmitter<any> = new EventEmitter();
         this.tagsRow = 0;
         this.done = false;
-        this.config = new __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigJSON */]();
+        this.conlluEditorType = "info";
+        this.config = new __WEBPACK_IMPORTED_MODULE_5__providers_config_json_class__["a" /* ConfigJSON */]();
         // conllu : ConllU = new ConllU().Document();
-        this.log = "";
+        this.log = [];
         this.doc = null;
         this.documentJson = {};
         this.project = "";
@@ -623,7 +647,7 @@ var AnnotatePage = (function () {
         // isConlluHidden = false
         this.copyElement = null;
         // @ViewChild('conllu-editor') conlluEditor: ConlluEditorComponent;
-        this.highlight = new Highlight(this.events);
+        this.highlight = new Highlight(this.events, this.zone);
         this._conlluRaw = "1-3 \u0648\u0639\u0646\u0647\u0627   _   _   _   _   _   _   _   _\n1   \u0648\u064E  _   conj    conj    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-0\n2   \u0639\u064E\u0646\u0647\u0627   \u0639\u064E\u0646_1   prep    prep    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-1\n3   _   _   3fs_pron    3fs_pron    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-2\n";
         this.stats = new Stats(this.events);
         this.preventKeyboard = false;
@@ -641,9 +665,11 @@ var AnnotatePage = (function () {
         //   })
         // }
         this.showAlertMessage = false;
+        this._info = null;
         this.searchResults = [];
         this.last_cretiera = {};
         this.wasReversed = false;
+        this.currentTags = this.getTags();
         this.undoArr = [];
         this.redoArr = [];
         var loading = this.loadingCtrl.create({
@@ -653,13 +679,13 @@ var AnnotatePage = (function () {
         if (!navParams.data.project) {
             //TODO change
             console.log("invalid params: ", navParams.data);
-            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_10__projects_projects__["b" /* ProjectsPage */]);
+            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_11__projects_projects__["b" /* ProjectsPage */]);
         }
         else {
             this.project = navParams.data.project;
             this.hash = navParams.data.hash;
             if (navCtrl.getViews().length == 0)
-                navCtrl.insert(1, __WEBPACK_IMPORTED_MODULE_9__docs_docs__["a" /* DocsPage */], {
+                navCtrl.insert(1, __WEBPACK_IMPORTED_MODULE_9__docs_docs__["b" /* DocsPage */], {
                     project: this.project,
                     hash: this.hash
                 });
@@ -693,9 +719,8 @@ var AnnotatePage = (function () {
             .then(function (arr) {
             loading.dismiss();
             _this.config = arr[0]; //this.configService.getConfig(this.project)
-            if (_this.myTags)
-                _this.myTags.config = _this.config;
-            _this.doc = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluDocument"](_this.config);
+            _this.currentTags = _this.getTags();
+            _this.doc = new __WEBPACK_IMPORTED_MODULE_12_conllu_dao__["ConlluDocument"](_this.config);
             _this.conlluRaw = arr[1].trim();
             _this.done = /(\n|^)# done/.test(_this.conlluRaw);
             var match = _this.conlluRaw.match(/^# (?:done|notdone).*\|highlight=([^\|\n]*)/);
@@ -711,11 +736,11 @@ var AnnotatePage = (function () {
             });
         }).catch(function (x) {
             _this.toastCtrl.create({
-                message: 'Conllu File loading Error: ' + x,
+                message: _this.translateService.instant('Conllu File loading Error: ') + _this.translateService.instant(x),
                 duration: 3000,
                 position: "top"
             }).present();
-            console.error('Conllu File loading Error: ' + x);
+            console.error('Conllu File loading Error: ', x);
             console.trace(x);
             loading.dismiss();
         });
@@ -726,11 +751,11 @@ var AnnotatePage = (function () {
         },
         set: function (argv) {
             this._conlluRaw = argv;
-            this.log = "";
+            this.log = [];
             // console.log("Here",this.conlluRaw)
             var that = this;
-            this.doc.parse(this.conlluRaw, function (s) {
-                that.log = that.log + s + '\n';
+            this.doc.parse(this._conlluRaw, function (s) {
+                that.log.push(s);
             }, false); //.toBrat(logger, true);
             // if(typeof highlightRef  == "string")
             // this.highlightElement(highlightRef)
@@ -750,24 +775,42 @@ var AnnotatePage = (function () {
         // console.log('ngAfterViewInit AnnotatePage');
         // this.renderer.invokeElementMethod(document.querySelector(".highlight"), 'focus', []);
     };
+    Object.defineProperty(AnnotatePage.prototype, "info", {
+        get: function () {
+            if (this._info)
+                return this._info;
+            var obj = {};
+            if (!this.doc)
+                return {};
+            obj.sent_no = this.doc.sentences.length;
+            obj.elem_no = this.doc.sentences.map(function (s) { return s.elements.length; }).reduce(function (p, c) { return p += c; }, 0);
+            obj.tokens_no = this.doc.sentences.map(function (s) { return s.tokens().length; }).reduce(function (p, c) { return p += c; }, 0);
+            obj.types_no = [].concat.apply([], this.doc.sentences.map(function (s) { return s.tokens().map(function (e) { return e.form; }); })).filter(function (e, i, arr) { return arr.indexOf(e) == i; }).length;
+            obj.mwe_no = this.doc.sentences.map(function (s) { return s.elements.filter(function (el) { return el.isMultiword; }).length; }).reduce(function (p, c) { return p += c; }, 0);
+            this._info = obj;
+            return obj;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AnnotatePage.prototype.addNote = function (event) {
         var _this = this;
         if (event === void 0) { event = null; }
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Note',
-            message: "Please enter the note to be saved on the element. Old message is: " + (this.highlight.element._miscs["NOTE"] || "Nothing"),
+            title: this.translateService.instant('Note'),
+            message: this.translateService.instant("Please enter the note to be saved on the element."),
             inputs: [
                 {
                     name: 'note',
-                    placeholder: 'Title',
+                    placeholder: this.translateService.instant('Title'),
                     value: this.highlight.element._miscs["NOTE"]
                 },
             ],
             buttons: [
                 {
-                    text: 'Save',
+                    text: this.translateService.instant('Save'),
                     handler: function (data) {
                         _this.highlight.element._miscs["NOTE"] = data.note.replace(/ /g, "_");
                         _this.syncConllU();
@@ -789,7 +832,8 @@ var AnnotatePage = (function () {
             this.events.publish('highlight:change', elem);
         else {
             console.error("highlighted non existing element", highlightRef);
-            this.highlightElement();
+            if (highlightRef != 'S1:1')
+                this.highlightElement();
         }
     };
     AnnotatePage.prototype.search = function (event) {
@@ -798,28 +842,28 @@ var AnnotatePage = (function () {
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Search',
-            message: "Show previous taggings in corpus",
+            title: this.translateService.instant('Search'),
+            message: this.translateService.instant("Show previous taggings in corpus"),
             inputs: [
                 {
                     name: 'form',
-                    placeholder: 'Word Form'
+                    placeholder: this.translateService.instant('Word Form')
                 },
             ],
             buttons: [
                 {
-                    text: 'Search',
+                    text: this.translateService.instant('Search'),
                     handler: function (data) {
                         _this.wordservice.askMemMA(data.form, _this.config)
                             .then(function (elements) {
                             _this.viewElementsPopup(elements[0], null);
                         }).catch(function (s) {
                             _this.toastCtrl.create({
-                                message: 'Error: ' + s,
+                                message: _this.translateService.instant('Error: ') + _this.translateService.instant(s),
                                 duration: 3000,
                                 position: "top"
                             }).present();
-                            console.error('Error: ' + s);
+                            console.error('Error: ', s);
                         });
                     }
                 }
@@ -833,50 +877,50 @@ var AnnotatePage = (function () {
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Find',
-            message: "Find an element within this document",
+            title: this.translateService.instant('Find'),
+            message: this.translateService.instant("Find an element within this document"),
             inputs: [
                 {
                     name: 'form',
-                    placeholder: 'Word Form',
+                    placeholder: this.translateService.instant('Word Form'),
                     value: this.last_cretiera.form
                 },
                 {
                     name: 'xpos',
-                    placeholder: 'XPOS tag',
+                    placeholder: this.translateService.instant('XPOS tag'),
                     value: this.last_cretiera.xpos
                 },
                 {
                     name: 'upos',
-                    placeholder: 'UPOS tag',
+                    placeholder: this.translateService.instant('UPOS tag'),
                     value: this.last_cretiera.upos
                 },
                 {
                     name: 'feats',
-                    placeholder: 'Feat=Val',
+                    placeholder: this.translateService.instant('Feat=Val'),
                     value: this.last_cretiera.feats
                 },
                 {
                     name: 'misc',
-                    placeholder: 'Misc=Val',
+                    placeholder: this.translateService.instant('Misc=Val'),
                     value: this.last_cretiera.misc
                 },
                 {
                     name: 'lemma',
-                    placeholder: 'Lemma',
+                    placeholder: this.translateService.instant('Lemma'),
                     value: this.last_cretiera.lemma
                 },
             ],
         });
         if (this.copyElement)
             prompt.addButton({
-                text: 'Find and Replace All',
+                text: this.translateService.instant('Find and Replace All'),
                 role: 'destructive',
                 handler: function (cretiera) {
                     _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                     if (!_this.copyElement) {
                         _this.toastCtrl.create({
-                            message: 'No copied element',
+                            message: _this.translateService.instant('No copied element'),
                             duration: 1000
                         }).present();
                     }
@@ -896,13 +940,13 @@ var AnnotatePage = (function () {
                 }
             });
         prompt.addButton({
-            text: 'Find All',
+            text: this.translateService.instant('Find All'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 _this.searchResults = _this.doc.find(cretiera);
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -912,7 +956,7 @@ var AnnotatePage = (function () {
             }
         });
         prompt.addButton({
-            text: 'Find All (Unique)',
+            text: this.translateService.instant('Find All (Unique)'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 var uniq = {};
@@ -925,7 +969,7 @@ var AnnotatePage = (function () {
                 });
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -935,13 +979,13 @@ var AnnotatePage = (function () {
             }
         });
         prompt.addButton({
-            text: 'Find Next',
+            text: this.translateService.instant('Find Next'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 _this.searchResults = _this.doc.find(cretiera);
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -979,7 +1023,7 @@ var AnnotatePage = (function () {
         });
         if (!r)
             return this.toastCtrl.create({
-                message: 'No more results were found',
+                message: this.translateService.instant('No more results were found'),
                 duration: 1000
             }).present();
         // if(r.isMultiword)
@@ -990,17 +1034,17 @@ var AnnotatePage = (function () {
         var _this = this;
         if (this.showAlertMessage) {
             var alertPopup = this.alertCtrl.create({
-                title: 'Exit',
-                message: 'Changes are not saved. Are you sure?',
+                title: this.translateService.instant('Exit'),
+                message: this.translateService.instant('Changes are not saved. Are you sure?'),
                 buttons: [{
-                        text: 'Exit',
+                        text: this.translateService.instant('Exit'),
                         handler: function () {
                             _this.showAlertMessage = false;
                             _this.navCtrl.pop();
                         }
                     },
                     {
-                        text: 'Stay',
+                        text: this.translateService.instant('Stay'),
                         handler: function () {
                             // need to do something if the user stays?
                         }
@@ -1016,7 +1060,7 @@ var AnnotatePage = (function () {
         var _this = this;
         var options = Object.keys(this.config.mf).filter(function (x) { return _this.config.MfVsPos[x].indexOf(_this.config.MfVsPos_upostag ? _this.highlight.element.upostag : _this.highlight.element.xpostag) >= 0; });
         if (options.length > 0) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_5__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */], {
                 element: this.highlight.element,
                 config: this.config,
                 options: options
@@ -1030,7 +1074,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No morphological features is needed for this tag: ' + this.config.getXPosTag(this.highlight.element.xpostag).desc,
+                message: this.translateService.instant('No morphological features is needed for this tag: ') + this.config.getXPosTag(this.highlight.element.xpostag).desc,
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1048,7 +1092,6 @@ var AnnotatePage = (function () {
         this.events.publish("stats", { action: "mouse", element: e });
     };
     AnnotatePage.prototype.keyboardShortcuts = function (e) {
-        console.log(e);
         var highlighNode = document.querySelector(".highlight");
         if (e.target != document.querySelector("body")
             && e.target && e.target.className.indexOf("element") == -1) {
@@ -1064,9 +1107,9 @@ var AnnotatePage = (function () {
         if (!this.config)
             return false;
         if (e.code == "Escape")
-            this.copyElement = false;
+            this.copyElement = null;
         var action = this.config.keyboardShortcuts
-            .filter(function (v) {
+            .find(function (v) {
             return (v.code == e.code) &&
                 // (v.key!=undefined && v.key == e.key) &&
                 ((v.metaKey == true) == e.metaKey) &&
@@ -1075,9 +1118,9 @@ var AnnotatePage = (function () {
                 ((v.ctrlKey == true) == e.ctrlKey) &&
                 true;
         });
-        if (action.length == 1) {
+        if (action != null) {
             this.events.publish("stats", { action: "keyboard", event: e, code: action });
-            this.doAction(action[0].action, action[0].params, e);
+            this.doAction(action.action, action.params, e);
         }
         else
             this.events.publish("stats", { action: "keyboard", event: e });
@@ -1187,7 +1230,7 @@ var AnnotatePage = (function () {
                     e.id = counter_1 + "-" + (counter_1 + parseInt(arr[1]) - parseInt(arr[0]));
                 }
             });
-            var sent = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluSentence"]("new", after, [], this.doc);
+            var sent = new __WEBPACK_IMPORTED_MODULE_12_conllu_dao__["ConlluSentence"]("new", after, [], this.doc);
             this.doc.sentences.splice(sindex + 1, 0, sent);
             this.doc.fixSentenceIds();
             // console.log(this.doc)
@@ -1210,7 +1253,7 @@ var AnnotatePage = (function () {
             el.parent.id = arr[0] + "-" + (parseInt(arr[1]) + 1);
         }
         else {
-            var parent = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluElement"]([parseInt(this.highlight.element.id) + "-" + (parseInt(this.highlight.element.id) + 1), this.highlight.element.form,
+            var parent = new __WEBPACK_IMPORTED_MODULE_12_conllu_dao__["ConlluElement"]([parseInt(this.highlight.element.id) + "-" + (parseInt(this.highlight.element.id) + 1), this.highlight.element.form,
                 "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"], this.highlight.element.lineidx, this.highlight.element.line, this.highlight.sentence);
             parent.analysis = this.highlight.element.analysis;
             el.analysis = [];
@@ -1275,7 +1318,7 @@ var AnnotatePage = (function () {
         if (analyses.length == 0)
             analyses = el.analysis; //.filter((e,i)=>! this.viewMode || e._miscs["DOCID"]!==this.pageid && e._miscs["DOCID"]!==undefined)
         if (analyses) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
                 element: el,
                 analyses: analyses,
                 hash: this.hash,
@@ -1292,7 +1335,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No Analysis Found for this word: ' + el.form,
+                message: this.translateService.instant('No Analysis Found for this word: ') + el.form,
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1305,7 +1348,7 @@ var AnnotatePage = (function () {
         if (analyses === void 0) { analyses = []; }
         if (e === void 0) { e = null; }
         if (analyses.length !== 0) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
                 analyses: analyses,
                 hash: this.hash,
                 project: this.project,
@@ -1321,7 +1364,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No Analysis Found. ',
+                message: this.translateService.instant('No Analysis Found'),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1414,7 +1457,7 @@ var AnnotatePage = (function () {
                         // console.log(elem.parent.children.map(e=>e.form))
                     }
                     else {
-                        var parent = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluElement"]([parseInt(elem.id) + "-" + (parseInt(elem.id) + 1), splits_1.join(""),
+                        var parent = new __WEBPACK_IMPORTED_MODULE_12_conllu_dao__["ConlluElement"]([parseInt(elem.id) + "-" + (parseInt(elem.id) + 1), splits_1.join(""),
                             "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"], elem.lineidx, elem.line, elem.sentence);
                         parent.analysis = elem.analysis;
                         elem.sentence.elements.splice(eindex, 0, parent);
@@ -1433,6 +1476,7 @@ var AnnotatePage = (function () {
     };
     AnnotatePage.prototype.doAction = function (action, params, e) {
         var _this = this;
+        if (e === void 0) { e = null; }
         switch (action) {
             case "nav":
                 // console.log("doAction")
@@ -1522,20 +1566,20 @@ var AnnotatePage = (function () {
                 this.delete(e);
                 break;
             case "assignXTag":
-                var fn_1 = this.myTags.getTags()[params[0] - 1];
-                if (fn_1) {
-                    this.highlight.element.xpostag = fn_1.tag;
-                    this.highlight.element.upostag = this.config.alltags.find(function (x) { return x.tag == fn_1.tag; }).mapToConllU;
+                var fn = this.getTags()[params[0] - 1];
+                if (fn) {
+                    this.highlight.element.xpostag = fn.tag;
+                    // this.highlight.element.upostag = this.config.alltags.find(x=>x.tag==fn.tag).mapToConllU
+                    this.saveForUndo();
                 }
-                this.saveForUndo();
                 break;
             case "showOtherUTags":
-                this.myTags.increaseTagsRow();
+                this.increaseTagsRow();
                 break;
             case "assignSentenceTag":
-                fn_1 = this.config.sentenceTags[parseInt(params[0]) - 1];
-                if (fn_1)
-                    this.highlight.sentence.tag = fn_1.tag;
+                fn = this.config.sentenceTags[parseInt(params[0]) - 1];
+                if (fn)
+                    this.highlight.sentence.tag = fn.tag;
                 this.saveForUndo();
                 break;
             case "saveFile":
@@ -1549,8 +1593,8 @@ var AnnotatePage = (function () {
             case "validateConllu":
                 if (e)
                     e.preventDefault();
-                var doc = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluDocument"](this.config);
-                doc.parse(this.doc.toConllU(), function (s) { this.log = this.log + s + '\n'; }, true);
+                var doc = new __WEBPACK_IMPORTED_MODULE_12_conllu_dao__["ConlluDocument"](this.config);
+                doc.parse(this.doc.toConllU(), function (s) { this.log.push(s); }, true);
                 break;
             case "validate":
                 if (e)
@@ -1558,13 +1602,13 @@ var AnnotatePage = (function () {
                 var issues = this.doc.validate();
                 if (issues.length > 0)
                     this.toastCtrl.create({
-                        message: 'Several issues were found',
+                        message: this.translateService.instant('Several issues were found'),
                         duration: 3000,
                         position: "top"
                     }).present();
                 else
                     this.toastCtrl.create({
-                        message: 'No issues were found',
+                        message: this.translateService.instant('No issues were found'),
                         duration: 3000,
                         position: "top"
                     }).present();
@@ -1577,6 +1621,20 @@ var AnnotatePage = (function () {
             default:
                 // code...
                 break;
+        }
+    };
+    AnnotatePage.prototype.getTags = function () {
+        return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map(function (x, i) {
+            x.fn = i + 1;
+            return x;
+        });
+    };
+    AnnotatePage.prototype.increaseTagsRow = function () {
+        this.tagsRow++;
+        this.currentTags = this.getTags();
+        if (this.currentTags.length == 0) {
+            this.tagsRow = 0;
+            this.currentTags = this.getTags();
         }
     };
     AnnotatePage.prototype.showCommands = function (e) {
@@ -1594,7 +1652,7 @@ var AnnotatePage = (function () {
         });
         alert.addButton('Cancel');
         alert.addButton({
-            text: 'OK',
+            text: this.translateService.instant('OK'),
             handler: function (index) {
                 _this.doAction(_this.config.keyboardShortcuts[index].action, _this.config.keyboardShortcuts[index].params, null);
             }
@@ -1646,17 +1704,17 @@ var AnnotatePage = (function () {
         }
         else if (askToMarkIsDone) {
             var alertPopup = this.alertCtrl.create({
-                title: 'Mark as done?',
-                message: 'Do you want to mark it as done?',
+                title: this.translateService.instant('Mark as done?'),
+                message: this.translateService.instant('Do you want to mark it as done?'),
                 buttons: [{
-                        text: '(Y)es',
+                        text: this.translateService.instant('Yes'),
                         handler: function () {
                             _this.doc.sentences[0].comments.unshift("# done " + _this.stats.getLine(_this.highlight.element));
                             _this.saveFile(null, false);
                         }
                     },
                     {
-                        text: '(N)o',
+                        text: this.translateService.instant('No'),
                         handler: function () {
                             _this.doc.sentences[0].comments.unshift("# notdone " + _this.stats.getLine(_this.highlight.element));
                             _this.saveFile(null, false);
@@ -1669,7 +1727,7 @@ var AnnotatePage = (function () {
             this._conlluRaw = this.doc.toConllU();
             this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(function (s) {
                 _this.toastCtrl.create({
-                    message: 'File was successfully saved. Status:' + (s.isDone ? "Done" : "Not Done"),
+                    message: _this.translateService.instant('File was successfully saved. Status:' + (s.isDone ? "Done" : "Not Done")),
                     duration: 3000,
                     position: "top"
                 }).present();
@@ -1677,11 +1735,11 @@ var AnnotatePage = (function () {
                 _this.showAlertMessage = false;
             }).catch(function (reason) {
                 _this.toastCtrl.create({
-                    message: 'Error: ' + reason,
+                    message: _this.translateService.instant('Error: ') + _this.translateService.instant(reason),
                     duration: 3000,
                     position: "top"
                 }).present();
-                console.error('Error: ' + reason);
+                console.error('Error: ', reason);
             });
         }
     };
@@ -1689,10 +1747,25 @@ var AnnotatePage = (function () {
         if (e === void 0) { e = null; }
         this._conlluRaw = this.doc.toConllU();
         this.toastCtrl.create({
-            message: 'Conll-U representation has been updated.',
+            message: this.translateService.instant('Conll-U representation has been updated'),
             duration: 3000,
             position: "top"
         }).present();
+    };
+    AnnotatePage.prototype.download = function () {
+        //make sure there is a tab after each span
+        // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
+        // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
+        // console.log(this.conlluRaw)
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.conlluRaw);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        var filename = this.pageid;
+        if (!/\.conllu$/.test(filename))
+            filename += ".conllu";
+        downloadAnchorNode.setAttribute("download", filename);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     };
     AnnotatePage.prototype.saveForUndo = function (newConllRaw) {
         if (newConllRaw === void 0) { newConllRaw = null; }
@@ -1717,6 +1790,14 @@ var AnnotatePage = (function () {
     // maResult = null
     AnnotatePage.prototype.askMA = function () {
         var _this = this;
+        if (this.doc.sentences.length > 100) {
+            this.toastCtrl.create({
+                message: this.translateService.instant('Warning: Sentences would not be sent to morphological analyser because sentence number') + " > 100",
+                duration: 3000,
+                position: "top"
+            }).present();
+            return;
+        }
         Promise.all(this.doc.sentences.map(function (s, i) {
             return _this.wordservice.askMA(s.tokens().map(function (e) { return e.form; }).join(" "), _this.config)
                 .then(function (elements) {
@@ -1738,15 +1819,23 @@ var AnnotatePage = (function () {
         }))
             .catch(function (s) {
             _this.toastCtrl.create({
-                message: 'Error: ' + s,
+                message: _this.translateService.instant('Error: ') + _this.translateService.instant(s),
                 duration: 3000,
                 position: "top"
             }).present();
-            console.error('Error: ' + s);
+            console.error('Error: ', s);
         });
     };
     AnnotatePage.prototype.askMemMA = function () {
         var _this = this;
+        if (this.doc.sentences.length > 100) {
+            this.toastCtrl.create({
+                message: this.translateService.instant('Warning: Sentences would not be sent to morphological analyser because sentence number') + " >100",
+                duration: 5000,
+                position: "top"
+            }).present();
+            return;
+        }
         this.doc.sentences.forEach(function (s, i) {
             _this.wordservice.askMemMA(s.tokens().map(function (e) { return e.form; }).join(" "), _this.config)
                 .then(function (elements) {
@@ -1764,11 +1853,11 @@ var AnnotatePage = (function () {
                 });
             }).catch(function (s) {
                 _this.toastCtrl.create({
-                    message: 'Error: ' + s,
+                    message: _this.translateService.instant('Error: ') + _this.translateService.instant(s),
                     duration: 3000,
                     position: "top"
                 }).present();
-                console.error('Error: ' + s);
+                console.error('Error: ', s);
             });
         });
     };
@@ -1781,31 +1870,30 @@ __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('lemma'),
     __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */])
 ], AnnotatePage.prototype, "lemmaGroup", void 0);
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('myTags'),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_7__components_tags_selector_tags_selector__["a" /* TagsSelectorComponent */])
-], AnnotatePage.prototype, "myTags", void 0);
 AnnotatePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>ترميز الملف: {{pageid}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="search($event)" tabindex="-1">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <!-- <ion-list> -->\n  <!-- <ion-item *ngFor="">\n    <ion-avatar item-left>\n      <h1></h1>\n    </ion-avatar>\n    <h2>Finn</h2>\n    <h3>Don\'t Know What To Do!</h3>\n    <p>I\'ve had a pretty messed up day. If we just...</p>\n  </ion-item> -->\n  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">\n    <ion-row>\n<!--       <ion-col style="display:none; margin: 0">\n        <div id="vis"></div>\n        <ion-textarea id="parsed" rows="10" cols="80"></ion-textarea>\n      </ion-col>\n -->      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="syncConllU()">\n            <ion-icon name="sync"></ion-icon>\n          </button>\n          <button *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="showStats()">\n            <ion-icon name="print"></ion-icon>Stats</button>\n          <button class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button tabindex="-1" (click)="undo()">\n            <ion-icon name="undo"></ion-icon> Undo\n          </button>\n          <button class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button tabindex="-1" (click)="redo()">\n            <ion-icon name="redo"></ion-icon> Redo\n          </button>\n          <!-- <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button> -->\n          <!-- <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button> -->\n          <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="saveFile()">\n            <ion-icon name="cloud-upload"></ion-icon> Save\n          </button>\n          <button class=\'topbar_button\' icon-left right ion-button tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n            {{config.isConlluHidden? "Show":"Hide"}} ConllU\n          </button>\n        </ion-row>\n        <!-- <ion-row>\n          <div *ngFor="let tag of sentenceTags;" class="tag" title="{{tag.desc}}" >\n              {{tag.tag}}\n              <span class="fn">F{{tag.fn}}</span>\n          </div>\n        </ion-row> -->\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-2>\n        <ion-row style="height: 95%;">\n          <ion-list *ngIf="highlight.element">\n            <!--         <ion-item>\n          <ion-label color="primary" stacked>Lemma</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>\n        </ion-item>-->\n              <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n                <ion-icon name="apps"></ion-icon>Features</button>\n              <button  color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n                <ion-icon name="menu"></ion-icon>Analyser</button>\n            <!--           <ion-item>\n            <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="mark_misc(\'UNCLEAR\')">\n              <ion-icon name="warning"></ion-icon>Unclear</button>\n            <ion-badge item-end>{{highlight.element.id}}</ion-badge>\n          </ion-item>\n -->\n            <ion-item *ngIf="highlight.element.parent">\n              <ion-label color="primary" stacked>Inflected Word Form</ion-label>\n              <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n            </ion-item>\n            <!--        <ion-item>\n          <ion-label color="primary" stacked>Token form</ion-label>\n          <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n -->\n            <ion-item (click)="mark_misc(\'UNCLEAR\')">\n              <ion-label>Unclear?</ion-label>\n              <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>Lemma</ion-label>\n              <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n            </ion-item>\n            <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n              <ion-label color="primary" stacked>{{feat.key}}</ion-label>\n              <ion-select [(ngModel)]="feat.value" interface="popover">\n                <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n              </ion-select>\n              <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>XPOS Tag</ion-label>\n              <ion-select [(ngModel)]="highlight.element.xpostag" tabindex="2">\n                <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n              </ion-select>\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>UPOS Tag</ion-label>\n              <ion-select [(ngModel)]="highlight.element.upostag">\n                <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n              </ion-select>\n            </ion-item>\n          </ion-list>\n          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n        </ion-row>\n      </ion-col>\n      <ion-col id="sentences" *ngIf="config">\n        <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}" >\n              <!-- [hidden]=""> -->\n          <div>{{sent.tag}}</div>\n          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element {{elem.upostag}}" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: highlight.element != null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: copyElement != null && (elem == copyElement || elem.parent == copyElement),\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0 }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword">\n            <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n            <ng-template #other_content>\n              <span class="form" #spanForm>{{elem.getForm()}}</span>\n            <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n            <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n            </ng-template>\n          </div>\n        </div>\n      </ion-col>\n      <ion-col col-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <!--         <ion-row *ngIf="editingMode" style="height: 95%;">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n -->\n        <ion-row *ngIf="log.length>0">\n          <ion-item>Error log:</ion-item>\n          <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">\n          </ion-textarea>\n        </ion-row>\n        <ion-row style="height: 95%; position: relative">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]"></conllu-editor>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
+        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'FILE\' | translate}}: {{pageid}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' ion-button icon-only tabindex="-1" (click)="syncConllU()">\n        <ion-icon name="sync"></ion-icon>\n      </button>\n      <button small *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="showStats()">\n        <ion-icon name="print"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="undo()">\n        <ion-icon name="undo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="redo()">\n        <ion-icon name="redo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="saveFile()">\n        <ion-icon name="cloud-upload"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="download()">\n        <ion-icon name="cloud-download"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="find($event)">\n        <ion-icon name="glasses"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="search($event)">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left right ion-button icon-only tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n        <ion-icon [name]="config.isConlluHidden? \'eye\':\'eye-off\'"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">\n    <ion-row>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="highlight.element" [currentTags]="currentTags" [element]="highlight.element" (nextTags)="increaseTagsRow()"></tags-selector>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-lg-2 col-sm-3 col-12>\n        <ion-list *ngIf="highlight.element">\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n            <ion-icon name="apps"></ion-icon>{{ \'Features\' | translate }} </button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n            <ion-icon name="menu"></ion-icon>{{\'Analyser\' | translate}}</button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="addNote($event)">\n            <ion-icon name="create"></ion-icon> {{\'Note\' | translate}}\n          </button>\n          <ion-item *ngIf="highlight.element.parent">\n            <ion-label color="primary" stacked>{{\'Inflected Word Form\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item (click)="mark_misc(\'UNCLEAR\')">\n            <ion-label>{{\'Unclear?\' | translate}}</ion-label>\n            <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'Lemma\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{config.getFeature(feat.key).desc}}</ion-label>\n            <ion-select [(ngModel)]="feat.value" interface="popover">\n              <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'XPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element._xpostag" tabindex="2">\n              <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'UPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element.upostag">\n              <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n        </ion-list>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n      </ion-col>\n      <ion-col *ngIf="config">\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id>2">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n        <ion-row id="sentences">\n          <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}">\n            <!-- [hidden]=""> -->\n            <div>{{sent.tag}}</div>\n            <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: highlight.element !== null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: (elem == copyElement || elem.parent == copyElement) && copyElement !== null,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0,\n              ADJ : elem.upostag == \'ADJ\',\n              ADP : elem.upostag == \'ADP\',\n              ADV : elem.upostag == \'ADV\',\n              CCONJ : elem.upostag == \'CCONJ\',\n              DET : elem.upostag == \'DET\',\n              NOUN : elem.upostag == \'NOUN\',\n              NUM : elem.upostag == \'NUM\',\n              PART : elem.upostag == \'PART\',\n              PRON : elem.upostag == \'PRON\',\n              PROPN : elem.upostag == \'PROPN\',\n              PUNCT : elem.upostag == \'PUNCT\',\n              SCONJ : elem.upostag == \'SCONJ\',\n              VERB : elem.upostag == \'VERB\',\n              X : elem.upostag == \'X\'\n               }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword" (dblclick)="editable = true">\n              <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n              <ng-template #other_content>\n                <span class="form" #spanForm>{{elem.getForm()}}</span>\n                <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n                <span class="lemma">/{{elem.lemma}}/</span>\n                <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              </ng-template>\n            </div>\n          </div>\n        </ion-row>\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id<doc?.sentences?.length-1">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n      </ion-col>\n      <ion-col col-lg-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <ion-segment [(ngModel)]="conlluEditorType" color="secondary">\n          <ion-segment-button value="textarea">\n            <ion-icon name="create"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="pretty">\n            <ion-icon name="menu"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="errors">\n            <ion-icon name="warning" color="danger"></ion-icon>\n            <ion-badge color="danger" [hidden]="log.length ==0">{{log.length}}</ion-badge>\n          </ion-segment-button>\n          <ion-segment-button value="info">\n            <ion-icon name="information-circle"></ion-icon>\n          </ion-segment-button>\n        </ion-segment>\n        <ion-row *ngIf="conlluEditorType==\'textarea\'">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="conlluRaw = $event.target.value" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'errors\'">\n          <div *ngFor="let l of log">{{l}}</div>\n          <!-- <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled"> -->\n          <!-- </ion-textarea> -->\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'pretty\'">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]" (highlightChange)="highlightElement($event)" (rawChange)="conlluRaw=$event"></conllu-editor>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'info\'">\n          <ion-card>\n            <ion-card-header>\n              Document Information\n            </ion-card-header>\n            <ion-list>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Sent #: {{info.sent_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Elem #: {{info.elem_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Tokens #: {{info.tokens_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Types #: {{info.types_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Multi Word Tokens #: {{info.mwe_no}}</ion-item>\n            </ion-list>\n          </ion-card>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
         __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"],
+        __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
         __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */],
         __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["b" /* ConfigService */],
+        __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */],
+        __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
 ], AnnotatePage);
 
 var Highlight = (function () {
-    function Highlight(events) {
+    function Highlight(events, zone) {
         var _this = this;
         this.events = events;
+        this.zone = zone;
         this.sentence = null;
         this.element = null;
         this.ref = "S1:1";
@@ -1814,9 +1902,11 @@ var Highlight = (function () {
                 console.trace("Published an event highlight:change but element is undefined");
                 return;
             }
-            _this.element = element;
-            _this.sentence = element.sentence;
-            _this.ref = "S" + _this.sentence._id + ":" + _this.element._id;
+            zone.run(function () {
+                _this.element = element;
+                _this.sentence = element.sentence;
+                _this.ref = "S" + _this.sentence._id + ":" + _this.element._id;
+            });
         });
     }
     return Highlight;
@@ -1888,17 +1978,17 @@ var Stats = (function () {
 
 /***/ }),
 
-/***/ 208:
+/***/ 237:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao__ = __webpack_require__(124);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_conllu_dao__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1947,7 +2037,7 @@ var WordService = (function () {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 if (!data.ok) {
-                    return reject("MA Results are not valid");
+                    return reject(data.error);
                 }
                 /***
                 ** MA Results
@@ -1998,7 +2088,7 @@ var WordService = (function () {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 if (!data.ok) {
-                    return reject("MemMa Results are not valid.");
+                    return reject(data.error);
                 }
                 /***
                 ** MA Results
@@ -2093,1290 +2183,14 @@ WordService = __decorate([
 
 /***/ }),
 
-/***/ 209:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var sentence_1 = __webpack_require__(210);
-exports.ConlluSentence = sentence_1.ConlluSentence;
-var element_1 = __webpack_require__(211);
-exports.ConlluElement = element_1.ConlluElement;
-var document_1 = __webpack_require__(293);
-exports.ConlluDocument = document_1.ConlluDocument;
-var util_1 = __webpack_require__(54);
-exports.Util = util_1.Util;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 210:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __webpack_require__(54);
-class ConlluSentence {
-    constructor(sentenceId, elements = [], comments = [], document) {
-        /*
-         * ConllU.ConlluSentence: represents CoNLL-U sentence
-         */
-        this._id = 0;
-        this.elements = [];
-        this.comments = [];
-        this.baseOffset = 0;
-        this.issues = [];
-        this.tag = "";
-        this.error = false;
-        this.id = sentenceId;
-        this.document = document;
-        this.comments = comments;
-        this.baseOffset = 0;
-        this.elements = elements;
-        this.elements.forEach(e => {
-            e.sentence = this;
-        });
-        // this.refix()
-    }
-    get id() {
-        return "S" + this._id;
-    }
-    set id(str) {
-        if (typeof str == "string")
-            this._id = parseInt(str.replace(/[^0-9]/g, ""));
-        else
-            this._id = str;
-    }
-    ;
-    refix(keepParentRelations = false) {
-        // Fix the id, isSeg, parent, children according to the ID values.
-        // Needed after editing elements of one sentence.
-        // param: keepParentRelations: when true will respect parent relation. Only Id, children and isSeg is updated.
-        var from = -1, to = -2;
-        var parent;
-        var counter = 1;
-        this.elements.forEach(e => {
-            if (e.isMultiword) {
-                if (!keepParentRelations) {
-                    // isSeg is updated later
-                    from = parseInt(e.id.split("-")[0]);
-                    to = parseInt(e.id.split("-")[1]);
-                    e.isSeg = -(to - from) - 1;
-                    parent = e;
-                }
-                e.parent = null;
-                e.children.length = 0;
-            }
-            else {
-                e.id = "" + counter++;
-                if (!keepParentRelations) {
-                    if (parseInt(e.id) >= from && parseInt(e.id) <= to) {
-                        e.isSeg = parseInt(e.id) - from;
-                        e.parent = parent;
-                        if (!e.parent) {
-                            console.error(e.sentence.elements.map(e => e.toConllU(true, false)));
-                        }
-                        else {
-                            e.parent.children.push(e);
-                            e.parent.id = e.parent.children[0].id + "-" + (parseInt(e.parent.children[0].id) + e.parent.children.length - 1);
-                        }
-                    }
-                }
-                else if (e.parent) {
-                    e.parent.children.push(e);
-                    e.isSeg = parseInt(e.id) - parseInt(e.parent.children[0].id);
-                    e.parent.isSeg = -(parseInt(e.parent.children[e.parent.children.length - 1].id) - parseInt(e.parent.children[0].id)) - 1;
-                    //TODO
-                    // if(-e.parent.isSeg != e.parent.children.length)
-                    // console.error("Not the same",-e.parent.isSeg, e.parent.children.length, e.parent.toConllU())
-                    e.parent.id = e.parent.children[0].id + "-" + (parseInt(e.parent.children[0].id) + e.parent.children.length - 1);
-                }
-                else {
-                    // console.error("Should never be here",e)
-                }
-            }
-            // return e
-        }); //.filter(e=>e!=null);
-        return this;
-    }
-    getText() {
-        return this.tokens().map(e => e.form).join(" ");
-    }
-    toConllU(lines = []) {
-        for (let com of this.comments) {
-            lines.push(com);
-        }
-        for (let elem of this.tokens()) {
-            lines.push(elem.toConllU());
-        }
-        return lines;
-    }
-    // set offset of first character in sentence (for standoff
-    // generation)
-    setBaseOffset(baseOffset) {
-        this.baseOffset = baseOffset;
-    }
-    dependencies() {
-        var dependencies = [];
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            dependencies = dependencies.concat(element.dependencies());
-        }
-        return dependencies;
-    }
-    ;
-    words(includeEmpty) {
-        return this.elements.filter(function (e) {
-            return (e.isWord() || (includeEmpty && e.isEmptyNode()));
-        });
-    }
-    ;
-    multiwords() {
-        return this.elements.filter(e => e.isMultiword);
-    }
-    ;
-    tokens() {
-        // extract token sequence by omitting word IDs that are
-        // included in a multiword token range.
-        var multiwords = this.multiwords();
-        var inRange = {};
-        for (let i = 0; i < multiwords.length; i++) {
-            var mw = multiwords[i];
-            for (let j = mw.rangeFrom(); j <= mw.rangeTo(); j++) {
-                inRange[j] = true;
-            }
-        }
-        return this.elements.filter(function (e) {
-            return e.isToken(inRange);
-        });
-    }
-    ;
-    // return words with possible modifications for visualization with
-    // brat
-    bratWords(includeEmpty) {
-        var words = this.words(includeEmpty);
-        for (let i = 0; i < words.length; i++) {
-            if (util_1.Util.isRtl(words[i].form)) {
-                words[i] = util_1.Util.deepCopy(words[i]);
-                words[i].form = util_1.Util.rtlFix(words[i].form);
-            }
-        }
-        return words;
-    }
-    ;
-    // return tokens with possible modifications for visualization
-    // with brat
-    bratTokens() {
-        var tokens = this.tokens();
-        for (let i = 0; i < tokens.length; i++) {
-            tokens[i] = util_1.Util.deepCopy(tokens[i]);
-            tokens[i].form = util_1.Util.rtlFix(tokens[i].form);
-        }
-        return tokens;
-    }
-    ;
-    // return the text of the sentence for visualization with brat
-    bratText(includeEmpty) {
-        var words = this.bratWords(includeEmpty);
-        var tokens = this.bratTokens();
-        var wordText = words.map(function (w) { return w.form; }).join(' ');
-        var tokenText = tokens.map(function (w) { return w.form; }).join(' ');
-        var combinedText = wordText;
-        if (wordText != tokenText) {
-            combinedText += '\n' + tokenText;
-        }
-        return combinedText;
-    }
-    ;
-    // return the annotated text spans of the sentence for visualization
-    // with brat.
-    bratSpans(includeEmpty) {
-        var spans = [], offset = this.baseOffset;
-        // create an annotation for each word
-        var words = this.bratWords(includeEmpty);
-        for (let i = 0; i < words.length; i++) {
-            var length = words[i].form.length;
-            spans.push([this.id + '-T' + words[i].id, words[i].upostag,
-                [[offset, offset + length]]]);
-            offset += length + 1;
-        }
-        return spans;
-    }
-    // return attributes of sentence annotations for visualization
-    // with brat.
-    bratAttributes(includeEmpty) {
-        var words = this.words(includeEmpty);
-        // create attributes for word features
-        var attributes = [], aidseq = 1;
-        for (let i = 0; i < words.length; i++) {
-            var word = words[i], tid = this.id + '-T' + word.id;
-            var nameVals = word.features;
-            for (let j = 0; j < nameVals.length; j++) {
-                var name = nameVals[j].key, value = nameVals[j].value;
-                attributes.push([this.id + '-A' + aidseq++, name, tid, value]);
-            }
-        }
-        return attributes;
-    }
-    ;
-    // return relations for sentence dependencies for visualization
-    // with brat.
-    bratRelations(includeEmpty) {
-        var dependencies = this.dependencies();
-        var relations = [];
-        for (let i = 0; i < dependencies.length; i++) {
-            var dep = dependencies[i];
-            relations.push([this.id + '-R' + i, dep[2],
-                [['arg1', this.id + '-T' + dep[1]],
-                    ['arg2', this.id + '-T' + dep[0]]]]);
-        }
-        return relations;
-    }
-    ;
-    // return comments (notes) on sentence annotations for
-    // visualization with brat.
-    bratComments(includeEmpty) {
-        var words = this.words(includeEmpty);
-        // TODO: better visualization for LEMMA, XPOSTAG, and MISC.
-        var comments = [];
-        for (let i = 0; i < words.length; i++) {
-            var word = words[i], tid = this.id + '-T' + word.id, label = 'AnnotatorNotes';
-            comments.push([tid, label, 'Lemma: ' + word.lemma]);
-            if (word.xpostag !== '_') {
-                comments.push([tid, label, 'Xpostag: ' + word.xpostag]);
-            }
-            if (word.misc !== '_') {
-                comments.push([tid, label, 'Misc: ' + word.misc]);
-            }
-        }
-        return comments;
-    }
-    ;
-    // Return styles on sentence annotations for visualization with
-    // brat. Note: this feature is an extension of both the CoNLL-U
-    // comment format and the basic brat data format.
-    bratStyles(includeEmpty) {
-        var styles = [], wildcards = [];
-        for (let i = 0; i < this.comments.length; i++) {
-            var comment = this.comments[i];
-            var m = comment.match(/^(\#\s*visual-style\s+)(.*)/);
-            if (!m) {
-                continue;
-            }
-            var styleSpec = m[2];
-            // Attempt to parse as a visual style specification. The
-            // expected format is "REF<SPACE>STYLE", where REF
-            // is either a single ID (for a span), a space-separated
-            // ID1 ID2 TYPE triple (for a relation), or a special
-            // wildcard value like "arcs", and STYLE is either
-            // a colon-separated key-value pair or a color.
-            m = styleSpec.match(/^([^\t]+)\s+(\S+)\s*$/);
-            if (!m) {
-                // TODO: avoid console.log
-                console.warn('warning: failed to parse: "' + comment + '"');
-                continue;
-            }
-            var reference = m[1], style = m[2];
-            // split style into key and value, adding a key to
-            // color-only styles as needed for the reference type.
-            var key, value;
-            m = style.match(/^(\S+):(\S+)$/);
-            if (m) {
-                key = m[1];
-                value = m[2];
-            }
-            else {
-                value = style;
-                if (reference === 'arcs' || reference.indexOf(' ') !== -1) {
-                    key = 'color';
-                }
-                else {
-                    key = 'bgColor';
-                }
-            }
-            // store wildcards for separate later processing
-            if (reference.match(/^(nodes|arcs)$/)) {
-                wildcards.push([reference, key, value]);
-                continue;
-            }
-            // adjust every ID in reference for brat
-            if (reference.indexOf(' ') === -1) {
-                reference = this.id + '-T' + reference;
-            }
-            else {
-                reference = reference.split(' ');
-                reference[0] = this.id + '-T' + reference[0];
-                reference[1] = this.id + '-T' + reference[1];
-            }
-            styles.push([reference, key, value]);
-        }
-        // for expanding wildcards, first determine which words / arcs
-        // styles have already been set, and then add the style to
-        // everything that hasn't.
-        var setStyle = {};
-        for (let i = 0; i < styles.length; i++) {
-            setStyle[styles[i][0] + styles[i][1]] = true;
-        }
-        for (let i = 0; i < wildcards.length; i++) {
-            let reference = wildcards[i][0], key = wildcards[i][1], value = wildcards[i][2];
-            if (reference === 'nodes') {
-                var words = this.words(includeEmpty);
-                for (let j = 0; j < words.length; j++) {
-                    var r = this.id + '-T' + words[j].id;
-                    if (!setStyle[r.concat(key)]) {
-                        styles.push([r, key, value]);
-                        setStyle[r.concat(key)] = true;
-                    }
-                }
-            }
-            else if (reference === 'arcs') {
-                var deps = this.dependencies();
-                for (let j = 0; j < deps.length; j++) {
-                    var rr = [this.id + '-T' + deps[j][1],
-                        this.id + '-T' + deps[j][0],
-                        deps[j][2]];
-                    if (!setStyle[rr.concat([key]).join("")]) {
-                        styles.push([rr, key, value]);
-                        setStyle[rr.concat([key]).join("")] = true;
-                    }
-                }
-            }
-            else {
-                util_1.Util.reportError('internal error');
-            }
-        }
-        return styles;
-    }
-    ;
-    // Return label of sentence for visualization with brat, or null
-    // if not defined. Note: this feature is an extension of both the
-    // CoNLL-U comment format and the basic brat data format.
-    bratLabel() {
-        var label = null;
-        for (let i = 0; i < this.comments.length; i++) {
-            var comment = this.comments[i];
-            var m = comment.match(/^(\#\s*sentence-label\b)(.*)/);
-            if (!m) {
-                continue;
-            }
-            label = m[2].trim();
-        }
-        return label;
-    }
-    ;
-    // Return representation of sentence in brat embedded format (see
-    // http://brat.nlplab.org/embed.html).
-    // If includeEmpty is truthy, include empty nodes in the representation.
-    // Note: "styles" is an extension, not part of the basic format.
-    toBrat(includeEmpty) {
-        var text = this.bratText(includeEmpty);
-        var spans = this.bratSpans(includeEmpty);
-        var attributes = this.bratAttributes(includeEmpty);
-        var relations = this.bratRelations(includeEmpty);
-        var comments = this.bratComments(includeEmpty);
-        var styles = this.bratStyles(includeEmpty);
-        var labels = [this.bratLabel()];
-        return {
-            'text': text,
-            'entities': spans,
-            'attributes': attributes,
-            'relations': relations,
-            'comments': comments,
-            'styles': styles,
-            'sentlabels': labels,
-        };
-    }
-    ;
-    elementById() {
-        var elementById = {};
-        for (let i = 0; i < this.elements.length; i++) {
-            elementById[this.elements[i].id] = this.elements[i];
-        }
-        return elementById;
-    }
-    ;
-    addError(issue, element) {
-        this.issues.push('line ' + (element.lineidx + 1) + ': ' + issue + ' ("' + element.line + '")');
-    }
-    // Check validity of the sentence. Return list of strings
-    // representing issues found in validation (empty list if none).
-    validate() {
-        this.issues = [];
-        this.validateUniqueIds();
-        this.validateWordSequence();
-        this.validateMultiwordSequence();
-        this.validateEmptyNodeSequence();
-        this.validateReferences();
-        this.validateParentAndChildren();
-        return this.issues;
-    }
-    ;
-    validateParentAndChildren() {
-        var initialIssueCount = this.issues.length;
-        for (let e of this.elements) {
-            if (e.isMultiword && e.id.split("-").length != 2)
-                this.addError('isMultiword but id is not a range."' + e.id + '"', e);
-            if (!e.isMultiword && e.id.split("-").length != 1)
-                this.addError('is not a Multiword but id is not a single integer."' + e.id + '"', e);
-            if (e.isMultiword && e.children.length == 0)
-                this.addError('isMultiword but zero children."' + e.id + '"', e);
-            if (e.isMultiword && e.children.filter(ee => ee.parent != e).length > 0)
-                this.addError('isMultiword and children are not pointing to parent."' + e.id + '"', e);
-        }
-    }
-    // Check for presence of ID duplicates
-    validateUniqueIds() {
-        var initialIssueCount = this.issues.length;
-        var elementById = {};
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            if (elementById[element.id] !== undefined) {
-                this.addError('non-unique ID "' + element.id + '"', element);
-            }
-            elementById[element.id] = element;
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    // Check validity of word ID sequence (should be 1,2,3,...)
-    validateWordSequence() {
-        var initialIssueCount = this.issues.length;
-        var expectedId = 1;
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            if (element.isMultiword || element.isEmptyNode()) {
-                continue; // only check simple word sequence here
-            }
-            if (parseInt(element.id, 10) !== expectedId) {
-                this.addError('word IDs should be 1,2,3,..., ' +
-                    'expected ' + expectedId + ', got ' + element.id, element);
-            }
-            expectedId = parseInt(element.id, 10) + 1;
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    // Check that multiword token ranges are valid
-    validateMultiwordSequence() {
-        var initialIssueCount = this.issues.length;
-        var expectedId = 1;
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            if (element.isMultiword && element.rangeFrom() !== expectedId) {
-                this.addError('multiword tokens must appear before ' +
-                    'first word in their range', element);
-            }
-            else {
-                expectedId = parseInt(element.id, 10) + 1;
-            }
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    validateEmptyNodeSequence() {
-        var initialIssueCount = this.issues.length;
-        var previousWordId = '0'; // TODO check https://github.com/UniversalDependencies/docs/this.issues/382
-        var nextEmptyNodeId = 1;
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            if (element.isWord()) {
-                previousWordId = element.id;
-                nextEmptyNodeId = 1;
-            }
-            else if (element.isEmptyNode()) {
-                var expectedId = previousWordId + '.' + nextEmptyNodeId;
-                if (element.id !== expectedId) {
-                    this.addError('empty node IDs should be *.1, *.2, ... ' +
-                        'expected ' + expectedId + ', got ' + element.id, element);
-                }
-                nextEmptyNodeId++;
-            }
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    // Check validity of ID references in HEAD and DEPS.
-    validateReferences() {
-        var initialIssueCount = this.issues.length;
-        var elementById = this.elementById();
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            // validate HEAD
-            if (!element.validHeadReference(elementById)) {
-                this.addError('HEAD is not valid ID: "' + element.head + '"', element);
-            }
-            // validate DEPS
-            var elemDeps = element.dependencies(true);
-            for (let j = 0; j < elemDeps.length; j++) {
-                var head = elemDeps[j][1];
-                if (head !== '0' && elementById[head] === undefined) {
-                    this.addError('invalid ID "' + head + '" in DEPS', element);
-                }
-            }
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    repair(log) {
-        log = (log !== undefined ? log : util_1.Util.nullLogger);
-        if (!this.validateUniqueIds()) {
-            this.repairUniqueIds(log);
-        }
-        if (!this.validateWordSequence()) {
-            this.repairWordSequence(log);
-        }
-        if (!this.validateMultiwordSequence()) {
-            this.repairMultiwordSequence(log);
-        }
-        if (!this.validateEmptyNodeSequence()) {
-            this.repairEmptyNodeSequence(log);
-        }
-        if (!this.validateReferences()) {
-            this.repairReferences(log);
-        }
-        var issues = this.validate();
-        return issues.length === 0;
-    }
-    ;
-    repairUniqueIds(log) {
-        log = (log !== undefined ? log : util_1.Util.nullLogger);
-        var elementById = {}, filtered = [];
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            if (elementById[element.id] === undefined) {
-                elementById[element.id] = element;
-                filtered.push(element);
-            }
-            else {
-                log('repair: remove element with duplicate ID "' + element.id + '"');
-            }
-        }
-        this.elements = filtered;
-        return true;
-    }
-    ;
-    repairWordSequence(log) {
-        log('TODO: implement ConllU.ConlluSentence.repairWordSequence()');
-        return true;
-    }
-    ;
-    repairMultiwordSequence(log) {
-        log('TODO: implement ConllU.ConlluSentence.repairMultiwordSequence()');
-        return true;
-    }
-    ;
-    repairEmptyNodeSequence(log) {
-        log('TODO: implement ConllU.ConlluSentence.repairEmptyNodeSequence()');
-        return true;
-    }
-    ;
-    repairReferences(log) {
-        log = (log !== undefined ? log : util_1.Util.nullLogger);
-        var elementById = this.elementById();
-        for (let i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
-            // repair HEAD if not valid
-            if (!element.validHeadReference(elementById)) {
-                log('repair: blanking invalid HEAD');
-                element.head = "";
-            }
-            // repair DEPS if not valid
-            if (element.deps === '_') {
-                continue;
-            }
-            var deparr = element.deps.split('|'), filtered = [];
-            for (let j = 0; j < deparr.length; j++) {
-                var dep = deparr[j];
-                var m = dep.match(util_1.Util.dependencyRegex);
-                if (m) {
-                    var head = m[1], deprel = m[2];
-                    if (head === '0' || elementById[head] !== undefined) {
-                        filtered.push(dep);
-                    }
-                    else {
-                        log('repair: removing invalid ID from DEPS');
-                        this.error = true;
-                    }
-                }
-                else {
-                    util_1.Util.reportError('internal error: repairReferences(): ' +
-                        'invalid DEPS');
-                }
-            }
-            if (filtered.length === 0) {
-                element.deps = '_';
-            }
-            else {
-                element.deps = filtered.join('|');
-            }
-        }
-        return true;
-    }
-    ;
-}
-exports.ConlluSentence = ConlluSentence;
-//# sourceMappingURL=sentence.js.map
-
-/***/ }),
-
-/***/ 211:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __webpack_require__(54);
-class ConlluElement {
-    // represents CoNLL-U word or multiword token
-    constructor(fields, lineidx, line, sentence) {
-        /*
-         * ConllU.Element: represents CoNLL-U word or multiword token
-         */
-        this._id = "";
-        this.form = "";
-        this.lemma = "";
-        this.upostag = "";
-        this._xpostag = "";
-        this.issues = [];
-        // private feats : string = "";
-        this.head = "";
-        this.deprel = "";
-        this.deps = "";
-        this._miscs = {};
-        this.lineidx = "";
-        this.line = "";
-        this.isSeg = -1;
-        this.parent = null;
-        this.children = [];
-        this.features = [];
-        this.analysis = [];
-        this.isMultiword = false;
-        this.sentence = sentence;
-        this.id = fields[0];
-        this.form = fields[1];
-        this.lemma = fields[2];
-        this.upostag = fields[3];
-        this.feats = fields[5];
-        this.xpostag = fields[4];
-        this.head = fields[6];
-        this.deprel = fields[7];
-        this.deps = fields[8];
-        this.misc = fields[9];
-        this.lineidx = lineidx;
-        this.line = line;
-    }
-    get id() {
-        return this._id;
-    }
-    set id(args) {
-        this._id = args;
-        this.isMultiword = this._isMultiword();
-    }
-    get xpostag() {
-        return this._xpostag;
-    }
-    set xpostag(argv) {
-        if (this.isMultiword) {
-            this._xpostag = "_";
-            return;
-        }
-        this._xpostag = this.sentence.document.mapTagToXpostag(argv);
-        this.upostag = this.sentence.document.mapTagToUpostag(this._xpostag, this.upostag);
-        // remove feats
-        var tag = this.sentence.document.config.alltags.find(x => x.tag == this._xpostag);
-        if (!tag)
-            return;
-        else if (Array.isArray(tag.features)) {
-            this.features = this.features.filter(x => tag.features.indexOf(x.key) >= 0);
-            // this.features = tag.features.map(x=>this.features.find(y=>y.key==x)||x).map(x=>typeof x =="string" ?{key:x,value:"_"}:x)
-            // console.log(this.features)
-        }
-    }
-    set misc(args) {
-        this._miscs = {};
-        if (args == undefined)
-            return;
-        if (args == "_")
-            return;
-        args.split("|").forEach(text => {
-            var arr = text.split("=");
-            this._miscs[arr[0]] = arr[1];
-        });
-    }
-    get misc() {
-        return Object.keys(this._miscs).map(key => {
-            return this._miscs[key] ? key + "=" + this._miscs[key] : undefined;
-        }).filter(x => x != undefined).sort().join("|") || "_";
-    }
-    set feats(args) {
-        this.features = [];
-        if (args == undefined)
-            return;
-        if (args == "_")
-            return;
-        // args.split("|").forEach(text => {
-        //     var arr = text.split("=")
-        //     this.features.push({key:arr[0],value:arr[1]})
-        // })
-        var featarr = args.split('|');
-        for (let i = 0; i < featarr.length; i++) {
-            var feat = featarr[i];
-            var m = feat.match(util_1.Util.featureRegex);
-            if (!m) {
-                continue;
-            }
-            var name = m[1], valuestr = m[2];
-            var values = valuestr.split(',');
-            for (let j = 0; j < values.length; j++) {
-                var value = values[j];
-                let m = value.match(util_1.Util.featureValueRegex);
-                if (!m) {
-                    continue;
-                }
-                this.features.push({ key: name, value: value });
-            }
-        }
-    }
-    get feats() {
-        return this.features.map(v => {
-            return v.key + "=" + v.value;
-        }).sort().join("|") || "_";
-    }
-    ;
-    setFeature(key, value) {
-        var i = this.features.findIndex(x => x.key == key);
-        if (i >= 0)
-            if (value)
-                this.features[i].value = value;
-            else
-                this.features.splice(i, 1);
-        else
-            this.features.push({ key: key, value: value });
-    }
-    copy(from) {
-        this.form = from.form;
-        this.lemma = from.lemma;
-        this.upostag = from.upostag;
-        this.xpostag = from.xpostag;
-        this.feats = from.feats;
-        this.head = from.head;
-        this.deprel = from.deprel;
-        this.deps = from.deps;
-        this.misc = from.misc;
-    }
-    getContext(span = 2) {
-        var elems = this.sentence.tokens();
-        // var eindex = elems.findIndex(e=>e==(this.parent || this))
-        var eindex = elems.indexOf(this.parent || this);
-        return elems.filter((e, i) => i >= eindex - span && i <= eindex + span);
-    }
-    isSameAs(element) {
-        return this.children.length == element.children.length &&
-            this.children.filter((c, i) => !c.isSameAs(element.children[i])).length == 0 &&
-            this.form == element.form &&
-            // this.lemma == element.lemma &&
-            this.upostag == element.upostag &&
-            this.xpostag == element.xpostag &&
-            this.feats == element.feats &&
-            this.head == element.head &&
-            this.deprel == element.deprel &&
-            this.deps == element.deps;
-    }
-    copyMorphInfo(from) {
-        this.upostag = from.upostag;
-        this.xpostag = from.xpostag;
-        this.feats = from.feats;
-        this.head = from.head;
-        this.deprel = from.deprel;
-        this.deps = from.deps;
-        this.misc = from.misc;
-    }
-    morphFeatsMissing() {
-        var tag = this.sentence.document.config.alltags.find(x => x.tag == this.xpostag);
-        if (!tag) {
-            // Util.reportError("tag was not found!", this.xpostag)
-            return [];
-        }
-        else if (!tag.features) {
-            util_1.Util.reportError("tag has no list of possible morph feats!" + this.xpostag);
-            return [];
-        }
-        else
-            return tag.features.filter(x => !this.features.find(y => y.key == x));
-    }
-    changeWith(el) {
-        if (el.parent) {
-            util_1.Util.reportError("ERROR: changeWith cannot be used with a child element");
-            el = el.parent;
-        }
-        // parent vs. parent
-        // var i = this.sentence.elements.findIndex(x=>x==this)
-        var i = this.sentence.elements.indexOf(this);
-        // if(el.isMultiword){
-        // Array.prototype.splice.apply(this.sentence.elements,[i,1,el].concat(el.children))
-        var c = el.clone();
-        // c now has elements where first is parent and rest is children
-        // var parent = c[0]
-        c.analysis = this.analysis;
-        c.sentence = this.sentence;
-        c.children.forEach(e => {
-            e.sentence = this.sentence;
-            // e._miscs["FROM_MA"]=true
-        });
-        // console.log(c.sentence.validate(),this.children.length);
-        // console.log([i,1+this.children.length].concat([c,...c.children]))
-        Array.prototype.splice.apply(this.sentence.elements, [i, 1 + (this.parent ? this.parent.children.length : this.children.length)].concat([c, ...c.children]));
-        // console.log(this.sentence.elements.length)
-        this.sentence.refix(true);
-        if (c.isMultiword)
-            return c.children[0];
-        else
-            return c;
-    }
-    clone() {
-        var e = new ConlluElement([this.id, this.form,
-            this.lemma,
-            this.upostag,
-            this.xpostag,
-            this.feats,
-            this.head,
-            this.deprel,
-            this.deps,
-            this.misc], this.lineidx, this.line, this.sentence);
-        e.isMultiword = this.isMultiword;
-        e.analysis = this.analysis;
-        e.sentence = this.sentence;
-        e.children = this.children.map(ee => {
-            let eee = ee.clone();
-            eee.parent = e;
-            return eee;
-        });
-        return e;
-    }
-    // cloneParent  (){
-    //     var all = []
-    //     var parent = this.clone()
-    //     return [parent].concat(this.children.map(e=>{
-    //         e.parent = parent;
-    //         return e.clone()
-    //     }))
-    // }
-    toConllU(includeId = true, includeChildren = true) {
-        if (includeChildren) {
-            if (this.isMultiword) {
-                return [this, ...this.children].map(e => e.toConllU(includeId, false)).join("\n");
-            }
-            else
-                return this.toConllU(includeId, false);
-        }
-        var line = [includeId ? this.id : "",
-            this.form,
-            this.lemma,
-            this.upostag,
-            this.xpostag,
-            this.feats,
-            this.head,
-            this.deprel,
-            this.deps,
-            includeId ? this.misc : ""];
-        return line.join("\t");
-    }
-    // constraints that hold for all fields
-    validateField(field, name = 'field', allowSpace = false) {
-        if (field === undefined) {
-            this.issues.push('invalid ' + name);
-            return false;
-        }
-        else if (field.length === 0) {
-            this.issues.push(name + ' must not be empty: "' + field + '"');
-            return false;
-        }
-        else if (util_1.Util.hasSpace(field) && !allowSpace) {
-            this.issues.push(name + ' must not contain space: "' + field + '"');
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    getForm() {
-        // console.log(elem)
-        if (!this.parent)
-            return this.form;
-        var prev = this.parent.children[this.isSeg - 1];
-        var prevStr = prev ? prev.form.replace(/[ًٌٍَُِّْ]*$/, "").substr(-1) : "";
-        var next = this.parent.children[this.isSeg + 1];
-        var nextStr = next ? next.form.charAt(0) : "";
-        var meLast = this.form.replace(/[ًٌٍَُِّْ]*$/, "");
-        meLast = meLast.charAt(meLast.length - 1);
-        var meFirst = this.form.charAt(0);
-        if (-this.parent.isSeg == this.isSeg + 1)
-            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") + this.form;
-        else if (this.isSeg == 0)
-            return this.form + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
-        else
-            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") +
-                this.form
-                + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
-    }
-    validateId(id) {
-        if (!this.validateField(id, 'ID')) {
-            return false;
-        }
-        else if (id.match(/^\d+$/)) {
-            if (id === '0') {
-                this.issues.push('ID indices must start from 1: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else if (id.match(/^(\d+)-(\d+)$/)) {
-            var m = id.match(/^(\d+)-(\d+)$/);
-            if (!m) {
-                util_1.Util.reportError('internal error');
-                return false;
-            }
-            var start = parseInt(m[1], 10), end = parseInt(m[2], 10);
-            if (end < start) {
-                this.issues.push('ID ranges must have start <= end: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else if (id.match(/^(\d+)\.(\d+)$/)) {
-            m = id.match(/^(\d+)\.(\d+)$/);
-            if (!m) {
-                util_1.Util.reportError('internal error');
-                return false;
-            }
-            var iPart = parseInt(m[1], 10), fPart = parseInt(m[2], 10);
-            if (iPart == 0 || fPart == 0) {
-                this.issues.push('ID indices must start from 1: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else {
-            this.issues.push('ID must be integer, range, or decimal: "' + id + '"');
-            return false;
-        }
-    }
-    ;
-    validateForm(form) {
-        return this.validateField(form, 'FORM', true);
-    }
-    ;
-    validateLemma(lemma) {
-        return this.validateField(lemma, 'LEMMA', true);
-    }
-    ;
-    validateUpostag(upostag) {
-        return this.validateField(upostag, 'UPOSTAG');
-    }
-    ;
-    validateXpostag(xpostag) {
-        return this.validateField(xpostag, 'XPOSTAG');
-    }
-    ;
-    validateFeats(feats) {
-        if (!this.validateField(feats, 'FEATS')) {
-            return false;
-        }
-        else if (feats === '_') {
-            return true;
-        }
-        var initialIssueCount = this.issues.length;
-        var featarr = feats.split('|');
-        var featmap = {};
-        var prevName = "";
-        for (let i = 0; i < featarr.length; i++) {
-            var feat = featarr[i];
-            var m = feat.match(util_1.Util.featureRegex);
-            if (!m) {
-                // TODO more descriptive issue
-                this.issues.push('invalid FEATS entry: "' + feat + '"');
-                continue;
-            }
-            var name = m[1], valuestr = m[2];
-            if (prevName !== "" &&
-                name.toLowerCase() < prevName.toLowerCase()) {
-                this.issues.push('features must be ordered alphabetically ' +
-                    '(case-insensitive): "' + name + '" < "' + prevName + '"');
-                var noIssue = false;
-            }
-            prevName = name;
-            var values = valuestr.split(',');
-            var valuemap = {}, validValues = [];
-            for (let value of values) {
-                let m = value.match(util_1.Util.featureValueRegex);
-                if (!m) {
-                    this.issues.push('invalid FEATS value: "' + value + '"');
-                    continue;
-                }
-                if (valuemap[value] !== undefined) {
-                    this.issues.push('duplicate feature value: "' + value + '"');
-                    continue;
-                }
-                valuemap[value] = true;
-                validValues.push(value);
-            }
-            if (featmap[name] !== undefined) {
-                this.issues.push('duplicate feature name: "' + name + '"');
-                continue;
-            }
-            if (validValues.length !== 0) {
-                featmap[name] = validValues;
-            }
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    validateHead(head) {
-        // TODO: consider checking that DEPREL is "root" iff HEAD is 0.
-        if (head === null) {
-            return true; // exceptional case for ConlluElement.repair()
-        }
-        else if (!this.validateField(head, 'HEAD')) {
-            return false;
-        }
-        else if (this.isEmptyNode() && head === '_') {
-            return true; // underscore permitted for empty nodes.
-        }
-        else if (head === '_') {
-            return true; // AboBander Only
-        }
-        else if (!head.match(/^\d+$/)) {
-            this.issues.push('HEAD must be an ID or zero: "' + head + '"');
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validateDeprel(deprel) {
-        if (!this.validateField(deprel, 'DEPREL')) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validateDeps(deps) {
-        // TODO: consider checking that deprel is "root" iff head is 0.
-        if (!this.validateField(deps, 'DEPS')) {
-            return false;
-        }
-        else if (deps === '_') {
-            return true;
-        }
-        var deparr = deps.split('|');
-        var prevHead = null;
-        // TODO: don't short-circuit on first error
-        for (let i = 0; i < deparr.length; i++) {
-            var dep = deparr[i];
-            var m = dep.match(/^(\d+(?:\.\d+)?):(\S+)$/);
-            if (!m) {
-                // TODO more descriptive issue
-                this.issues.push('invalid DEPS: "' + deps + '"');
-                return false;
-            }
-            var head = m[1], deprel = m[2];
-            if (prevHead !== null &&
-                parseFloat(head) < parseFloat(prevHead)) {
-                this.issues.push('DEPS must be ordered by head index');
-                return false;
-            }
-            prevHead = head;
-        }
-        return true;
-    }
-    ;
-    validateMisc(misc) {
-        if (!this.validateField(misc, 'MISC')) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validHeadReference(elementById) {
-        return (this.head === '_' || this.head === null || this.head === '0' ||
-            elementById[this.head] !== undefined);
-    }
-    ;
-    isWord() {
-        // word iff ID is an integer
-        return !!this.id.match(/^\d+$/);
-    }
-    ;
-    _isMultiword() {
-        return !!this.id.match(/^\d+-\d+$/);
-    }
-    ;
-    isEmptyNode() {
-        return !!this.id.match(/^\d+\.\d+$/);
-    }
-    ;
-    rangeFrom() {
-        let val = this.id.match(/^(\d+)-\d+$/);
-        if (val)
-            return parseInt(val[1], 10);
-        return -1;
-    }
-    ;
-    rangeTo() {
-        let val = this.id.match(/^\d+-(\d+)$/);
-        if (val)
-            return parseInt(val[1], 10);
-        return -1;
-    }
-    ;
-    isToken(inRange) {
-        // token iff multiword or not included in a multiword range
-        return this.isMultiword || !inRange[this.id];
-    }
-    ;
-    // return list of (DEPENDENT, HEAD, DEPREL) lists
-    dependencies(skipHead = false) {
-        var elemDeps = [];
-        if (!skipHead && this.head !== '_' && this.head !== null) {
-            elemDeps.push([this.id, this.head, this.deprel]);
-        }
-        if (this.deps != '_') {
-            var deparr = this.deps.split('|');
-            for (let i = 0; i < deparr.length; i++) {
-                var dep = deparr[i];
-                var m = dep.match(util_1.Util.dependencyRegex);
-                if (m) {
-                    elemDeps.push([this.id, m[1], m[2]]);
-                }
-                else {
-                    util_1.Util.reportError('internal error: dependencies(): invalid DEPS ' +
-                        this.deps);
-                }
-            }
-        }
-        return elemDeps;
-    }
-    // Check validity of the element. Return list of strings
-    // representing issues found in validation (empty list if none).
-    validate() {
-        var issues = [];
-        this.validateId(this.id);
-        this.validateForm(this.form);
-        // multiword tokens (elements with range IDs) are (locally) valid
-        // iff all remaining fields (3-10) contain just an underscore.
-        if (this.isMultiword) {
-            if (this.lemma != '_' ||
-                this.upostag != '_' ||
-                this.xpostag != '_' ||
-                this.feats != '_' ||
-                this.head != '_' ||
-                this.deprel != '_' ||
-                this.deps != '_' //||
-            // this.misc != '_'
-            ) {
-                this.issues.push('non-underscore field for multiword token');
-            }
-            return issues;
-        }
-        // if we're here, not a multiword token.
-        this.validateLemma(this.lemma);
-        this.validateUpostag(this.upostag);
-        this.validateXpostag(this.xpostag);
-        this.validateFeats(this.feats);
-        this.validateHead(this.head);
-        this.validateDeprel(this.deprel);
-        this.validateDeps(this.deps);
-        this.validateMisc(this.misc);
-        return issues;
-    }
-    ;
-    // Attempt to repair a non-valid element. Return true iff the
-    // element is valid following repair, false otherwise.
-    repair(log) {
-        log = (log !== undefined ? log : util_1.Util.nullLogger);
-        if (!this.validateId(this.id)) {
-            return false; // can't be helped
-        }
-        if (!this.validateForm(this.form)) {
-            log('repair: blanking invalid FORM');
-            this.form = '<ERROR>';
-        }
-        if (this.isMultiword) {
-            // valid as long as everything is blank
-            this.lemma = '_';
-            this.upostag = '_';
-            this.xpostag = '_';
-            this.feats = '_';
-            this.head = '_';
-            this.deprel = '_';
-            this.deps = '_';
-            // this.misc = '_';
-            return true;
-        }
-        // if we're here, not a multiword token.
-        if (!this.validateLemma(this.lemma)) {
-            log('repair: blanking invalid LEMMA');
-            this.lemma = '<ERROR>';
-        }
-        if (!this.validateUpostag(this.upostag)) {
-            log('repair: blanking invalid UPOSTAG');
-            this.upostag = '_'; // TODO: not valid
-        }
-        if (!this.validateXpostag(this.xpostag)) {
-            log('repair: blanking invalid XPOSTAG');
-            this.xpostag = '_';
-        }
-        if (!this.validateFeats(this.feats)) {
-            log('repair: blanking invalid FEATS ' + this.toConllU(false));
-            this.feats = '_';
-        }
-        if (!this.validateHead(this.head)) {
-            log('repair: blanking invalid HEAD');
-            this.head = ""; // note: exceptional case
-        }
-        if (!this.validateDeprel(this.deprel)) {
-            log('repair: blanking invalid DEPREL');
-            this.deprel = '_'; // TODO: not valid
-        }
-        if (!this.validateDeps(this.deps)) {
-            log('repair: blanking invalid DEPS');
-            this.deps = '_';
-        }
-        if (!this.validateMisc(this.misc)) {
-            log('repair: blanking invalid MISC');
-            this.misc = '_';
-        }
-        var issues = this.validate();
-        return issues.length === 0;
-    }
-    ;
-}
-exports.ConlluElement = ConlluElement;
-//# sourceMappingURL=element.js.map
-
-/***/ }),
-
-/***/ 212:
+/***/ 240:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SelectizePopoverPageComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3397,7 +2211,7 @@ var SelectizePopoverPageComponent = (function () {
         this.navParams = navParams;
         this.viewCtrl = viewCtrl;
         this.element = null;
-        this.config = new __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */]();
+        this.config = new __WEBPACK_IMPORTED_MODULE_2__providers_config_json_class__["a" /* ConfigJSON */]();
         this.myconfig = {};
         this.options = [];
         this.selectize_config = function () {
@@ -3512,14 +2326,14 @@ SelectizePopoverPageComponent = __decorate([
 
 /***/ }),
 
-/***/ 213:
+/***/ 241:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MASelectizePopoverPageComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ionic_native_in_app_browser__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ionic_native_in_app_browser__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(17);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3706,93 +2520,13 @@ MASelectizePopoverPageComponent = __decorate([
 
 /***/ }),
 
-/***/ 215:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TagsSelectorComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-/**
- * Generated class for the TagsSelectorComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
-var TagsSelectorComponent = (function () {
-    // @Input() hash : string = ""
-    function TagsSelectorComponent(events) {
-        this.events = events;
-        this.tagsRow = 0;
-        this.currentTags = [];
-        this.tagsRow = 0;
-    }
-    Object.defineProperty(TagsSelectorComponent.prototype, "config", {
-        get: function () {
-            return this._config;
-        },
-        set: function (argv) {
-            this._config = argv;
-            this.currentTags = this.getTags();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TagsSelectorComponent.prototype.getTags = function () {
-        return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map(function (x, i) {
-            x.fn = i + 1;
-            return x;
-        });
-    };
-    TagsSelectorComponent.prototype.increaseTagsRow = function () {
-        this.tagsRow++;
-        this.currentTags = this.getTags();
-        if (this.currentTags.length == 0) {
-            this.tagsRow = 0;
-            this.currentTags = this.getTags();
-        }
-    };
-    TagsSelectorComponent.prototype.selectTag = function (tag) {
-        this.events.publish("changeTag", tag);
-    };
-    return TagsSelectorComponent;
-}());
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])("config"),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */])
-], TagsSelectorComponent.prototype, "_config", void 0);
-TagsSelectorComponent = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'tags-selector',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/'<button color="secondary" ion-button *ngFor="let tag of currentTags;" class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">\n  {{tag.desc}}\n  <ion-badge >{{tag.fn}}</ion-badge>\n</button>\n\n<button ion-button color="secondary" class="tag" title="Press 0 for more tags" (click)="increaseTagsRow()" tabindex="-1">\n  More\n  <ion-badge >0</ion-badge>\n</button>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/,
-        inputs: ['config']
-    }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]])
-], TagsSelectorComponent);
-
-//# sourceMappingURL=tags-selector.js.map
-
-/***/ }),
-
-/***/ 216:
+/***/ 243:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HelpPopoverComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3832,7 +2566,7 @@ var HelpPopoverComponent = (function () {
 }());
 HelpPopoverComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'help-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/'  <ion-card>\n  <ion-card-header>\n    Keyboard Shortcuts\n  </ion-card-header>\n      <ion-list no-border>\n      <ion-item *ngFor="let sh of shortcuts">\n        <!-- <h2><button ion-button outline item-right icon-left>\n          {{sh[0]}}\n        </button></h2>\n        <p>{{sh[1]}}</p>\n -->\n        <!-- <ion-icon name=\'planet\' item-start></ion-icon> -->\n      <ion-note item-start>\n      {{sh[0]}}\n      </ion-note>\n      {{sh[1]}}\n      <ion-note item-end>\n      {{sh[2]}}\n      </ion-note>\n    </ion-item>\n\n      </ion-list>\n      </ion-card>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/
+        selector: 'help-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/'  <ion-card>\n  <ion-card-header>\n    {{\'Keyboard Shortcuts\' | translate}}\n  </ion-card-header>\n      <ion-list no-border>\n      <ion-item *ngFor="let sh of shortcuts">\n        <!-- <h2><button ion-button outline item-right icon-left>\n          {{sh[0]}}\n        </button></h2>\n        <p>{{sh[1]}}</p>\n -->\n        <!-- <ion-icon name=\'planet\' item-start></ion-icon> -->\n      <ion-note item-start>\n      {{sh[0]}}\n      </ion-note>\n      {{sh[1]}}\n      <ion-note item-end>\n      {{sh[2]}}\n      </ion-note>\n    </ion-item>\n\n      </ion-list>\n      </ion-card>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
@@ -3842,14 +2576,14 @@ HelpPopoverComponent = __decorate([
 
 /***/ }),
 
-/***/ 217:
+/***/ 261:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GuidelinesService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -3881,6 +2615,11 @@ var GuidelinesService = (function () {
             specialPos: [],
             specialSeg: [],
         };
+        this.guidelinesObj = {
+            loaded: false,
+            specialPos: {},
+            specialSeg: {},
+        };
     }
     GuidelinesService.prototype.load = function (project, hash) {
         var _this = this;
@@ -3888,7 +2627,6 @@ var GuidelinesService = (function () {
             // already loaded data
             return Promise.resolve(this.guidelines);
         }
-        var that = this;
         // don't have the data yet
         return new Promise(function (resolve, reject) {
             // We're using Angular HTTP provider to request the data,
@@ -3901,7 +2639,7 @@ var GuidelinesService = (function () {
             //    	}),
             //    	// 'body': JSON.stringify()
             // }
-            _this.http.post(_this.myconfig.get("server") + "guidelines", {
+            _this.http.post(_this.myconfig.getValue("server") + "guidelines", {
                 project: project,
                 hash: hash
             })
@@ -3913,14 +2651,18 @@ var GuidelinesService = (function () {
                 if (data.ok) {
                     data.guides.forEach(function (v) {
                         if (v.ok) {
-                            that.guidelines[v.type] = v.data;
+                            _this.guidelines[v.type] = v.data;
+                            _this.guidelinesObj[v.type] = {};
                             _this.guidelines[v.type] = _this.guidelines[v.type].map(function (x) {
                                 x.form_normalized = x.form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g, "");
+                                var options = {};
+                                x.options.forEach(function (x) { return options[x.value] = x; });
+                                _this.guidelinesObj[v.type][x.form_normalized] = options;
                                 return x;
                             });
                         }
                     });
-                    resolve(that.guidelines);
+                    resolve(_this.guidelines);
                 }
                 else
                     reject(data.error);
@@ -3933,25 +2675,31 @@ var GuidelinesService = (function () {
             return {};
         return this.guidelines[type].filter(function (x) { return x.form_normalized == form; })[0] || {};
     };
+    GuidelinesService.prototype.getObj = function (type, form) {
+        form = form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g, "");
+        if (!this.guidelines[type])
+            return {};
+        return this.guidelinesObj[type][form] || {};
+    };
     return GuidelinesService;
 }());
 GuidelinesService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
 ], GuidelinesService);
 
 //# sourceMappingURL=guidelines-service.js.map
 
 /***/ }),
 
-/***/ 219:
+/***/ 263:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(277);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -3959,44 +2707,36 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 238:
+/***/ 277:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export loadConfiguration */
 /* unused harmony export deepLinkConfig */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(278);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__ = __webpack_require__(294);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_guider_guider__ = __webpack_require__(295);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_concordance_concordance__ = __webpack_require__(296);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__components_conllu_editor_conllu_editor__ = __webpack_require__(297);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__ionic_native_in_app_browser__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__pipes_not_multi_tag__ = __webpack_require__(298);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pipes_is_next_sentence__ = __webpack_require__(299);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__ionic_native_status_bar__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26_ng_selectize__ = __webpack_require__(300);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28_angular2_focus__ = __webpack_require__(304);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(318);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__ = __webpack_require__(261);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_components_module__ = __webpack_require__(421);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_in_app_browser__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pipes_not_multi_tag__ = __webpack_require__(431);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pipes_is_next_sentence__ = __webpack_require__(432);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__ionic_native_status_bar__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__ionic_native_splash_screen__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_angular2_focus__ = __webpack_require__(433);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__ = __webpack_require__(23);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4004,12 +2744,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-// import { HttpClientModule } from "@angular/common/http";
-
-
-
-
-// import { Data } from './data';
 
 
 
@@ -4025,13 +2759,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-// import { HighlightComponent } from '../components/highlight/highlight';
 
-
-
-
-
-// import { IonicStorageModule } from '@ionic/storage';
 
 
 
@@ -4041,28 +2769,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 function loadConfiguration(configurationService) {
     return function () { return configurationService.load("assets/ionic.config.json"); };
 }
-// import { Storage } from '@ionic/storage';
-// let storage = new Storage(['sqlite', 'websql', 'indexeddb'], { name: '__hadiths' })// optional config);
-// export function provideData() {
-//   return new Data(storage)// optional config);
-// }
-// export function provideStorage() {
-// return storage;
-// }
-// var wasim_config = {
-//   server: "http://wasim-api.localhost/",
-//   // udpipe: "http://localhost:1441/",
-//   locationStrategy: 'hash',
-// }
 var deepLinkConfig = {
     links: [
-        // { component: AnnotatePage, name: 'Annotate Page', segment: '',defaultHistory: [ ] },
-        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id/:position', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */], name: 'Documents Page', segment: 'docs/:project/:hash', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */], name: 'Projects Page', segment: 'projects', defaultHistory: [] }
+        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id/:position', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */], name: 'Documents Page', segment: 'docs/:project/:hash', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */], name: 'Projects Page', segment: 'projects', defaultHistory: [] }
     ]
 };
+// export function createTranslateLoader(http: Http) {
+//   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+// }
 var AppModule = (function () {
     function AppModule() {
     }
@@ -4073,60 +2790,44 @@ AppModule = __decorate([
         declarations: [
             __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
             __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */],
-            __WEBPACK_IMPORTED_MODULE_21__pipes_not_multi_tag__["a" /* NotMultiTag */],
-            __WEBPACK_IMPORTED_MODULE_22__pipes_is_next_sentence__["a" /* IsNextSentence */],
-            __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__["a" /* GetFormPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_17__components_conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */],
-            __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__["a" /* HelpPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["a" /* LoginModal */],
-            __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__["FileSelectDirective"],
-            __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__["FileDropDirective"],
-            __WEBPACK_IMPORTED_MODULE_14__components_guider_guider__["a" /* GuiderComponent */],
-            __WEBPACK_IMPORTED_MODULE_15__components_concordance_concordance__["a" /* ConcordanceComponent */]
+            __WEBPACK_IMPORTED_MODULE_14__pipes_not_multi_tag__["a" /* NotMultiTag */],
+            __WEBPACK_IMPORTED_MODULE_15__pipes_is_next_sentence__["a" /* IsNextSentence */],
+            __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["a" /* LoginModal */],
+            __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__["FileSelectDirective"],
+            __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__["FileDropDirective"],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_28_angular2_focus__["a" /* FocusModule */].forRoot(),
+            __WEBPACK_IMPORTED_MODULE_20_angular2_focus__["a" /* FocusModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-            __WEBPACK_IMPORTED_MODULE_23__angular_http__["b" /* HttpModule */],
-            // HttpClientModule,
-            __WEBPACK_IMPORTED_MODULE_26_ng_selectize__["a" /* NgSelectizeModule */],
-            // IonicStorageModule.forRoot(),
-            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], { locationStrategy: 'hash' }, deepLinkConfig)
-            // IonicModule.forRoot(MyApp,wasim_config, deepLinkConfig)
+            __WEBPACK_IMPORTED_MODULE_16__angular_http__["b" /* HttpModule */],
+            __WEBPACK_IMPORTED_MODULE_10__components_components_module__["a" /* ComponentsModule */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], { locationStrategy: 'hash' }, deepLinkConfig),
         ],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicApp */]],
         entryComponents: [
             __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
-            __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["a" /* LoginModal */],
-            __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__["a" /* GetFormPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["a" /* LoginModal */],
             __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */]
         ],
         providers: [
             { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["ErrorHandler"], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["e" /* IonicErrorHandler */] },
-            __WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__["a" /* ConfigurationService */],
+            __WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__["a" /* ConfigurationService */],
             {
                 provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["APP_INITIALIZER"],
                 useFactory: loadConfiguration,
-                deps: [__WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__["a" /* ConfigurationService */]],
+                deps: [__WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__["a" /* ConfigurationService */]],
                 multi: true
             },
-            // Data,
-            __WEBPACK_IMPORTED_MODULE_24__ionic_native_status_bar__["a" /* StatusBar */],
-            __WEBPACK_IMPORTED_MODULE_25__ionic_native_splash_screen__["a" /* SplashScreen */],
-            __WEBPACK_IMPORTED_MODULE_18__ionic_native_in_app_browser__["a" /* InAppBrowser */],
+            __WEBPACK_IMPORTED_MODULE_17__ionic_native_status_bar__["a" /* StatusBar */],
+            __WEBPACK_IMPORTED_MODULE_18__ionic_native_splash_screen__["a" /* SplashScreen */],
+            __WEBPACK_IMPORTED_MODULE_11__ionic_native_in_app_browser__["a" /* InAppBrowser */],
             __WEBPACK_IMPORTED_MODULE_4__providers_word_service__["a" /* WordService */],
             __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__["a" /* ConlluService */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["b" /* ConfigService */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["a" /* ConfigService */],
             __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__["a" /* GuidelinesService */],
             __WEBPACK_IMPORTED_MODULE_8__providers_project_service__["a" /* ProjectService */],
         ]
@@ -4137,16 +2838,19 @@ AppModule = __decorate([
 
 /***/ }),
 
-/***/ 278:
+/***/ 318:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(228);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(230);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_storage__ = __webpack_require__(134);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4161,7 +2865,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-// import { Data } from './data';
+
+
+
 // Enable production mode unless running locally
 // if (!/localhost/.test(document.location.host)) {
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
@@ -4169,14 +2875,25 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
 var MyApp = (function () {
     function MyApp(platform, 
         // public data: Data,
-        _config, statusbar, splashscreen) {
+        _config, statusbar, translateService, storage, myconfig, splashscreen) {
+        var _this = this;
         this.platform = platform;
         this._config = _config;
         this.statusbar = statusbar;
+        this.translateService = translateService;
+        this.storage = storage;
+        this.myconfig = myconfig;
         this.splashscreen = splashscreen;
         this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__["b" /* ProjectsPage */];
         this.initializeApp();
-        // used for an example of ngFor and navigation
+        var browserLang = this.translateService.getBrowserLang();
+        var lang = this.myconfig.getValue('lang');
+        var langs = this.myconfig.getValue('langs');
+        this.translateService.addLangs(langs);
+        this.translateService.setDefaultLang("en");
+        storage.get("lang").then(function (s) { return _this.translateService.use(s); }).catch(function () {
+            _this.translateService.use(lang ? lang : browserLang);
+        });
         this.pages = [];
     }
     MyApp.prototype.initializeApp = function () {
@@ -4205,6 +2922,9 @@ MyApp = __decorate([
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Platform */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
         __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
+        __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */],
+        __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__["a" /* ConfigurationService */],
         __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
 
@@ -4212,362 +2932,496 @@ MyApp = __decorate([
 
 /***/ }),
 
-/***/ 293:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const sentence_1 = __webpack_require__(210);
-const element_1 = __webpack_require__(211);
-const util_1 = __webpack_require__(54);
-class ConlluDocument {
-    // constructor(config, public events: Events=null) {
-    constructor(config, id = "") {
-        /*
-         * ConllU.ConlluDocument: represents CoNLL-U document
-         */
-        this.sentences = [];
-        this.config = { alltags: [] };
-        this.id = "";
-        this.error = false;
-        this.strict = false;
-        this.issues = [];
-        this.logger = (s) => { };
-        if (!config)
-            console.error("No config JSON is supplied!");
-        this.config = config;
-        this.reset();
-        this.id = id;
-    }
-    mapTagToXpostag(from) {
-        var f = this.config.alltags.find(x => x.tag == from || x.mapFrom.indexOf(from) >= 0);
-        if (f)
-            return f.tag;
-        util_1.Util.reportError("tag is not mapped to Xpostag: " + from);
-        return from;
-    }
-    fixSentenceIds() {
-        this.sentences.forEach((s, i) => {
-            // console.log(s)
-            let id_i = s.comments.findIndex(c => {
-                return c.indexOf("# sent_id") == 0;
-            });
-            if (id_i >= 0)
-                s.comments[id_i] = "# sent_id = " + (i + 1);
-            else
-                s.comments.push("# sent_id = " + (i + 1));
-            s.id = 'S' + (i + 1);
-            let text_i = s.comments.findIndex(c => {
-                return c.indexOf("# text") == 0;
-            });
-            if (text_i >= 0)
-                s.comments[text_i] = "# text = " + s.getText();
-            else
-                s.comments.push("# text = " + s.getText());
-        });
-    }
-    mapTagToUpostag(from, from_ud) {
-        var f = this.config.alltags.find(x => x.tag == from);
-        if (f)
-            return f.mapToConllU;
-        util_1.Util.reportError("tag is not mapped to Upostag: " + from);
-        return from_ud;
-    }
-    reset() {
-        this.sentences = [];
-        this.error = false;
-        this.logger = function (s) { };
-        this.strict = false; // pick heuristically
-    }
-    ;
-    getElement(ref) {
-        if (!ref)
-            return null;
-        ref = ref.split(":");
-        let sent = this.sentences.find(x => x.id == ref[0]);
-        if (!sent)
-            return null;
-        let elem = sent.elements.find(x => x.id == ref[1]);
-        if (!elem)
-            return null;
-        // this.events.publish('highlight:change', elem)
-        if (elem.isMultiword)
-            elem = elem.children[0];
-        return elem;
-    }
-    getElementLine(element, sentence) {
-        var counter = 1;
-        var result = 0;
-        this.sentences.forEach(s => {
-            s.elements.forEach(e => {
-                if (s.id == sentence.id && e.id == element.id) {
-                    result = counter;
-                }
-                counter++;
-            });
-            counter++;
-        });
-        return result;
-    }
-    log(message) {
-        this.logger(message);
-    }
-    ;
-    logError(message) {
-        this.log('error: ' + message);
-        this.error = true;
-    }
-    ;
-    toConllU() {
-        var lines = [];
-        for (let sent of this.sentences) {
-            sent.toConllU(lines);
-            lines.push("");
-        }
-        return lines.join("\n");
-    }
-    /* Parse CoNLL-U format, return ConlluDocument.
-     * (see http://universaldependencies.github.io/docs/format.html)
-     *
-     * CoNLL-U files contain three types of lines:
-     * 1.  Word lines
-     * 2.  Blank lines marking sentence boundaries
-     * 3.  Comment lines starting with a hash ("#")
-     *
-     * Each word line has the following format
-     * 1.  ID: Word index, integer starting at 1 for each new sentence;
-     *     may be a range for tokens with multiple words; may be a decimal
-     *     number for empty nodes.
-     * 2.  FORM: Word form or punctuation symbol.
-     * 3.  LEMMA: Lemma or stem of word form.
-     * 4.  UPOSTAG: Universal part-of-speech tag.
-     * 5.  XPOSTAG: Language-specific part-of-speech tag; underscore
-     *     if not available.
-     * 6.  FEATS: List of morphological features from the Universal
-     *     feature inventory or from a defined language-specific extension;
-     *      underscore if not available.
-     * 7.  HEAD: Head of the current token, which is either a value of ID
-     *     or zero (0).
-     * 8.  DEPREL: Universal Stanford dependency relation to the HEAD
-     *     (root iff HEAD = 0) or a defined language-specific subtype
-     *     of one.
-     * 9.  DEPS: List of secondary dependencies (head-deprel pairs).
-     * 10. MISC: Any other annotation.
-     */
-    parse(input, logger, strict) {
-        // discard previous state, if any
-        this.reset();
-        if (logger !== undefined) {
-            this.logger = logger;
-        }
-        if (strict !== undefined) {
-            this.strict = strict;
-        }
-        // TODO: handle other newline formats
-        var lines = input.split('\n');
-        if (!this.strict) {
-            this.strict = util_1.Util.selectParsingMode(input, this.logger);
-        }
-        // select splitter to use for dividing the lines into fields.
-        var splitter = util_1.Util.selectFieldSplitter(input, this.logger, this.strict);
-        var //elements = [],
-        // comments = [],
-        beforeConlluSentence = true;
-        var sId = 'S' + (this.sentences.length + 1);
-        var currentSentence = new sentence_1.ConlluSentence(sId, [], [], this); //, currentSentence.elements, currentSentence.comments);
-        for (let idx = 0; idx < lines.length; idx++) {
-            var line = lines[idx], that = this;
-            var logLineError = function (message) {
-                that.logError('line ' + (idx + 1) + ': ' + message + ' ("' + line + '")');
-                that.error = true;
-            };
-            if (util_1.Util.isComment(line)) {
-                if (beforeConlluSentence) {
-                    currentSentence.comments.push(line);
-                }
-                else {
-                    logLineError('comments must precede sentence, ignoring');
-                }
-                continue;
-            }
-            // non-comment, assume inside sentence until terminated by
-            // blank line
-            beforeConlluSentence = false;
-            var fields = splitter(line);
-            if (fields.length === 0) {
-                // empty line, terminates sentence
-                if (currentSentence.elements.length !== 0 || currentSentence.comments.length !== 0) {
-                    currentSentence.refix();
-                    this.sentences.push(currentSentence);
-                    let sId = 'S' + (this.sentences.length + 1);
-                    currentSentence = new sentence_1.ConlluSentence(sId, [], [], this); //, currentSentence.elements, currentSentence.comments);
-                    // this.sentences.push(sentence);
-                }
-                else {
-                    if (this.config.debug)
-                        logLineError('empty sentence, ignoring');
-                }
-                // reset
-                // elements = [];
-                // comments = [];
-                beforeConlluSentence = true;
-                continue;
-            }
-            if (fields.length !== 10) {
-                logLineError('expected 10 fields, got ' + fields.length);
-                util_1.Util.repairFields(fields, this.logger);
-            }
-            var element = new element_1.ConlluElement(fields, idx, line, currentSentence);
-            let issues = element.validate();
-            issues.forEach(v => logLineError(v));
-            if (issues.length !== 0) {
-                if (!element.repair(this.logger)) {
-                    logLineError('repair failed, discarding line');
-                    continue; // failed, ignore line
-                }
-            }
-            let ar = element.id.split("-");
-            if (ar[0] != ar[1])
-                currentSentence.elements.push(element);
-        }
-        // If elements is non-empty, last sentence ended without its
-        // expected terminating empty line. Process, but warn if strict.
-        // if (elements.length !== 0) {
-        //     if (this.strict) {
-        //         this.logError('missing blank line after last sentence');
-        //     }
-        //     var sId = 'S' + (this.sentences.length + 1);
-        //     var sentence = new ConlluSentence(sId, elements, comments);
-        //     sentence.document = this;
-        //     this.sentences.push(sentence);
-        //     // reset
-        //     elements = [];
-        //     comments = [];
-        //     beforeConlluSentence = true;
-        // }
-        // If comments is non-empty, there were comments after the
-        // terminating empty line. Warn and discard.
-        if (currentSentence.comments.length !== 0 && currentSentence.elements.length == 0) {
-            this.logError('comments may not occur after last sentence, ' +
-                'ignoring');
-        }
-        else {
-            currentSentence.refix();
-            this.sentences.push(currentSentence);
-        }
-        for (let i = 0; i < this.sentences.length; i++) {
-            var sentence = this.sentences[i];
-            let issues = sentence.validate();
-            issues.forEach(v => this.logError(v));
-            if (issues.length !== 0) {
-                if (!sentence.repair(this.logger)) {
-                    this.logError('repair failed, discarding sentence');
-                    continue;
-                }
-            }
-        }
-        // console.log(this)
-        return this;
-    }
-    validate() {
-        this.sentences.forEach(s => s.validate());
-    }
-    find(creteria) {
-        var regExps = ["form", "lemma"]
-            .filter(prop => creteria[prop] !== "" && creteria[prop].split("/").length == 3)
-            .map(prop => {
-            let s = creteria[prop];
-            creteria[prop] = "";
-            return { "prop": prop, "regexp": new RegExp(s.split("/")[1]) };
-        });
-        return [].concat.apply([], this.sentences.map(sent => {
-            return sent.elements.filter(elem => {
-                if (regExps.filter(r => !r.regexp.test(elem[r.prop])).length > 0)
-                    return false;
-                if (creteria.form !== "" && elem.form != creteria.form && elem.form.replace(/[ًٌٍَُِّْ]/g, "") != creteria.form) {
-                    return false;
-                }
-                if (creteria.xpos !== "" && elem.xpostag != creteria.xpos)
-                    return false;
-                if (creteria.upos !== "" && elem.upostag != creteria.upos)
-                    return false;
-                if (creteria.feats !== "" && elem.feats.indexOf(creteria.feats) < 0)
-                    return false;
-                if (creteria.misc !== "" && elem.misc.indexOf(creteria.misc) < 0)
-                    return false;
-                return true;
-            });
-        }));
-    }
-    toBrat(logger, includeEmpty) {
-        if (logger !== undefined) {
-            this.logger = logger;
-        }
-        if (includeEmpty === undefined) {
-            includeEmpty = false; // hide empty nodes by default
-        }
-        // merge brat data over all sentences
-        var mergedBratData = {}, textOffset = 0;
-        var categories = [
-            'entities',
-            'attributes',
-            'relations',
-            'comments',
-            'styles',
-            'sentlabels'
-        ];
-        for (let i = 0; i < categories.length; i++) {
-            mergedBratData[categories[i]] = [];
-        }
-        mergedBratData['text'] = '';
-        for (let i = 0; i < this.sentences.length; i++) {
-            var sentence = this.sentences[i];
-            var issues = sentence.validate();
-            for (let j = 0; j < issues.length; j++) {
-                this.logError(issues[j]);
-            }
-            if (issues.length !== 0) {
-                if (!sentence.repair(this.logger)) {
-                    this.logError('repair failed, discarding sentence');
-                    continue;
-                }
-            }
-            sentence.setBaseOffset(textOffset !== 0 ? textOffset + 1 : 0);
-            var bratData = sentence.toBrat(includeEmpty);
-            // merge
-            if (mergedBratData['text'].length !== 0) {
-                mergedBratData['text'] += '\n';
-                textOffset += 1;
-            }
-            mergedBratData['text'] += bratData['text'];
-            textOffset += bratData['text'].length;
-            for (let j = 0; j < categories.length; j++) {
-                var c = categories[j];
-                mergedBratData[c] = mergedBratData[c].concat(bratData[c]);
-            }
-        }
-        // to avoid brat breakage on error, don't send empty text
-        if (mergedBratData['text'].length === 0) {
-            mergedBratData['text'] = '<EMPTY>';
-        }
-        mergedBratData['error'] = this.error;
-        return mergedBratData;
-    }
-    ;
-}
-exports.ConlluDocument = ConlluDocument;
-//# sourceMappingURL=document.js.map
-
-/***/ }),
-
-/***/ 294:
+/***/ 36:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GetFormPopoverComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigJSON; });
+var desc = { "saveFile": "Convert to Conll then Save",
+    "syncConllU": "Convert to Conll",
+    "diactric": "Add a diactric",
+    "nav": "Move next/prev Word",
+    "undo": "Undo last action (move backward in action history)",
+    "redo": "Move forward in action history",
+    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
+    "tag": "Assign current segment a new tag",
+    "tag_ma": "Ask a morphological analyser for help",
+    "tag_morphofeatures": "Assign morphological features",
+    "diac": "Mark the last character with a diacritic",
+    "more": "Show more less-frequent tags" };
+var ConfigJSON = (function () {
+    function ConfigJSON(data) {
+        /**
+         * The remote repository to push changes of your project to. Please make sure that you have appropriate login
+         */
+        this.remote_repo = "";
+        /**
+         * The default view for the right panel of Conll-U view. Four possible values or null to hide it completely: "textarea, pretty, errors, info"
+         */
+        this.conlluEditorType = "pretty";
+        /**
+         * Wether a morphological analyser will be used.
+         */
+        this.askMA = false;
+        /**
+         * Wether the memory-based morphological analyser (from previous taggins) will be used.
+         */
+        this.askMemMA = false;
+        /**
+         * Wether online guideline will be used. Requires memory-based option to be true.
+         */
+        this.askGuider = false;
+        /**
+         * (Read-only) project name
+         */
+        this.project = "";
+        /**
+         * (Read-only) project name
+         */
+        this.hash = "";
+        /**
+         * the model name for UDPipe.
+         */
+        this.language = "qac";
+        /**
+         * (Read-only) tagset name
+         */
+        this.tagset = "";
+        this.users = [];
+        this.debug = false;
+        this.keyboardShortcuts = [];
+        this.MfVsPos = {};
+        this.MfVsPos_upostag = true;
+        this.concordanceWindow = 5;
+        this.mf = {};
+        this.isRtl = true;
+        this.useUD = true;
+        this.sync = true;
+        this.alltags = [];
+        this.allxtags = [];
+        this.allutags = [];
+        this.onFeatSelect = {};
+        this.tags = {};
+        this.sentenceTags = [];
+        this.loaded = false;
+        this.undoSize = 5;
+        this.features = {};
+        if (data) {
+            this.remote_repo = data.config.remote_repo;
+            this.language = data.config.language;
+            this.tagset = data.config.tagset;
+            this.useUD = data.config.useUD;
+            this.isRtl = data.config.isRtl;
+            this.sync = data.config.sync;
+            this.undoSize = data.config.undoSize;
+            this.users = data.config.users;
+            this.keyboardShortcuts = data.config.keyboardShortcuts;
+            this.conlluEditorType = data.config.conlluEditorType; //as ConlluEditorType
+            this.askMA = data.config.askMA;
+            this.askMemMA = data.config.askMemMA;
+            this.askGuider = data.config.askGuider;
+            this.onFeatSelect = data.config.onFeatSelect;
+            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos;
+            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag;
+            this.mf = data.config.mf;
+            this.sentenceTags = data.config.sentenceTags;
+            this.allutags = data.config.allutags;
+            this.alltags = data.config.alltags;
+        }
+    }
+    ConfigJSON.prototype.getFeature = function (key) {
+        return this.features[key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    // getFeatures(xpostag){
+    //   return this.alltags.find(x=>x.tag==this.xpostag)
+    // }
+    ConfigJSON.prototype.getXPosTag = function (key) {
+        return this.tags["X:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    ConfigJSON.prototype.getUPosTag = function (key) {
+        return this.tags["U:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    return ConfigJSON;
+}());
+
+ConfigJSON.validation = {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "definitions": {
+        "ConlluEditorType": {
+            "enum": [
+                "errors",
+                "info",
+                "pretty",
+                "textarea"
+            ],
+            "type": "string"
+        },
+        "KeyboardJSON": {
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "altKey": {
+                    "type": "boolean"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "ctrlKey": {
+                    "type": "boolean"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "keys": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "metaKey": {
+                    "type": "boolean"
+                },
+                "params": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "shiftKey": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "TagsJSON": {
+            "properties": {
+                "count": {
+                    "type": "number"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "features": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "fn": {
+                    "type": "number"
+                },
+                "mapFrom": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "mapToConllU": {
+                    "type": "string"
+                },
+                "mf": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "MfVsPos": {
+            "properties": {},
+            "type": "object"
+        },
+        "MfVsPos_upostag": {
+            "default": true,
+            "type": "boolean"
+        },
+        "alltags": {
+            "default": [],
+            "items": {
+                "$ref": "#/definitions/TagsJSON"
+            },
+            "type": "array"
+        },
+        "allutags": {
+            "default": [],
+            "items": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "allxtags": {
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "askGuider": {
+            "default": false,
+            "description": "Wether online guideline will be used. Requires memory-based option to be true.",
+            "type": "boolean"
+        },
+        "askMA": {
+            "default": false,
+            "description": "Wether a morphological analyser will be used.",
+            "type": "boolean"
+        },
+        "askMemMA": {
+            "default": false,
+            "description": "Wether the memory-based morphological analyser (from previous taggins) will be used.",
+            "type": "boolean"
+        },
+        "concordanceWindow": {
+            "default": 5,
+            "type": "number"
+        },
+        "conlluEditorType": {
+            "$ref": "#/definitions/ConlluEditorType",
+            "description": "The default view for the right panel of Conll-U view. Four possible values or null to hide it completely: \"textarea, pretty, errors, info\""
+        },
+        "debug": {
+            "default": false,
+            "type": "boolean"
+        },
+        "features": {
+            "additionalProperties": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "hash": {
+            "default": "",
+            "description": "(Read-only) project name",
+            "type": "string"
+        },
+        "isRtl": {
+            "default": true,
+            "type": "boolean"
+        },
+        "keyboardShortcuts": {
+            "default": [],
+            "items": {
+                "$ref": "#/definitions/KeyboardJSON"
+            },
+            "type": "array"
+        },
+        "language": {
+            "default": "qac",
+            "description": "the model name for UDPipe.",
+            "type": "string"
+        },
+        "loaded": {
+            "default": false,
+            "type": "boolean"
+        },
+        "mf": {
+            "properties": {},
+            "type": "object"
+        },
+        "onFeatSelect": {
+            "additionalProperties": {
+                "additionalProperties": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "project": {
+            "default": "",
+            "description": "(Read-only) project name",
+            "type": "string"
+        },
+        "remote_repo": {
+            "default": "",
+            "description": "The remote repository to push changes of your project to. Please make sure that you have appropriate login",
+            "type": "string"
+        },
+        "sentenceTags": {
+            "default": [],
+            "items": {},
+            "type": "array"
+        },
+        "sync": {
+            "default": true,
+            "type": "boolean"
+        },
+        "tags": {
+            "additionalProperties": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "tagset": {
+            "default": "",
+            "description": "(Read-only) tagset name",
+            "type": "string"
+        },
+        "undoSize": {
+            "default": 5,
+            "type": "number"
+        },
+        "useUD": {
+            "default": true,
+            "type": "boolean"
+        },
+        "users": {
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+};
+//# sourceMappingURL=config-json.class.js.map
+
+/***/ }),
+
+/***/ 421:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export createTranslateLoader */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ComponentsModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__ = __webpack_require__(422);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__guider_guider__ = __webpack_require__(423);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__ = __webpack_require__(424);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__ = __webpack_require__(425);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng_selectize__ = __webpack_require__(426);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ngx_translate_http_loader__ = __webpack_require__(429);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__ionic_storage__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__ = __webpack_require__(249);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function createTranslateLoader(http) {
+    return new __WEBPACK_IMPORTED_MODULE_12__ngx_translate_http_loader__["a" /* TranslateHttpLoader */](http, './assets/i18n/', '.json');
+}
+// let translate =
+var ComponentsModule = (function () {
+    function ComponentsModule() {
+    }
+    return ComponentsModule;
+}());
+ComponentsModule = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
+        declarations: [__WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_5__guider_guider__["a" /* GuiderComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
+            __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__["a" /* ConcordanceComponent */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+            __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */]],
+        imports: [
+            __WEBPACK_IMPORTED_MODULE_14_ionic_angular__["f" /* IonicModule */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_common__["CommonModule"],
+            __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__["c" /* NgJsonEditorModule */],
+            __WEBPACK_IMPORTED_MODULE_15__ionic_storage__["a" /* IonicStorageModule */].forRoot(),
+            __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["b" /* TranslateModule */].forRoot({
+                loader: {
+                    provide: __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["a" /* TranslateLoader */],
+                    useFactory: (createTranslateLoader),
+                    deps: [__WEBPACK_IMPORTED_MODULE_13__angular_http__["a" /* Http */]]
+                }
+            }),
+            __WEBPACK_IMPORTED_MODULE_10_ng_selectize__["a" /* NgSelectizeModule */]
+        ],
+        entryComponents: [
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+        ],
+        exports: [__WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_5__guider_guider__["a" /* GuiderComponent */],
+            __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["b" /* TranslateModule */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+            __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__["c" /* NgJsonEditorModule */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
+            __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__["a" /* ConcordanceComponent */],
+            __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */]]
+    })
+], ComponentsModule);
+
+//# sourceMappingURL=components.module.js.map
+
+/***/ }),
+
+/***/ 422:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConcordanceComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4580,120 +3434,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 /**
- * Generated class for the GetFormPopoverComponent component.
+ * Generated class for the GuiderComponent component.
  *
  * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
  * for more info on Angular Components.
  */
-var GetFormPopoverComponent = (function () {
-    // @ViewChild('diacs') diacsGroup: RadioGroup;
-    function GetFormPopoverComponent(navParams, viewCtrl) {
-        var _this = this;
-        this.navParams = navParams;
-        this.viewCtrl = viewCtrl;
-        this.element = null;
-        this.diacsOptions = [];
-        this.rank = 1;
-        this.selected = { form: "" };
-        this.mapObj = {
-            "noun": "NOUN",
-            "noun_prop": "PROPN",
-            "verb": "VERB",
-            "adj": "ADJ",
-            "adv": "ADV",
-            "prep": "PART",
-        };
-        this.element = navParams.data.element;
-        // this.diacsOptions = this.element.analysis.diacs()
-        // this.diacsOptions = this.element.analysis.possibilities;
-        // console.log(this.element.analysis.possibilities)
-        console.log(this.diacsOptions);
-        this.rank = this.diacsOptions.findIndex(function (val) {
-            return _this.element.form == val.diac;
-        });
+var ConcordanceComponent = (function () {
+    function ConcordanceComponent() {
+        this.elementIndex = 0;
     }
-    GetFormPopoverComponent.prototype.map = function (from) {
-        return this.mapObj[from] || from;
-    };
-    GetFormPopoverComponent.prototype.onChange = function (ev) {
-        var _this = this;
-        if (ev.code == "Enter") {
-            var newval = this.diacsOptions[this.rank];
-            if (newval) {
-                // this.element.form = newval.segmentation[this.element.isSeg] || newval.segmentation[0];
-                if (newval.segmentation.length == 1) {
-                    this.element.form = newval.segmentation[0];
-                }
-                else {
-                    newval.segmentation.forEach(function (seg, i) {
-                        if (_this.element.parent) {
-                            if (_this.element.parent.children[i])
-                                _this.element.parent.children[i].form = seg;
-                        }
-                        else
-                            console.error("ERROR: Should have a parent:", _this.element);
-                    });
-                }
-                this.element.lemma = newval.lemma;
-                this.element.upostag = this.map(newval.pos);
-            }
-            // else
-            // this.element.form = ev.target.value
-            this.viewCtrl.dismiss();
-        }
-        if (ev.code == "ArrowDown") {
-            ev.preventDefault();
-            // var i = this.diacsOptions.findIndex((val) => {
-            //   return this.rank == val.rank;
-            // })
-            // // var i = this.rank
-            // var chosen = this.diacsOptions[i + 1 >= this.diacsOptions.length ? this.diacsOptions.length - 1 : i + 1]
-            // this.element.form = chosen.diac
-            // this.rank = chosen.rank
-            this.rank = this.rank + 1 >= this.diacsOptions.length ? this.rank : this.rank + 1;
-        }
-        if (ev.code == "ArrowUp") {
-            ev.preventDefault();
-            // var i = this.diacsOptions.findIndex((val) => {
-            //   return this.rank == val.rank;
-            // })
-            // // var i = this.rank
-            // var chosen = this.diacsOptions[i - 1 < 0 ? 0 : i - 1]
-            // // this.element.form = chosen.diac
-            // this.rank = chosen.rank
-            this.rank = this.rank - 1 < 0 ? this.rank : this.rank - 1;
-        }
-        if (ev.code == "Escape") {
-            // this.viewCtrl.dismiss()
-        }
-        if (/F[0-9]/.test(ev.code)) {
-            ev.preventDefault();
-            console.log(ev.code);
-            // this.element.form = this.element.analysis.diacs()[parseInt(ev.code.replace("F", "")) - 1]
-        }
-    };
-    return GetFormPopoverComponent;
+    return ConcordanceComponent;
 }());
-GetFormPopoverComponent = __decorate([
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Object)
+], ConcordanceComponent.prototype, "element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__providers_config_json_class__["a" /* ConfigJSON */])
+], ConcordanceComponent.prototype, "config", void 0);
+ConcordanceComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'get-form-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/get-form-popover/get-form-popover.html"*/'<ion-input (keyup)="onChange($event)" class="form_input" value="{{this.element.form}}" autofocus></ion-input>\n  <ion-list radio-group [(ngModel)]="rank" #diacs>\n      <ion-list-header>\n        Diacritization\n      </ion-list-header>\n        <ion-item radio-group *ngFor="let option of diacsOptions" [(ngModel)]="rank">\n          <ion-label>{{option.diac}}\n            <div class="segmentation">\n              <span *ngFor="let seg of option.segmentation">{{seg}}</span>\n            </div>\n            <span>{{option.gloss}}</span>\n            <span>{{map(option.pos)}}</span>\n          </ion-label>\n          <ion-radio value="{{option.rank}}"></ion-radio>\n        </ion-item>\n  </ion-list>'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/get-form-popover/get-form-popover.html"*/
+        selector: 'concordance',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/'<div style="text-align: center">\n<div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">\n  <div>{{element?.sentence.tag}}</div>\n  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{\n              isCompounds: elem.upostag==\'_\',\n              highlight: elem == element,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              isSeg: elem.isSeg > 0 }">\n    <span>\n          <span class="form">{{elem.getForm()}}</span>\n          <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n          <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n    </span>\n  </div>\n</div>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
-], GetFormPopoverComponent);
+    __metadata("design:paramtypes", [])
+], ConcordanceComponent);
 
-//# sourceMappingURL=get-form-popover.js.map
+//# sourceMappingURL=concordance.js.map
 
 /***/ }),
 
-/***/ 295:
+/***/ 423:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GuiderComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__ = __webpack_require__(261);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4721,7 +3500,6 @@ var GuiderComponent = (function () {
         this.events = events;
         this.toastCtrl = toastCtrl;
         this.viewCtrl = viewCtrl;
-        this.showDetails = false;
         this.project = "";
         this.hash = "";
         this.options = [];
@@ -4754,7 +3532,7 @@ var GuiderComponent = (function () {
     GuiderComponent.prototype.ngOnChanges = function (changes) {
         this.options = this.guidelinesService.get(this.type, this.element.form).options;
         if (this.options)
-            this.options.forEach(function (e) { return e.showDetails = true; });
+            this.options.forEach(function (e) { return e.showDetails = false; });
         if (this.show())
             this.events.publish("stats", { action: "showGuider", elements: this.element });
     };
@@ -4778,7 +3556,7 @@ __decorate([
 ], GuiderComponent.prototype, "hash", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__providers_config_service__["a" /* ConfigJSON */])
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__providers_config_json_class__["a" /* ConfigJSON */])
 ], GuiderComponent.prototype, "config", void 0);
 GuiderComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -4795,14 +3573,14 @@ GuiderComponent = __decorate([
 
 /***/ }),
 
-/***/ 296:
+/***/ 424:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConcordanceComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TagsSelectorComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_conllu_dao__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_conllu_dao__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4814,46 +3592,58 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
 /**
- * Generated class for the GuiderComponent component.
+ * Generated class for the TagsSelectorComponent component.
  *
  * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
  * for more info on Angular Components.
  */
-var ConcordanceComponent = (function () {
-    function ConcordanceComponent(navParams, events, toastCtrl, viewCtrl) {
-        this.navParams = navParams;
-        this.events = events;
-        this.toastCtrl = toastCtrl;
-        this.viewCtrl = viewCtrl;
-        this.elementIndex = 0;
+var TagsSelectorComponent = (function () {
+    // @Input("config") public _config : ConfigJSON
+    // set config(argv){
+    //   this._config = argv
+    //   this.currentTags = this.getTags()
+    // }
+    // get config(){
+    //   return this._config
+    // }
+    // @Input() hash : string = ""
+    function TagsSelectorComponent() {
+        this.currentTags = [];
+        this.nextTags = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+        // this.tagsRow = 0;
     }
-    return ConcordanceComponent;
+    TagsSelectorComponent.prototype.selectTag = function (tag) {
+        if (this.element)
+            this.element.xpostag = tag.tag;
+    };
+    return TagsSelectorComponent;
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", Object)
-], ConcordanceComponent.prototype, "element", void 0);
+    __metadata("design:type", Array)
+], TagsSelectorComponent.prototype, "currentTags", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */])
-], ConcordanceComponent.prototype, "config", void 0);
-ConcordanceComponent = __decorate([
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_conllu_dao__["ConlluElement"])
+], TagsSelectorComponent.prototype, "element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
+], TagsSelectorComponent.prototype, "nextTags", void 0);
+TagsSelectorComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'concordance',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/'<div style="text-align: center">\n<div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">\n  <div>{{element?.sentence.tag}}</div>\n  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{\n              isCompounds: elem.upostag==\'_\',\n              highlight: elem == element,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              isSeg: elem.isSeg > 0 }">\n    <span>\n          <span class="form">{{elem.getForm()}}</span>\n          <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n          <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n    </span>\n  </div>\n</div>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/
+        selector: 'tags-selector',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/'<button color="secondary" style="direction: rtl" ion-button *ngFor="let tag of currentTags;" small class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">\n  <span class=\'tag-num\'>{{tag.fn}}-</span>{{tag.desc}}\n</button>\n\n<button small ion-button style="direction: rtl" color="secondary" class="tag" title="Press 0 for more tags" (click)="this.nextTags.emit(true)" tabindex="-1">\n  <span class=\'tag-num\'>0</span>{{\'MORE\' | translate}}\n</button>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/,
+        inputs: ['config']
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
-], ConcordanceComponent);
+    __metadata("design:paramtypes", [])
+], TagsSelectorComponent);
 
-//# sourceMappingURL=concordance.js.map
+//# sourceMappingURL=tags-selector.js.map
 
 /***/ }),
 
-/***/ 297:
+/***/ 425:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4876,7 +3666,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Components.
  */
 var ConlluEditorComponent = (function () {
-    function ConlluEditorComponent() {
+    function ConlluEditorComponent(renderer) {
+        this.renderer = renderer;
         this.conlluRawSpansSubset = [{}];
         this._conlluRaw = "";
         this.eid = -1;
@@ -4935,7 +3726,7 @@ var ConlluEditorComponent = (function () {
             });
             // r[index]=e.target.innerText
             var conlluRaw = _this.conlluRaw.split("\n").map(function (rr, i) {
-                return i == row_index ? e.target.innerText : rr;
+                return i == row_index ? e.target.innerText.trim() : rr;
             }).join("\n");
             // console.log(this.conlluRaw)
             if (document.activeElement.classList.contains("conllu-row"))
@@ -4949,38 +3740,36 @@ var ConlluEditorComponent = (function () {
     ConlluEditorComponent.prototype.removeConlluRawRow = function (r, row_index, e) {
         var _this = this;
         if (e === void 0) { e = null; }
-        //make sure there is a tab after each span
-        setTimeout(function () {
-            // r[index]=e.target.innerText
-            var conlluRaw = _this.conlluRaw.split("\n").filter(function (rr, i) {
-                return i != row_index;
-            }).join("\n");
-            // if(document.activeElement.classList.contains("conllu-row"))
-            //   return
-            // this.saveForUndo(conlluRaw)
-            _this.conlluRawChange.emit(conlluRaw);
-        });
+        if (e && window.getSelection().baseOffset != 0)
+            return;
+        this.conlluRaw = this.conlluRaw.split("\n").filter(function (rr, i) {
+            return i != row_index;
+        }).join("\n");
+        setTimeout(function () { return e ? _this.focus(row_index, e) : ""; });
+        this.conlluRawChange.emit(this.conlluRaw);
     };
     ConlluEditorComponent.prototype.addConlluRawRow = function (r, row_index, e) {
         var _this = this;
         if (e === void 0) { e = null; }
-        //make sure there is a tab after each span
-        setTimeout(function () {
-            // r[index]=e.target.innerText
-            var ar = _this.conlluRaw.split("\n");
-            ar.splice(row_index, 0, "# ");
-            var conlluRaw = ar.join("\n");
-            // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-            // console.log(this.conlluRaw)
-            // console.log(document.activeElement)
-            // if(document.activeElement.classList.contains("conllu-row"))
-            // return
-            // this.saveForUndo(conlluRaw)
-            _this.conlluRawChange.emit(conlluRaw);
-        });
+        if (e)
+            e.preventDefault();
+        var ar = this.conlluRaw.split("\n");
+        ar.splice(row_index, 0, "# ");
+        this.conlluRaw = ar.join("\n");
+        setTimeout(function () { return e ? _this.focus(row_index, e) : ""; });
+        this.conlluRawChange.emit(this.conlluRaw);
     };
-    ConlluEditorComponent.prototype.downloadConlluRawRow = function (r, row_index, e) {
+    ConlluEditorComponent.prototype.focus = function (row_index, e) {
         if (e === void 0) { e = null; }
+        // var current =
+        var highlighNode = document.querySelector("div.conllu-row-" + row_index);
+        console.log(highlighNode);
+        if (highlighNode)
+            this.renderer.invokeElementMethod(highlighNode, 'focus', []);
+        // else
+        // console.log("Not found",current)
+    };
+    ConlluEditorComponent.prototype.downloadConlluRawRow = function () {
         //make sure there is a tab after each span
         // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
         // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
@@ -5007,7 +3796,7 @@ var ConlluEditorComponent = (function () {
                 sentid: sentid,
                 elemid: elemid,
                 line: i,
-                elems: e.split("\t").map(function (ee) { return ee += "\t"; })
+                elems: e.split("\t") //.map(ee=>ee+="\t")
             };
         });
     };
@@ -5028,25 +3817,25 @@ __decorate([
     __metadata("design:paramtypes", [Array])
 ], ConlluEditorComponent.prototype, "hid", null);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])('rawChange'),
     __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
 ], ConlluEditorComponent.prototype, "conlluRawChange", void 0);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])('highlightChange'),
     __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
 ], ConlluEditorComponent.prototype, "highlighElementChange", void 0);
 ConlluEditorComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'conllu-editor',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/'<!-- Generated template for the ConlluEditorComponent component -->\n<pre [style.counter-reset]="\'line \'+ start">\n<!--       --><div contenteditable="true" class="conllu-row" [ngClass]="{\n              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (blur)="onConlluRawSpansChanged(r,i, $event)"><div class=\'actions\' contenteditable="false"><button tabindex="-1" ion-button small icon-only color="light" (click)="removeConlluRawRow(r,i,$event)"><ion-icon name="remove"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="addConlluRawRow(r,i,$event)"><ion-icon name="add"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="highlighElementChange.emit(\'S\'+r.sentid+\':\'+r.elemid)"><ion-icon name="checkmark"></ion-icon></button></div><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]==\'#\'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>\n          <button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>\n\n<!-- --></pre>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/
+        selector: 'conllu-editor',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/'<!-- Generated template for the ConlluEditorComponent component -->\n<pre [style.counter-reset]="\'line \'+ start">\n<!--       --><div contenteditable="true" class="conllu-row conllu-row-{{i}}" [ngClass]="{\n              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (focus)="highlighElementChange.emit(\'S\'+r.sentid+\':\'+r.elemid)" (blur)="onConlluRawSpansChanged(r,i, $event)" (keydown.enter)="addConlluRawRow(r,i+1,$event)" (keydown.arrowup)="focus(i-1,$event)" (keydown.arrowdown)="focus(i+1,$event)" (keyup.backspace)="removeConlluRawRow(r,i,$event)"><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]==\'#\'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>\n          <div class="downloadButton"><button tabindex="-1" ion-button small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>\n<button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button></div>\n\n<!-- --></pre>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"]])
 ], ConlluEditorComponent);
 
 //# sourceMappingURL=conllu-editor.js.map
 
 /***/ }),
 
-/***/ 298:
+/***/ 431:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5088,7 +3877,7 @@ NotMultiTag = __decorate([
 
 /***/ }),
 
-/***/ 299:
+/***/ 432:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5137,254 +3926,19 @@ IsNextSentence = __decorate([
 
 /***/ }),
 
-/***/ 30:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigJSON; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ConfigService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-// import { Config } from 'ionic-angular';
-
-
-
-// import { Sentence} from '../pages/annotate/conllu';
-
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
-var desc = { "saveFile": "Convert to Conll then Save",
-    "syncConllU": "Convert to Conll",
-    "diactric": "Add a diactric",
-    "nav": "Move next/prev Word",
-    "undo": "Undo last action (move backward in action history)",
-    "redo": "Move forward in action history",
-    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
-    "tag": "Assign current segment a new tag",
-    "tag_ma": "Ask a morphological analyser for help",
-    "tag_morphofeatures": "Assign morphological features",
-    "diac": "Mark the last character with a diacritic",
-    "more": "Show more less-frequent tags" };
-var ConfigJSON = (function () {
-    function ConfigJSON(data) {
-        this.remote_repo = "";
-        this.isConlluHidden = false;
-        this.askMA = false;
-        this.askMemMA = false;
-        this.askGuider = false;
-        this.project = "";
-        this.hash = "";
-        this.language = "qac";
-        this.tagset = "";
-        this.rowlength = 7;
-        this.users = [];
-        this.debug = false;
-        this.keyboardShortcuts = [];
-        this.MfVsPos = {};
-        this.MfVsPos_upostag = true;
-        this.concordanceWindow = 5;
-        this.mf = {};
-        this.isRtl = true;
-        this.useUD = true;
-        this.sync = true;
-        this.alltags = [];
-        this.allxtags = [];
-        this.allutags = [];
-        this.onFeatSelect = {};
-        this.tags = {};
-        this.sentenceTags = [];
-        this.loaded = false;
-        this.undoSize = 5;
-        this.features = {};
-        if (data) {
-            this.remote_repo = data.config.remote_repo;
-            this.language = data.config.language;
-            this.tagset = data.config.tagset;
-            this.useUD = data.config.useUD;
-            this.rowlength = data.config.rowlength;
-            this.isRtl = data.config.isRtl;
-            this.sync = data.config.sync;
-            this.undoSize = data.config.undoSize;
-            this.users = data.config.users;
-            this.keyboardShortcuts = data.config.keyboardShortcuts;
-            this.isConlluHidden = data.config.isConlluHidden;
-            this.askMA = data.config.askMA;
-            this.askMemMA = data.config.askMemMA;
-            this.askGuider = data.config.askGuider;
-            this.onFeatSelect = data.config.onFeatSelect;
-            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos;
-            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag;
-            this.mf = data.config.mf;
-            this.sentenceTags = data.config.sentenceTags;
-            this.allutags = data.config.allutags;
-            this.alltags = data.config.alltags;
-        }
-    }
-    ConfigJSON.prototype.getFeature = function (key) {
-        return this.features[key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    // getFeatures(xpostag){
-    //   return this.alltags.find(x=>x.tag==this.xpostag)
-    // }
-    ConfigJSON.prototype.getXPosTag = function (key) {
-        return this.tags["X:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    ConfigJSON.prototype.getUPosTag = function (key) {
-        return this.tags["U:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    return ConfigJSON;
-}());
-
-var ConfigService = (function () {
-    function ConfigService(http, myconfig) {
-        this.http = http;
-        this.myconfig = myconfig;
-        this.config = {};
-        this.rtls = ["arabic", "qac"];
-        this.config.default = new ConfigJSON();
-    }
-    ConfigService.prototype.load = function (project, hash) {
-        var _this = this;
-        if (this.config[project]) {
-            // already loaded data
-            return Promise.resolve(this.config[project]);
-        }
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.getValue("server") + "get_config", {
-                project: project,
-                hash: hash
-            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    var config = new ConfigJSON(data);
-                    config.project = project;
-                    config.hash = hash;
-                    config.keyboardShortcuts.forEach(function (e) {
-                        e.keys = [];
-                        if (e.metaKey)
-                            e.keys.push("⌘");
-                        if (e.shiftKey)
-                            e.keys.push("⇧");
-                        if (e.altKey)
-                            e.keys.push("⎇");
-                        if (!e.code)
-                            e.code = "";
-                        var code = e.code
-                            .replace(/^Key/, "")
-                            .replace("ArrowLeft", "⇦")
-                            .replace("ArrowRight", "⇨")
-                            .replace("Enter", "⏎");
-                        if (code)
-                            e.keys.push(code);
-                        var params = e.params ? e.params.join() : "";
-                        if (e.code.indexOf("Digit") == 0)
-                            params = "";
-                        if (e.code.indexOf("F" + params) == 0)
-                            params = "";
-                        e.desc = desc[e.action + params] || desc[e.action] || e.action;
-                    });
-                    config.alltags.forEach(function (xx, i, arr) {
-                        arr[i].mapFrom = arr[i].mapFrom || [""];
-                    });
-                    if (config.MfVsPos) {
-                        config.alltags.forEach(function (xx, i, arr) {
-                            arr[i].features = Object.keys(config.mf).filter(function (x) { return config.MfVsPos[x].indexOf(config.MfVsPos_upostag ? xx.mapToConllU : xx.tag) >= 0; });
-                        });
-                    }
-                    else {
-                        console.error("config['MF.vs.POS'] is missing");
-                    }
-                    config.allxtags = config.alltags.map(function (x) { return x.tag; });
-                    // config.allutags = data.config.alltags.map(x=>x.mapToConllU).sort().filter(function(el,i,a){return i==a.indexOf(el);}) // sort and unique
-                    config.tags = {};
-                    config.alltags.forEach(function (x) { return config.tags["X:" + x.tag] = x; });
-                    // config.allutags.forEach(x=>config.tags["U:"+x.tag]=x)
-                    config.tags["X:_"] = { tag: "_", desc: "_" };
-                    config.tags["U:_"] = { tag: "_", desc: "_" };
-                    config.features = {};
-                    Object.keys(config.mf).forEach(function (k) { return config.mf[k].forEach(function (v) { return config.features[k + "=" + v.tag] = v; }); });
-                    _this.config[project] = config;
-                    resolve(_this.config[project]);
-                }
-                else
-                    // if(data.default)
-                    // 	that.config.default = data.default
-                    reject(data.error);
-            });
-        });
-    };
-    ConfigService.prototype.save = function (project, hash, config) {
-        var _this = this;
-        config = JSON.parse(JSON.stringify(config));
-        delete config.hash;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.getValue("server") + "save_config", {
-                project: project,
-                hash: hash,
-                config: config
-            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    resolve();
-                    config.isRtl = _this.isRtl(project);
-                    _this.config[project] = config;
-                }
-                else
-                    reject(data.error);
-            });
-        });
-    };
-    ConfigService.prototype.getConfig = function (project) {
-        return this.config[project] ? this.config[project] : this.config.default;
-    };
-    ConfigService.prototype.isRtl = function (project) {
-        if (this.getConfig(project).isRtl != undefined)
-            return this.getConfig(project).isRtl;
-        return this.rtls.indexOf(this.getConfig(project).language) >= 0;
-    };
-    return ConfigService;
-}());
-ConfigService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
-], ConfigService);
-
-//# sourceMappingURL=config-service.js.map
-
-/***/ }),
-
-/***/ 53:
+/***/ 64:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ProjectsPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginModal; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(134);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5398,7 +3952,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-// import { Storage } from '@ionic/storage';
+
+
+
 /**
  * Generated class for the ProjectsPage page.
  *
@@ -5407,24 +3963,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var ProjectsPage = (function () {
     // public validSecurity  = false
-    function ProjectsPage(navCtrl, navParams, projectService, 
-        // public storage: Storage,
-        modalCtrl, toastCtrl) {
-        // this.storage.get("security").then(v=>{
-        // 	this.security = v
-        // 	if(this.security){
-        // 		this.validSecurity = true
-        // 		this.securityChanged()
-        // 	}
+    function ProjectsPage(navCtrl, navParams, alertCtrl, projectService, storage, myconfig, translateService, modalCtrl, toastCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
         this.projectService = projectService;
+        this.storage = storage;
+        this.myconfig = myconfig;
+        this.translateService = translateService;
         this.modalCtrl = modalCtrl;
         this.toastCtrl = toastCtrl;
         // public security = ""
         this.projects = [];
         this.new_project = "";
-        // });
         this.list();
     }
     ProjectsPage.prototype.create = function () {
@@ -5440,14 +3991,14 @@ var ProjectsPage = (function () {
             }
         }).catch(function (e) {
             _this.toastCtrl.create({
-                message: e.error,
+                message: _this.translateService.instant(e.error),
                 duration: 3000,
                 position: "top"
             }).present();
         });
     };
     ProjectsPage.prototype.goto = function (project) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["a" /* DocsPage */], {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["b" /* DocsPage */], {
             project: project.project,
             hash: project.hash,
         });
@@ -5462,6 +4013,31 @@ var ProjectsPage = (function () {
         loginModal.present();
         loginModal.onDidDismiss(function () { _this.list(); });
     };
+    ProjectsPage.prototype.lang = function (event) {
+        var _this = this;
+        if (event === void 0) { event = null; }
+        var prompt = this.alertCtrl.create({
+            title: this.translateService.instant('Language Change'),
+            // message: this.translateService.instant("Please the language code"),
+            inputs: this.translateService.getLangs().map(function (e) { return new Object({
+                name: 'lang',
+                type: 'radio',
+                label: e,
+                checked: e == _this.translateService.currentLang,
+                value: e
+            }); }),
+            buttons: [
+                {
+                    text: this.translateService.instant('Change Langugaue'),
+                    handler: function (data) {
+                        _this.translateService.use(data);
+                        _this.storage.get("lang").then(function (e) { return console.log(e); });
+                        _this.storage.set("lang", data);
+                    }
+                }
+            ]
+        }).present();
+    };
     ProjectsPage.prototype.list = function () {
         var _this = this;
         this.projectService.list().then(function (result) {
@@ -5470,14 +4046,14 @@ var ProjectsPage = (function () {
             // this.storage.set("security",this.security);
             if (result.projects.length == 0) {
                 _this.toastCtrl.create({
-                    message: "There is no projects created yet. Please create one now.",
+                    message: _this.translateService.instant("There is no projects created yet. Please create one now."),
                     duration: 3000,
                     position: "top"
                 }).present();
             }
         }).catch(function (error) {
             _this.toastCtrl.create({
-                message: error,
+                message: _this.translateService.instant(error),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -5494,18 +4070,23 @@ var ProjectsPage = (function () {
 }());
 ProjectsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>المشاريع</ion-title>\n    <ion-buttons end>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">\n        <ion-icon name="log-out"></ion-icon>\n      </button>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">\n        <ion-icon name="contact"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding rtl>\n  <ion-card>\n  <ion-item-divider>\n    المشاريع الحالية\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>\n    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">احذف</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>لا يوجد أي مشروع</ion-item>\n  <ion-item-divider>\n    مشروع جديد\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>اسم المشروع</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>\n	</ion-item>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
+        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'PROJECTS TITLE\' | translate}}</ion-title>\n    <ion-buttons end>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">\n        <ion-icon name="log-out"></ion-icon>\n      </button>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">\n        <ion-icon name="contact"></ion-icon>\n      </button>\n      <button right ion-button icon-only (click)="lang($event)" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding rtl>\n  <ion-card>\n  <ion-item-divider>\n    {{\'CURRENT PROJECTS\' | translate}}\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">{{\'GO\' | translate}}</button>\n    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">{{\'DELETE\' | translate}}</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>{{\'NO PROJECT IS FOUND\' | translate}}</ion-item>\n  <ion-item-divider>\n    {{\'NEW PROJECT\' | translate}}\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>{{\'PROJECT NAME\' | translate}}</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">{{\'CREATE NEW PROJECT\' | translate}}</button>\n	</ion-item>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
         __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */],
+        __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__["a" /* ConfigurationService */],
+        __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
 ], ProjectsPage);
 
 var LoginModal = (function () {
-    function LoginModal(viewCtrl, params, projectService, toastCtrl) {
+    function LoginModal(viewCtrl, params, translateService, projectService, toastCtrl) {
         this.viewCtrl = viewCtrl;
+        this.translateService = translateService;
         this.projectService = projectService;
         this.toastCtrl = toastCtrl;
         this.username = "";
@@ -5521,7 +4102,7 @@ var LoginModal = (function () {
         })
             .catch(function (e) {
             _this.toastCtrl.create({
-                message: e,
+                message: _this.translateService.instant(e),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -5531,151 +4112,236 @@ var LoginModal = (function () {
 }());
 LoginModal = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-login',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>تسجيل الدخول</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card *ngIf="!validSecurity">\n    <ion-card-header>تسجيل الدخول</ion-card-header>\n    <ion-card-content>\n      <form (ngSubmit)="login()">\n        <ion-item>\n          <ion-label fixed>اسم المستخدم</ion-label>\n          <ion-input [(ngModel)]="username" name="username"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label fixed>كلمة المرور</ion-label>\n          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>\n        </ion-item>\n        <button type="submit" ion-button block>تسجيل الدخول</button>\n      </form>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/,
+        selector: 'page-login',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'LOGIN PAGE TITLE\' | translate}}</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card *ngIf="!validSecurity">\n    <ion-card-header>{{\'LOGIN MODAL TITLE\' | translate}}</ion-card-header>\n    <ion-card-content>\n      <form (ngSubmit)="login()">\n        <ion-item>\n          <ion-label fixed>{{\'USERNAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="username" name="username"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label fixed>{{\'PASSWORD\' | translate}}</ion-label>\n          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>\n        </ion-item>\n        <button type="submit" ion-button block>{{\'LOGIN\' | translate}}</button>\n      </form>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
 ], LoginModal);
 
 //# sourceMappingURL=projects.js.map
 
 /***/ }),
 
-/***/ 54:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ 65:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DocsPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigModal; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__ = __webpack_require__(329);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__annotate_annotate__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_config_service__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_config_json_class__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__ = __webpack_require__(249);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 
-Object.defineProperty(exports, "__esModule", { value: true });
-class Util {
-    static isTatweel(first, second) {
-        if (!first || !second)
-            return false;
-        if (first == "ـ" && second == "ـ")
-            return false;
-        if ("دذاءؤرىةإأآو_".indexOf(first) >= 0)
-            return false;
-        else if ("ء_".indexOf(second) >= 0)
-            return false;
+
+
+
+
+
+
+
+
+
+/**
+ * Generated class for the DocsPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
+var DocsPage = (function () {
+    // public config :ConfigJSON = ""
+    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, modalCtrl, translateService, toastCtrl) {
+        var _this = this;
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.conlluService = conlluService;
+        this.myconfig = myconfig;
+        this.configService = configService;
+        this.modalCtrl = modalCtrl;
+        this.translateService = translateService;
+        this.toastCtrl = toastCtrl;
+        this.uploader = new __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.getValue("server") + "conllu_upload" });
+        this.hasBaseDropZoneOver = false;
+        this.hasAnotherDropZoneOver = false;
+        this.project = "";
+        this.hash = "";
+        this.newFilename = "";
+        this.text = "";
+        this.list = [];
+        if (!navParams.data.project) {
+            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_5__projects_projects__["b" /* ProjectsPage */]);
+        }
         else {
-            return true;
+            this.project = navParams.data.project;
+            this.hash = navParams.data.hash;
         }
+        var that = this;
+        this.uploader.authToken = this.project + ":" + this.hash;
+        this.uploader.onSuccessItem = function (item) {
+            that.list.push(item.file.name);
+        };
+        conlluService.getList(this.project, this.hash).then(function (result) {
+            if (result.ok)
+                _this.list = result.files;
+            else
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant(result.error),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+        });
     }
-    static reportError(error) {
-        if (Util.errors.indexOf(error) < 0) {
-            console.error(error);
-            Util.errors.push(error);
+    DocsPage.prototype.goto = function (id) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_6__annotate_annotate__["a" /* AnnotatePage */], {
+            project: this.project,
+            hash: this.hash,
+            id: id,
+        });
+    };
+    DocsPage.prototype.remove = function (filename) {
+        var _this = this;
+        this.conlluService.remove(this.project, this.hash, filename).then(function (s) {
+            if (s.ok)
+                _this.list.splice(_this.list.findIndex(function (x) { return x.filename == filename; }), 1);
+        });
+    };
+    DocsPage.prototype.udpipe = function (sentence) {
+        var _this = this;
+        var that = this;
+        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
+            that.list.push({ filename: result.filename, firstline: result.firstline });
+        }).catch(function (err) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant(err),
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+    };
+    DocsPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad DocsPage');
+    };
+    DocsPage.prototype.fileOverBase = function (e) {
+        this.hasBaseDropZoneOver = e;
+    };
+    DocsPage.prototype.fileOverAnother = function (e) {
+        this.hasAnotherDropZoneOver = e;
+    };
+    DocsPage.prototype.openConfig = function () {
+        var loginModal = this.modalCtrl.create(ConfigModal, {
+            project: this.project,
+            hash: this.hash,
+        }, {
+            enableBackdropDismiss: true
+        });
+        loginModal.present();
+        // loginModal.onDidDismiss(()=>{this.list()})
+    };
+    return DocsPage;
+}());
+DocsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'MANAGE PROJECT\' | translate}}: {{project}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="openConfig()" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid>\n    <ion-row>\n      <ion-col col-12>\n        <ion-list>\n          <ion-item *ngFor="let i of list">\n            {{i.filename}}\n            <ion-note>{{i.firstline}}</ion-note>\n            <button ion-button outline item-end icon-left (click)="goto(i.filename)">{{\'GO\' | translate}}</button>\n            <a ion-button outline item-end icon-left href="{{myconfig.getValue(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">{{\'DOWNLOAD\' | translate}}</a>\n            <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">{{\'DELETE\' | translate}}</button>\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-card>\n        <ion-item>\n          <!-- <ion-label >Text</ion-label> -->\n          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n        </ion-item>\n        <ion-item-divider>\n        </ion-item-divider>\n        <ion-item>\n          <ion-label fixed>{{\'FILENAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="newFilename"></ion-input>\n          <button ion-button outline item-end icon-left (click)="udpipe(text)">{{\'GO\' | translate}}</button>\n        </ion-item>\n      </ion-card>\n    </ion-row>\n    <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n      <ion-card>\n        <ion-card-header>\n          {{\'UPLOADING FILES\' | translate}}\n        </ion-card-header>\n        <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n        <ion-list>\n          <ion-item-divider>\n            {{\'FILE LIST\' | translate}}\n          </ion-item-divider>\n          <ion-item *ngFor="let item of uploader.queue">\n            <ion-avatar item-start>\n              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n            </ion-avatar>\n            <h2>{{ item?.file?.name }}</h2>\n            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n            <div *ngIf="uploader.isHTML5">\n              <div class="progress" style="margin-bottom: 0;">\n                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n              </div>\n            </div>\n            <ion-row>\n              <ion-col>\n                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                  <ion-icon name="cloud-upload"></ion-icon>\n                  <div>{{\'Upload\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                  <ion-icon name="undo"></ion-icon>\n                  <div>{{\'Cancel\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.remove()">\n                  <ion-icon name="trash"></ion-icon>\n                  <div>{{\'Remove\' | translate}}</div>\n                </button>\n              </ion-col>\n            </ion-row>\n          </ion-item>\n        </ion-list>\n        <ion-item-divider>\n          {{\'UPLOAD A NEW FILE(S)\' | translate}}\n        </ion-item-divider>\n        <button ion-button (click)="uploadbutton.click()" icon-only>\n          <ion-icon name="cloud-upload"></ion-icon>\n          <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n        </button>\n      </ion-card>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */],
+        __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__["a" /* ConfigurationService */],
+        __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
+        __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+], DocsPage);
+
+
+var ConfigModal = (function () {
+    function ConfigModal(params, translateService, toastCtrl, configService) {
+        var _this = this;
+        this.translateService = translateService;
+        this.toastCtrl = toastCtrl;
+        this.configService = configService;
+        // get config (){
+        //   return this._config;
+        // }
+        // set config (argv){
+        //   // this.configStr = JSON.stringify(argv,null,4)
+        //   this._config =argv
+        // }
+        // configStr : string = ""
+        this.project = "";
+        this.hash = "";
+        this.configErrors = "";
+        // console.log('UserId', params.get('userId'));
+        this.project = params.data.project;
+        this.hash = params.data.hash;
+        this.editorOptions = new __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["b" /* JsonEditorOptions */]();
+        this.editorOptions.schema = __WEBPACK_IMPORTED_MODULE_9__providers_config_json_class__["a" /* ConfigJSON */].validation;
+        this.editorOptions.modes = ['code', 'tree']; // set all allowed modes
+        this.configService.load(this.project, this.hash).then(function (s) {
+            _this.config = s;
+        }).catch(function (x) {
+            // this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
+        });
+    }
+    ConfigModal.prototype.saveConfig = function () {
+        var _this = this;
+        try {
+            this.configService.save(this.project, this.hash, this.editor.get()).then(function (e) {
+                // this.configService.save(this.project, this.hash,JSON.parse(this.configStr)).then(e=>{
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant("Config file has been updated successfully."),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            }).catch(function (e) {
+                console.dir(e);
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant(e),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+                _this.configErrors = e;
+            });
         }
-    }
-}
-Util.repairFields = function (fields, logger) {
-    if (logger === undefined) {
-        logger = Util.nullLogger;
-    }
-    if (fields.length > 10) {
-        logger('repair: discarding fields > 10');
-        fields = fields.slice(0, 10);
-    }
-    else {
-        logger('repair: filling in empty ("_") for missing fields');
-        for (let m = 0; m < 10 - fields.length; m++) {
-            fields.push('_');
+        catch (e) {
+            console.dir(e);
+            this.configErrors = e.message;
         }
-    }
-};
-Util.strictFieldSplitter = function (line) {
-    // strict CoNLL format parsing: only split on TAB, no extra space.
-    if (line.length === 0) {
-        return [];
-    }
-    else {
-        return line.split('\t');
-    }
-};
-Util.looseFieldSplitter = function (line) {
-    // loose CoNLL format parsing: split on any space sequence, trim
-    // surrounding space.
-    line = line.trim();
-    if (line.length === 0) {
-        return [];
-    }
-    else {
-        return line.split(/\s+/);
-    }
-};
-Util.selectParsingMode = function (conll, log) {
-    // return whether to use strict mode parsing
-    // very simple heuristic: any TABs in the input trigger
-    // strict parsing, loose only if none present.
-    if (conll.indexOf('\t') !== -1) {
-        // log('note: TAB found, parsing CoNLL-U in strict mode.')
-        return true;
-    }
-    else {
-        log('note: no TAB found, parsing CoNLL-U in loose mode.');
-        return false;
-    }
-};
-Util.selectFieldSplitter = function (conll, log, strict) {
-    // return function to use for dividing lines into fields.
-    if (strict) {
-        return Util.strictFieldSplitter;
-    }
-    else {
-        return Util.looseFieldSplitter;
-    }
-};
-Util.isComment = function (line) {
-    return line.length !== 0 && line[0] === '#';
-};
-Util.hasSpace = function (s) {
-    return !!s.match(/\s/);
-};
-Util.nullLogger = function (message) {
-    return null;
-};
-/*
- * Return true iff given string only contains characters from a
- * right-to-left Unicode block and is not empty.
- */
-Util.isRtl = function (s) {
-    // range from http://stackoverflow.com/a/14824756
-    return !!s.match(/^[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]+$/);
-};
-/*
- * Return given token with possible modifications to accommodate
- * issues in brat rendering of right-to-left text
- * (https://github.com/UniversalDependencies/docs/issues/52)
- */
-Util.rtlFix = function (s) {
-    var prefix = '\u02D1', suffix = '\u02D1';
-    if (Util.isRtl(s)) {
-        s = prefix + s + suffix;
-    }
-    return s;
-};
-/*
- * Return a deep copy of the given object. Note: not particularly
- * efficient, and all fields must be serializable for this to work
- * correctly.
- */
-Util.deepCopy = function (o) {
-    return JSON.parse(JSON.stringify(o));
-};
-/*
- * Regular expressions for various parts of the format.
- * See https://github.com/UniversalDependencies/docs/issues/33
- */
-// match single (feature, value[s]) pair in FEATS
-Util.featureRegex = /^([A-Z0-9][a-zA-Z0-9]*(?:\[[a-z0-9]+\])?)=(_|[A-Z0-9][a-zA-Z0-9]*(?:,[A-Z0-9][a-zA-Z0-9]*)*)$/;
-// match single feature value in FEATS
-Util.featureValueRegex = /^([A-Z0-9][a-zA-Z0-9]*|_)$/;
-// match single (head, deprel) pair in DEPS
-Util.dependencyRegex = /^(\d+(?:\.\d+)?):(.*)$/;
-Util.errors = [];
-exports.Util = Util;
-//# sourceMappingURL=util.js.map
+    };
+    return ConfigModal;
+}());
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */]),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */])
+], ConfigModal.prototype, "editor", void 0);
+ConfigModal = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-login',
+        // styleUrls: ['./app.component.css'],
+        template: "\n  <ion-header>\n  <ion-navbar>\n    <ion-title>{{'Configuration File' | translate}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)=\"saveConfig()\" tabindex=\"-1\">\n        <ion-icon name=\"cloud-upload\"></ion-icon>\n      </button>\n    </ion-buttons>\n\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n<json-editor [style.height.%]=\"90\" [options]=\"editorOptions\" [data]=\"config\"></json-editor>\n                    <div [hidden]=\"!configErrors\" class=\"configErrors\">{{configErrors}}</div>\n                    <!--<textarea [style.height.%]=\"90\" [style.width.%]=\"100\" [(ngModel)]=\"configStr\"></textarea>-->\n                    <!--<button ion-button item-end (click)=\"saveConfig(i)\">{{'SAVE' | translate}}</button>-->\n                    </ion-content>\n",
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */], __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */]])
+], ConfigModal);
+
+//# sourceMappingURL=docs.js.map
 
 /***/ })
 
-},[219]);
+},[263]);
 //# sourceMappingURL=main.js.map

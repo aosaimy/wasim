@@ -1,4 +1,4 @@
-import { Input, Output, Component,EventEmitter } from '@angular/core';
+import { Input, Renderer, Output, Component,EventEmitter } from '@angular/core';
 
 /**
  * Generated class for the ConlluEditorComponent component.
@@ -53,10 +53,10 @@ export class ConlluEditorComponent {
   }
 
 
-  @Output() public conlluRawChange: EventEmitter<string> = new EventEmitter();
-  @Output() public highlighElementChange: EventEmitter<string> = new EventEmitter();
+  @Output('rawChange') public conlluRawChange: EventEmitter<string> = new EventEmitter();
+  @Output('highlightChange') public highlighElementChange: EventEmitter<string> = new EventEmitter();
 
-  constructor() {
+  constructor(public renderer:Renderer) {
     this.conlluRawSpans = this.getConlluRaw()
   }
 
@@ -71,7 +71,7 @@ export class ConlluEditorComponent {
       })
       // r[index]=e.target.innerText
       let conlluRaw = this.conlluRaw.split("\n").map((rr,i)=>{
-        return i==row_index? e.target.innerText : rr
+        return i==row_index? e.target.innerText.trim() : rr
       }).join("\n")
       // console.log(this.conlluRaw)
       if(document.activeElement.classList.contains("conllu-row"))
@@ -83,35 +83,35 @@ export class ConlluEditorComponent {
     })
   }
   removeConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    setTimeout(() => {
-      // r[index]=e.target.innerText
-      let conlluRaw = this.conlluRaw.split("\n").filter((rr,i)=>{
-        return i!=row_index
-      }).join("\n")
-      // if(document.activeElement.classList.contains("conllu-row"))
-      //   return
-      // this.saveForUndo(conlluRaw)
-      this.conlluRawChange.emit(conlluRaw)
-    })
+    if(e && window.getSelection().baseOffset != 0)
+      return
+
+    this.conlluRaw = this.conlluRaw.split("\n").filter((rr,i)=>{
+      return i!=row_index
+    }).join("\n")
+    setTimeout(()=>e?this.focus(row_index,e):"")
+    this.conlluRawChange.emit(this.conlluRaw)
   }
   addConlluRawRow(r,row_index,e = null) {
-    //make sure there is a tab after each span
-    setTimeout(() => {
-      // r[index]=e.target.innerText
+    if(e)
+      e.preventDefault()
       var ar = this.conlluRaw.split("\n")
       ar.splice(row_index,0,"# ")
-      let conlluRaw = ar.join("\n")
-      // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-      // console.log(this.conlluRaw)
-      // console.log(document.activeElement)
-      // if(document.activeElement.classList.contains("conllu-row"))
-        // return
-      // this.saveForUndo(conlluRaw)
-      this.conlluRawChange.emit(conlluRaw)
-    })
+      this.conlluRaw = ar.join("\n")
+      setTimeout(()=>e?this.focus(row_index,e):"")
+      this.conlluRawChange.emit(this.conlluRaw)
   }
-  downloadConlluRawRow(r,row_index,e = null) {
+  focus(row_index:number,e = null) {
+    // var current =
+    var highlighNode : any = document.querySelector("div.conllu-row-"+row_index)
+
+    console.log(highlighNode)
+    if(highlighNode)
+      this.renderer.invokeElementMethod(highlighNode, 'focus', []);
+    // else
+      // console.log("Not found",current)
+  }
+  downloadConlluRawRow() {
     //make sure there is a tab after each span
     // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
     // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
@@ -137,7 +137,7 @@ export class ConlluEditorComponent {
         sentid:sentid,
         elemid:elemid,
         line:i,
-        elems:e.split("\t").map(ee=>ee+="\t")
+        elems:e.split("\t")//.map(ee=>ee+="\t")
       }
     })
   }

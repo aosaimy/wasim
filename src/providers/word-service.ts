@@ -40,7 +40,7 @@ export class WordService {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           if(!data.ok){
-            return reject("MA Results are not valid")
+            return reject(data.error)
           }
 
           /***
@@ -98,7 +98,7 @@ export class WordService {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
 	        if(!data.ok){
-	        	return reject("MemMa Results are not valid.")
+	        	return reject(data.error)
 	        }
 
           /***

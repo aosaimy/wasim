@@ -1,6 +1,6 @@
 import { SimpleChanges, Component, Input } from '@angular/core';
 import { Events, ToastController, ViewController, NavParams } from 'ionic-angular';
-import { ConfigJSON } from '../../providers/config-service';
+import { ConfigJSON } from '../../providers/config-json.class';
 
 /**
  * Generated class for the GuiderComponent component.
@@ -18,9 +18,10 @@ export class ConcordanceComponent {
   elementIndex : number = 0
   @Input() config : ConfigJSON
 
-  constructor(private navParams: NavParams,
-    public events: Events,
-    public toastCtrl: ToastController,
-    public viewCtrl: ViewController) {
+  constructor(//private navParams: NavParams,
+    // public events: Events,
+    // public toastCtrl: ToastController,
+    // public viewCtrl: ViewController
+    ) {
   }
 }

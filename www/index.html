@@ -14,10 +14,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4e8ef7">
 
-  <script type="text/javascript" src="assets/js/lib/head.load.min.js"></script>
-  <script type="text/javascript" src="assets/js/jquery.min.js"></script>
-  <script type="text/javascript" src="assets/js/selectize.js"></script>
-
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
 
@@ -51,80 +47,12 @@
   <!-- Ionic's root component and where the app will load -->
   <ion-app></ion-app>
 
-  <!-- The polyfills js is generated during the build process -->
+  <script type="text/javascript" src="assets/js/jquery-selectize.js"></script>
+
+
+    <!-- The polyfills js is generated during the build process -->
   <script src="build/polyfills.js"></script>
 
-  <script type="text/javascript">
-      var root = ''; // filled in by jekyll
-      head.js(
-          // External libraries
-          // root + 'assets/js/lib/ext/jquery.min.js',
-          // root + 'assets/js/lib/ext/jquery.svg.min.js',
-          // root + 'assets/js/lib/ext/jquery.svgdom.min.js',
-          // root + 'assets/js/lib/ext/jquery-ui.min.js',
-          // root + 'assets/js/lib/ext/waypoints.min.js',
-
-          // brat helper modules
-          // root + 'assets/js/lib/brat/configuration.js',
-          // root + 'assets/js/lib/brat/util.js',
-          // root + 'assets/js/lib/brat/annotation_log.js',
-          root + 'assets/js/lib/ext/webfont.js',
-          // brat modules
-          // root + 'assets/js/lib/brat/dispatcher.js',
-          // root + 'assets/js/lib/brat/url_monitor.js',
-          // root + 'assets/js/lib/brat/visualizer.js',
-
-          // annotation documentation support
-          // root + 'assets/js/lib/ext/annodoc.js',
-          root + 'assets/js/lib/local/config.js',
-
-          // the conllu.js assets/js/library itself
-          // root + 'assets/js/lib/conllu.js',
-          // root + 'assets/js/jquery.min.js' ,
-          // root + 'assets/js/selectize.standalone.js'
-      );
-
-      var webFontURLs = [
-          // root + 'assets/fonts/PT_Sans-Caption-Web-Regular.ttf',
-          root + 'assets/fonts/webfont/KawkabMono-Light.woff2'
-      ];
-
-      /* not used here */
-      var documentCollections = {};
-
-      head.ready(function() {
-      // performes all embedding and support functions
-          // Annodoc.activate(Config.bratCollData, documentCollections);
-          // var delay = (function(){
-          //   var timer = 0;
-          //   return function(callback, ms){
-          //     clearTimeout (timer);
-          //     timer = setTimeout(callback, ms);
-          //   };
-          // })();
-
-          // var makeLogger = function(logElement) {
-          //     if (logElement === undefined) {
-          //         return function(s) {
-          //             console.log(s);
-          //         };
-          //     } else {
-          //         return function(s) {
-          //             logElement.val(logElement.val()+s + '\n');
-          //         };
-          //     }
-          // };
-
-
-          // $("#input").keyup(function(){
-          //   delay(function(){
-          //     var doc = new ConllU.Document();
-          //     $("#log").val("")
-          //     var logger = makeLogger($("#log"))
-          //     return doc.parse($("#input").val(),logger,false)//.toBrat(logger, true);
-          // },100)}).trigger("keyup")
-      });
-  </script>
 
   <!-- all code from node_modules directory is here -->
   <script src="build/vendor.js"></script>

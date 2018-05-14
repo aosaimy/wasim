@@ -2,19 +2,19 @@ module.exports = {
   copyAssets: {
     src: [
       '{{SRC}}/assets/**/*',
-      '{{ROOT}}/node_modules/jquery/**/*',
+      // '{{ROOT}}/node_modules/jquery/**/*',
     ],
     dest: '{{WWW}}/assets'
   },
   // // Here is my custom script
-  copySeletizeJS: {
-    src: [
-      '{{ROOT}}/node_modules/jquery/dist/jquery.min.js',
-      '{{ROOT}}/node_modules/selectize/dist/js/standalone/selectize.js'
-    ],
-    // Very important, the dest folder to reference from index.html
-    dest: '{{WWW}}/assets/js/'
-  },
+  // copySeletizeJS: {
+  //   src: [
+  //     // '{{ROOT}}/node_modules/jquery/dist/jquery.min.js',
+  //     '{{ROOT}}/assets/js/jquery-selectize.js'
+  //   ],
+  //   // Very important, the dest folder to reference from index.html
+  //   dest: '{{WWW}}/assets/js'
+  // },
   copySeletizeCSS: {
     src: [
       '{{ROOT}}/node_modules/selectize/dist/css/selectize.css',

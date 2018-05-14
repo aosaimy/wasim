@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Config } from 'ionic-angular';
+import { ConfigurationService } from "ionic-configuration-service";
 import { Http , Headers, RequestOptionsArgs } from '@angular/http';
 import { RequestOptions, Request, RequestMethod} from '@angular/http';
 // import { Sentence} from '../pages/annotate/conllu';
@@ -16,19 +16,23 @@ import 'rxjs/add/operator/map';
 export class GuidelinesService {
 
   constructor(public http: Http,
-  	public myconfig: Config) {
+  	public myconfig: ConfigurationService) {
   }
   guidelines = {
+    loaded: false,
+    specialPos : [],
+    specialSeg : [],
+  }
+  guidelinesObj = {
   	loaded: false,
-  	specialPos : [],
-  	specialSeg : [],
+  	specialPos : {},
+  	specialSeg : {},
   }
   load(project:string, hash: string,) {
 	  if (this.guidelines.loaded) {
 	    // already loaded data
 	    return Promise.resolve(this.guidelines);
 	  }
-	  var that = this
 	  // don't have the data yet
 	  return new Promise((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
@@ -43,7 +47,7 @@ export class GuidelinesService {
 	 //    	// 'body': JSON.stringify()
 		// }
 
-	     this.http.post(this.myconfig.get("server")+"guidelines",{
+	     this.http.post(this.myconfig.getValue("server")+"guidelines",{
 	     	project: project,
 	     	hash: hash
 	     })
@@ -55,14 +59,18 @@ export class GuidelinesService {
 	        if(data.ok){
 	        	data.guides.forEach(v=>{
 	        		if(v.ok){
-	        			that.guidelines[v.type] = v.data
+                this.guidelines[v.type] = v.data
+	        			this.guidelinesObj[v.type] = {}
 	        			this.guidelines[v.type] = this.guidelines[v.type].map(x=>{
 	        				x.form_normalized=x.form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g,"")
+                  let options = {}
+                  x.options.forEach(x=>options[x.value]=x)
+                  this.guidelinesObj[v.type][x.form_normalized]=options
 	        				return x;
 	        			})
 	        		}
 	        	});
-	        	resolve(that.guidelines);
+	        	resolve(this.guidelines);
 	        }
 	        else
 	        	reject(data.error)
@@ -70,10 +78,16 @@ export class GuidelinesService {
 	  });
 	}
 
-	get(type,form){
+  get(type,form){
+    form = form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g,"")
+    if(!this.guidelines[type])
+      return {}
+    return this.guidelines[type].filter(x=>x.form_normalized==form)[0] || {}
+  }
+  getObj(type,form){
 		form = form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g,"")
-		if(!this.guidelines[type])
-			return {}
-		return this.guidelines[type].filter(x=>x.form_normalized==form)[0] || {}
+    if(!this.guidelines[type])
+      return {}
+		return this.guidelinesObj[type][form] || {}
 	}
 }

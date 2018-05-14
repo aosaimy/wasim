@@ -5,5 +5,7 @@
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "langs": ["ar","en"],
+  "lang": "ar"
 }

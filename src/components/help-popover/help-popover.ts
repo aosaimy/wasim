@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {  ViewController, NavParams } from 'ionic-angular';
-import {  ConfigJSON } from '../../providers/config-service';
+import {  ConfigJSON } from '../../providers/config-json.class';
 
 /**
  * Generated class for the HelpPopoverComponent component.
