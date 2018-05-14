@@ -34,6 +34,7 @@
     "conllu-dao": "aosaimy/conllu-dao",
     "crypto": "0.0.3",
     "express": "^4.15.4",
+    "hoek": "^5.0.3",
     "http": "0.0.0",
     "ionic-angular": "3.9.2",
     "ionic-configuration-service": "5",
@@ -55,7 +56,8 @@
     "xml2js": "^0.4.17",
     "zone.js": "0.8.12"
   },
-  "version": "1.1",
+ "license": "MIT",
+  "version": "1.1.1",
   "devDependencies": {
     "@ionic/app-scripts": "^2.1.0",
     "electron-rebuild": "^1.7.3",
