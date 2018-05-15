@@ -1,5 +1,5 @@
-import { NgZone, Renderer, Component, Input, ViewChild, EventEmitter, Directive } from '@angular/core';
-import { Events, ToastController, RadioGroup, AlertButton, AlertController, LoadingController, PopoverController, NavController, NavParams } from 'ionic-angular';
+import { NgZone, Renderer, Component, ViewChild } from '@angular/core';
+import { Events, ToastController, RadioGroup, AlertController, LoadingController, PopoverController, NavController, NavParams } from 'ionic-angular';
 // import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 import { WordService } from '../../providers/word-service';
@@ -10,7 +10,7 @@ import { TagsJSON, ConfigJSON} from '../../providers/config-json.class';
 import { SelectizePopoverPageComponent } from '../../components/selectize-popover-page/selectize-popover-page';
 import { MASelectizePopoverPageComponent } from '../../components/ma-selectize-popover-page/ma-selectize-popover-page';
 // import { SegmentorPopoverPageComponent } from '../../components/segmentor-popover-page/segmentor-popover-page';
-import { TagsSelectorComponent } from '../../components/tags-selector/tags-selector';
+// import { TagsSelectorComponent } from '../../components/tags-selector/tags-selector';
 // import { HighlightComponent } from '../../components/highlight/highlight';
 // import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
 // import { GuiderComponent } from '../../components/guider/guider';
@@ -837,8 +837,7 @@ export class AnnotatePage {
     }
     else if (ev.code == "ArrowLeft") {
       if(ev.target.selectionStart == ev.target.value.length && ev.target.value == elem.form){
-        console.log("here")
-        this.nav("word_left")
+        this.nav("word_next")
       }
     }
     else if (ev.code == "Escape") {
@@ -847,8 +846,7 @@ export class AnnotatePage {
     }
     else if (ev.code == "ArrowRight") {
       if(ev.target.selectionStart == 0 && ev.target.value == elem.form){
-        console.log("here")
-        this.nav("word_right")
+        this.nav("word_prev")
       }
     }
     else if (ev.code == "Enter") {
@@ -1125,9 +1123,9 @@ export class AnnotatePage {
     if (!this.highlight.element)
       return;
     let x = null
-    if(direction=="word_left")
+    if(direction=="word_next")
       x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == parseInt(this.highlight.element.id) + 1)
-    else if(direction=="word_right")
+    else if(direction=="word_prev")
       x = this.highlight.sentence.elements.find(x => !x.isMultiword && parseInt(x.id) == (parseInt(this.highlight.element.id) - 1))
     if (x) {
       this.events.publish('highlight:change', x);

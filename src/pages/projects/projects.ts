@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, ToastController,ViewController,ModalController, NavController, NavParams } from 'ionic-angular';
-import { ProjectService } from '../../providers/project-service';
+import { Proj, ProjectService } from '../../providers/project-service';
 import { DocsPage } from '../docs/docs';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigurationService } from "ionic-configuration-service";
@@ -20,7 +20,7 @@ import { Storage } from '@ionic/storage';
 export class ProjectsPage {
 
   // public security = ""
-  public projects = []
+  public projects : {project:string, hash:string}[]= []
   // public validSecurity  = false
 
   constructor(public navCtrl: NavController,
@@ -40,26 +40,42 @@ export class ProjectsPage {
   create(){
   	this.projectService.create(this.new_project)
   		.then((result:{ok:boolean,hash:string,project:string,error:string})=>{
-  		if(result.ok){
   			this.projects.push({
   				project: result.project,
   				hash: result.hash,
   			})
-  			// this.storage.set("project_hash_"+result.project,result.hash);
-  		}
   	}).catch(e=>{
-              this.toastCtrl.create({
-            message: this.translateService.instant(e.error),
-            duration: 3000,
-            position: "top"
-          }).present()
-
+         this.toastCtrl.create({
+          message: this.translateService.instant(e),
+          duration: 3000,
+          position: "top"
+        }).present()
     })
   }
   goto(project){
     this.navCtrl.push(DocsPage,{
       project: project.project,
       hash: project.hash,
+    })
+  }
+  remove(project){
+    this.projectService.remove(project.project).then((result:{ok:boolean,projects:Proj[],error:string})=>{
+      // this.validSecurity = true
+      // this.storage.set("security",this.security);
+      this.projects = this.projects.filter(p=> p!=project)
+      if(result.projects.length == 0){
+        this.toastCtrl.create({
+            message: this.translateService.instant("There is no projects created yet. Please create one now."),
+            duration: 3000,
+            position: "top"
+          }).present()
+      }
+    }).catch(error=>{
+        this.toastCtrl.create({
+            message: this.translateService.instant(error),
+            duration: 3000,
+            position: "top"
+          }).present()
     })
   }
   logout(){
@@ -96,7 +112,7 @@ export class ProjectsPage {
     }).present()
   }
   list(){
-  	this.projectService.list().then((result:{ok:boolean,projects:string[],error:string})=>{
+  	this.projectService.list().then((result:{ok:boolean,projects:Proj[],error:string})=>{
 			this.projects = result.projects
 			// this.validSecurity = true
 			// this.storage.set("security",this.security);

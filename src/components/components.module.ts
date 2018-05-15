@@ -9,13 +9,12 @@ import { TagsSelectorComponent } from './tags-selector/tags-selector';
 import { ConlluEditorComponent } from './conllu-editor/conllu-editor';
 import { ConfigModal } from '../pages/docs/docs';
 import {NgSelectizeModule} from 'ng-selectize';
-import { TranslateService, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Http} from '@angular/http';
 import { IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { NgJsonEditorModule } from 'ang-jsoneditor';
-import { ConfigJSON } from './config-service';
 
 export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

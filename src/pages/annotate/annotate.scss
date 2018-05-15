@@ -68,6 +68,7 @@ page-annotate {
     font-family: KawkabMonoLight;
     min-width: 4em;
     font-size: 0.9em; // height: 4.75vw;
+    // min-height: 6.4em;
     // min-height: 4em;
     @mixin mobile-portrait-only {
       page-annotate & {

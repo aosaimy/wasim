@@ -36,10 +36,7 @@ export class MyApp {
     const langs = this.myconfig.getValue<string[]>('langs')
     this.translateService.addLangs(langs);
     this.translateService.setDefaultLang("en");
-    storage.get("lang").then(s=>this.translateService.use(s)).catch(()=>{
-      this.translateService.use(lang ? lang : browserLang);
-    })
-
+    storage.get("lang").then(s=>s ? this.translateService.use(s) : this.translateService.use(lang ? lang : browserLang))
 
     this.pages = [
     ];

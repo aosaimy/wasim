@@ -53,7 +53,7 @@ export class ConfigService {
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        if(data.ok){
-            var config = new ConfigJSON(data)
+            var config = new ConfigJSON(data.config)
             config.project = project
             config.hash = hash
             config.keyboardShortcuts.forEach(e=>{
@@ -128,7 +128,7 @@ export class ConfigService {
 	        if(data.ok){
 	        	resolve();
             config.isRtl = this.isRtl(project)
-	        	this.config[project] = config
+	        	this.config[project] = new ConfigJSON(config)
 	        }
 	        else
 	        	reject(data.error)

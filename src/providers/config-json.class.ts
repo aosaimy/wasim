@@ -94,28 +94,28 @@ export class ConfigJSON {
 
       constructor(data?: any){
         if(data){
-            this.remote_repo = data.config.remote_repo
-            this.language = data.config.language
-            this.tagset = data.config.tagset
-            this.useUD = data.config.useUD
-            this.isRtl = data.config.isRtl
-            this.sync = data.config.sync
-            this.undoSize = data.config.undoSize
-            this.users = data.config.users
-            this.keyboardShortcuts = data.config.keyboardShortcuts
-            this.conlluEditorType = data.config.conlluEditorType //as ConlluEditorType
-            this.askMA = data.config.askMA
-            this.askMemMA = data.config.askMemMA
-            this.askGuider = data.config.askGuider
-            this.onFeatSelect = data.config.onFeatSelect
-            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos
-            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag
+            this.remote_repo = data.remote_repo
+            this.language = data.language
+            this.tagset = data.tagset
+            this.useUD = data.useUD
+            this.isRtl = data.isRtl
+            this.sync = data.sync
+            this.undoSize = data.undoSize
+            this.users = data.users
+            this.keyboardShortcuts = data.keyboardShortcuts
+            this.conlluEditorType = data.conlluEditorType //as ConlluEditorType
+            this.askMA = data.askMA
+            this.askMemMA = data.askMemMA
+            this.askGuider = data.askGuider
+            this.onFeatSelect = data.onFeatSelect
+            this.MfVsPos = data["MF.vs.POS"] || data.MfVsPos
+            this.MfVsPos_upostag = data["MF.vs.POS_upostag"] || data.MfVsPos_upostag
 
-            this.mf = data.config.mf
-            this.sentenceTags = data.config.sentenceTags
-            this.allutags = data.config.allutags
+            this.mf = data.mf
+            this.sentenceTags = data.sentenceTags
+            this.allutags = data.allutags
 
-            this.alltags = data.config.alltags
+            this.alltags = data.alltags
           }
       }
       getFeature(key) : {tag:string,desc:string}{

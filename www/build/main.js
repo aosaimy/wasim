@@ -276,7 +276,7 @@ var ConfigService = (function () {
                 .map(function (res) { return res.json(); })
                 .subscribe(function (data) {
                 if (data.ok) {
-                    var config = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](data);
+                    var config = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](data.config);
                     config.project = project;
                     config.hash = hash;
                     config.keyboardShortcuts.forEach(function (e) {
@@ -349,7 +349,7 @@ var ConfigService = (function () {
                 if (data.ok) {
                     resolve();
                     config.isRtl = _this.isRtl(project);
-                    _this.config[project] = config;
+                    _this.config[project] = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](config);
                 }
                 else
                     reject(data.error);
@@ -368,10 +368,10 @@ var ConfigService = (function () {
 }());
 ConfigService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _b || Object])
 ], ConfigService);
 
+var _a, _b;
 //# sourceMappingURL=config-service.js.map
 
 /***/ }),
@@ -434,12 +434,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 var ProjectService = (function () {
     function ProjectService(http, myconfig) {
         this.http = http;
@@ -466,6 +460,31 @@ var ProjectService = (function () {
                 if (data.ok) {
                     _this.username = data.username;
                     _this._list = data;
+                    resolve(data);
+                }
+                else
+                    reject(data.error);
+            }, function (error) {
+                if (error.status != 200)
+                    reject("Server is not working properly. url=" + _this.myconfig.getValue("server"));
+            });
+        });
+    };
+    ProjectService.prototype.remove = function (project) {
+        var _this = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "projects_remove", {
+                project: project
+            }, _this.options)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                // data = data;
+                if (data.ok) {
+                    if (_this._list.projects.length > 0)
+                        _this._list.projects = _this._list.projects.filter(function (p) { return project; });
                     resolve(data);
                 }
                 else
@@ -528,7 +547,7 @@ var ProjectService = (function () {
         var _this = this;
         // var this = this
         // don't have the data yet
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             _this.http.post(_this.myconfig.getValue("server") + "projects_create", {
                 // "security": security,
                 "project": project,
@@ -537,7 +556,10 @@ var ProjectService = (function () {
                 .subscribe(function (data) {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
-                resolve(data);
+                if (data.ok)
+                    resolve(data);
+                else
+                    reject(data.error);
             });
         });
     };
@@ -545,10 +567,10 @@ var ProjectService = (function () {
 }());
 ProjectService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _b || Object])
 ], ProjectService);
 
+var _a, _b;
 //# sourceMappingURL=project-service.js.map
 
 /***/ }),
@@ -595,6 +617,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 // import { GuidelinesService } from '../../providers/guidelines-service';
 
 
+// import { SegmentorPopoverPageComponent } from '../../components/segmentor-popover-page/segmentor-popover-page';
+// import { TagsSelectorComponent } from '../../components/tags-selector/tags-selector';
 // import { HighlightComponent } from '../../components/highlight/highlight';
 // import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
 // import { GuiderComponent } from '../../components/guider/guider';
@@ -1404,8 +1428,7 @@ var AnnotatePage = (function () {
         }
         else if (ev.code == "ArrowLeft") {
             if (ev.target.selectionStart == ev.target.value.length && ev.target.value == elem.form) {
-                console.log("here");
-                this.nav("word_left");
+                this.nav("word_next");
             }
         }
         else if (ev.code == "Escape") {
@@ -1414,8 +1437,7 @@ var AnnotatePage = (function () {
         }
         else if (ev.code == "ArrowRight") {
             if (ev.target.selectionStart == 0 && ev.target.value == elem.form) {
-                console.log("here");
-                this.nav("word_right");
+                this.nav("word_prev");
             }
         }
         else if (ev.code == "Enter") {
@@ -1665,9 +1687,9 @@ var AnnotatePage = (function () {
         if (!this.highlight.element)
             return;
         var x = null;
-        if (direction == "word_left")
+        if (direction == "word_next")
             x = this.highlight.sentence.elements.find(function (x) { return !x.isMultiword && parseInt(x.id) == parseInt(_this.highlight.element.id) + 1; });
-        else if (direction == "word_right")
+        else if (direction == "word_prev")
             x = this.highlight.sentence.elements.find(function (x) { return !x.isMultiword && parseInt(x.id) == (parseInt(_this.highlight.element.id) - 1); });
         if (x) {
             this.events.publish('highlight:change', x);
@@ -1868,25 +1890,13 @@ var AnnotatePage = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('lemma'),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */])
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */]) === "function" && _a || Object)
 ], AnnotatePage.prototype, "lemmaGroup", void 0);
 AnnotatePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'FILE\' | translate}}: {{pageid}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' ion-button icon-only tabindex="-1" (click)="syncConllU()">\n        <ion-icon name="sync"></ion-icon>\n      </button>\n      <button small *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="showStats()">\n        <ion-icon name="print"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="undo()">\n        <ion-icon name="undo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="redo()">\n        <ion-icon name="redo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="saveFile()">\n        <ion-icon name="cloud-upload"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="download()">\n        <ion-icon name="cloud-download"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="find($event)">\n        <ion-icon name="glasses"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="search($event)">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left right ion-button icon-only tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n        <ion-icon [name]="config.isConlluHidden? \'eye\':\'eye-off\'"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">\n    <ion-row>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="highlight.element" [currentTags]="currentTags" [element]="highlight.element" (nextTags)="increaseTagsRow()"></tags-selector>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-lg-2 col-sm-3 col-12>\n        <ion-list *ngIf="highlight.element">\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n            <ion-icon name="apps"></ion-icon>{{ \'Features\' | translate }} </button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n            <ion-icon name="menu"></ion-icon>{{\'Analyser\' | translate}}</button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="addNote($event)">\n            <ion-icon name="create"></ion-icon> {{\'Note\' | translate}}\n          </button>\n          <ion-item *ngIf="highlight.element.parent">\n            <ion-label color="primary" stacked>{{\'Inflected Word Form\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item (click)="mark_misc(\'UNCLEAR\')">\n            <ion-label>{{\'Unclear?\' | translate}}</ion-label>\n            <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'Lemma\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{config.getFeature(feat.key).desc}}</ion-label>\n            <ion-select [(ngModel)]="feat.value" interface="popover">\n              <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'XPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element._xpostag" tabindex="2">\n              <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'UPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element.upostag">\n              <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n        </ion-list>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n      </ion-col>\n      <ion-col *ngIf="config">\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id>2">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n        <ion-row id="sentences">\n          <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}">\n            <!-- [hidden]=""> -->\n            <div>{{sent.tag}}</div>\n            <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: highlight.element !== null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: (elem == copyElement || elem.parent == copyElement) && copyElement !== null,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0,\n              ADJ : elem.upostag == \'ADJ\',\n              ADP : elem.upostag == \'ADP\',\n              ADV : elem.upostag == \'ADV\',\n              CCONJ : elem.upostag == \'CCONJ\',\n              DET : elem.upostag == \'DET\',\n              NOUN : elem.upostag == \'NOUN\',\n              NUM : elem.upostag == \'NUM\',\n              PART : elem.upostag == \'PART\',\n              PRON : elem.upostag == \'PRON\',\n              PROPN : elem.upostag == \'PROPN\',\n              PUNCT : elem.upostag == \'PUNCT\',\n              SCONJ : elem.upostag == \'SCONJ\',\n              VERB : elem.upostag == \'VERB\',\n              X : elem.upostag == \'X\'\n               }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword" (dblclick)="editable = true">\n              <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n              <ng-template #other_content>\n                <span class="form" #spanForm>{{elem.getForm()}}</span>\n                <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n                <span class="lemma">/{{elem.lemma}}/</span>\n                <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              </ng-template>\n            </div>\n          </div>\n        </ion-row>\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id<doc?.sentences?.length-1">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n      </ion-col>\n      <ion-col col-lg-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <ion-segment [(ngModel)]="conlluEditorType" color="secondary">\n          <ion-segment-button value="textarea">\n            <ion-icon name="create"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="pretty">\n            <ion-icon name="menu"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="errors">\n            <ion-icon name="warning" color="danger"></ion-icon>\n            <ion-badge color="danger" [hidden]="log.length ==0">{{log.length}}</ion-badge>\n          </ion-segment-button>\n          <ion-segment-button value="info">\n            <ion-icon name="information-circle"></ion-icon>\n          </ion-segment-button>\n        </ion-segment>\n        <ion-row *ngIf="conlluEditorType==\'textarea\'">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="conlluRaw = $event.target.value" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'errors\'">\n          <div *ngFor="let l of log">{{l}}</div>\n          <!-- <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled"> -->\n          <!-- </ion-textarea> -->\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'pretty\'">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]" (highlightChange)="highlightElement($event)" (rawChange)="conlluRaw=$event"></conllu-editor>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'info\'">\n          <ion-card>\n            <ion-card-header>\n              Document Information\n            </ion-card-header>\n            <ion-list>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Sent #: {{info.sent_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Elem #: {{info.elem_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Tokens #: {{info.tokens_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Types #: {{info.types_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Multi Word Tokens #: {{info.mwe_no}}</ion-item>\n            </ion-list>\n          </ion-card>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
+        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'FILE\' | translate}}: {{pageid}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' ion-button icon-only tabindex="-1" (click)="syncConllU()">\n        <ion-icon name="sync"></ion-icon>\n      </button>\n      <button small *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="showStats()">\n        <ion-icon name="print"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="undo()">\n        <ion-icon name="undo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="redo()">\n        <ion-icon name="redo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="saveFile()">\n        <ion-icon name="cloud-upload"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="download()">\n        <ion-icon name="cloud-download"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="find($event)">\n        <ion-icon name="glasses"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="search($event)">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left right ion-button icon-only tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n        <ion-icon [name]="config.isConlluHidden? \'eye\':\'eye-off\'"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">\n    <ion-row>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="highlight.element" [currentTags]="currentTags" [element]="highlight.element" (nextTags)="increaseTagsRow()"></tags-selector>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-lg-2 col-sm-3 col-12>\n        <ion-list *ngIf="highlight.element">\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n            <ion-icon name="apps"></ion-icon>{{ \'Features\' | translate }} </button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n            <ion-icon name="menu"></ion-icon>{{\'Analyser\' | translate}}</button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="addNote($event)">\n            <ion-icon name="create"></ion-icon> {{\'Note\' | translate}}\n          </button>\n          <ion-item *ngIf="highlight.element.parent">\n            <ion-label color="primary" stacked>{{\'Inflected Word Form\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item (click)="mark_misc(\'UNCLEAR\')">\n            <ion-label>{{\'Unclear?\' | translate}}</ion-label>\n            <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'Lemma\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n          </ion-item>\n          <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{config.getFeature(feat.key).desc}}</ion-label>\n            <ion-select [(ngModel)]="feat.value" interface="popover">\n              <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'XPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element._xpostag" tabindex="2">\n              <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'UPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element.upostag">\n              <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n        </ion-list>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n      </ion-col>\n      <ion-col *ngIf="config">\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id>2">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n        <ion-row id="sentences">\n          <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}">\n            <!-- [hidden]=""> -->\n            <div>{{sent.tag}}</div>\n            <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: highlight.element !== null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: (elem == copyElement || elem.parent == copyElement) && copyElement !== null,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0,\n              ADJ : elem.upostag == \'ADJ\',\n              ADP : elem.upostag == \'ADP\',\n              ADV : elem.upostag == \'ADV\',\n              CCONJ : elem.upostag == \'CCONJ\',\n              DET : elem.upostag == \'DET\',\n              NOUN : elem.upostag == \'NOUN\',\n              NUM : elem.upostag == \'NUM\',\n              PART : elem.upostag == \'PART\',\n              PRON : elem.upostag == \'PRON\',\n              PROPN : elem.upostag == \'PROPN\',\n              PUNCT : elem.upostag == \'PUNCT\',\n              SCONJ : elem.upostag == \'SCONJ\',\n              VERB : elem.upostag == \'VERB\',\n              X : elem.upostag == \'X\'\n               }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword" (dblclick)="editable = true">\n              <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n              <ng-template #other_content>\n                <span class="form" #spanForm>{{elem.getForm()}}</span>\n                <span class="postag">{{ config.tags[\'X:\'+elem.xpostag] ? config.tags[\'X:\'+elem.xpostag].desc : elem.xpostag}}</span>\n                <span class="postag upostag" *ngIf="config.useUD">{{ config.tags[\'U:\'+elem.upostag] ? config.tags[\'U:\'+elem.upostag].desc : elem.upostag}}</span>\n                <span class="lemma">/{{elem.lemma}}/</span>\n                <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              </ng-template>\n            </div>\n          </div>\n        </ion-row>\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id<doc?.sentences?.length-1">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n      </ion-col>\n      <ion-col col-lg-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <ion-segment [(ngModel)]="conlluEditorType" color="secondary">\n          <ion-segment-button value="textarea">\n            <ion-icon name="create"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="pretty">\n            <ion-icon name="menu"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="errors">\n            <ion-icon name="warning" color="danger"></ion-icon>\n            <ion-badge color="danger" [hidden]="log.length ==0">{{log.length}}</ion-badge>\n          </ion-segment-button>\n          <ion-segment-button value="info">\n            <ion-icon name="information-circle"></ion-icon>\n          </ion-segment-button>\n        </ion-segment>\n        <ion-row *ngIf="conlluEditorType==\'textarea\'">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="conlluRaw = $event.target.value" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'errors\'">\n          <div *ngFor="let l of log">{{l}}</div>\n          <!-- <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled"> -->\n          <!-- </ion-textarea> -->\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'pretty\'">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]" (highlightChange)="highlightElement($event)" (rawChange)="conlluRaw=$event"></conllu-editor>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'info\'">\n          <ion-card>\n            <ion-card-header>\n              Document Information\n            </ion-card-header>\n            <ion-list>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Sent #: {{info.sent_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Elem #: {{info.elem_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Tokens #: {{info.tokens_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Types #: {{info.types_no}}</ion-item>\n              <ion-item><ion-icon name="cart" item-start></ion-icon>Multi Word Tokens #: {{info.mwe_no}}</ion-item>\n            </ion-list>\n          </ion-card>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"],
-        __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */],
-        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */]) === "function" && _h || Object, typeof (_j = typeof __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */]) === "function" && _j || Object, typeof (_k = typeof __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */]) === "function" && _k || Object, typeof (_l = typeof __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */]) === "function" && _l || Object, typeof (_m = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */]) === "function" && _m || Object, typeof (_o = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _o || Object, typeof (_p = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _p || Object])
 ], AnnotatePage);
 
 var Highlight = (function () {
@@ -1974,6 +1984,7 @@ var Stats = (function () {
     return Stats;
 }());
 
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
 //# sourceMappingURL=annotate.js.map
 
 /***/ }),
@@ -2891,9 +2902,7 @@ var MyApp = (function () {
         var langs = this.myconfig.getValue('langs');
         this.translateService.addLangs(langs);
         this.translateService.setDefaultLang("en");
-        storage.get("lang").then(function (s) { return _this.translateService.use(s); }).catch(function () {
-            _this.translateService.use(lang ? lang : browserLang);
-        });
+        storage.get("lang").then(function (s) { return s ? _this.translateService.use(s) : _this.translateService.use(lang ? lang : browserLang); });
         this.pages = [];
     }
     MyApp.prototype.initializeApp = function () {
@@ -2914,20 +2923,15 @@ var MyApp = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Nav */]),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Nav */])
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Nav */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* Nav */]) === "function" && _a || Object)
 ], MyApp.prototype, "nav", void 0);
 MyApp = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/'<ion-menu [content]="content">\n  <ion-header>\n    <ion-toolbar>\n      <ion-title>Menu</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <ion-content>\n    <ion-list>\n      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n        {{p.title}}\n      </button>\n    </ion-list>\n  </ion-content>\n\n</ion-menu>\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/app/app.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Platform */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
-        __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
-        __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */],
-        __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */],
-        __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__["a" /* ConfigurationService */],
-        __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Platform */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Platform */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]) === "function" && _h || Object])
 ], MyApp);
 
+var _a, _b, _c, _d, _e, _f, _g, _h;
 //# sourceMappingURL=app.component.js.map
 
 /***/ }),
@@ -3007,26 +3011,26 @@ var ConfigJSON = (function () {
         this.undoSize = 5;
         this.features = {};
         if (data) {
-            this.remote_repo = data.config.remote_repo;
-            this.language = data.config.language;
-            this.tagset = data.config.tagset;
-            this.useUD = data.config.useUD;
-            this.isRtl = data.config.isRtl;
-            this.sync = data.config.sync;
-            this.undoSize = data.config.undoSize;
-            this.users = data.config.users;
-            this.keyboardShortcuts = data.config.keyboardShortcuts;
-            this.conlluEditorType = data.config.conlluEditorType; //as ConlluEditorType
-            this.askMA = data.config.askMA;
-            this.askMemMA = data.config.askMemMA;
-            this.askGuider = data.config.askGuider;
-            this.onFeatSelect = data.config.onFeatSelect;
-            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos;
-            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag;
-            this.mf = data.config.mf;
-            this.sentenceTags = data.config.sentenceTags;
-            this.allutags = data.config.allutags;
-            this.alltags = data.config.alltags;
+            this.remote_repo = data.remote_repo;
+            this.language = data.language;
+            this.tagset = data.tagset;
+            this.useUD = data.useUD;
+            this.isRtl = data.isRtl;
+            this.sync = data.sync;
+            this.undoSize = data.undoSize;
+            this.users = data.users;
+            this.keyboardShortcuts = data.keyboardShortcuts;
+            this.conlluEditorType = data.conlluEditorType; //as ConlluEditorType
+            this.askMA = data.askMA;
+            this.askMemMA = data.askMemMA;
+            this.askGuider = data.askGuider;
+            this.onFeatSelect = data.onFeatSelect;
+            this.MfVsPos = data["MF.vs.POS"] || data.MfVsPos;
+            this.MfVsPos_upostag = data["MF.vs.POS_upostag"] || data.MfVsPos_upostag;
+            this.mf = data.mf;
+            this.sentenceTags = data.sentenceTags;
+            this.allutags = data.allutags;
+            this.alltags = data.alltags;
         }
     }
     ConfigJSON.prototype.getFeature = function (key) {
@@ -3982,16 +3986,13 @@ var ProjectsPage = (function () {
         var _this = this;
         this.projectService.create(this.new_project)
             .then(function (result) {
-            if (result.ok) {
-                _this.projects.push({
-                    project: result.project,
-                    hash: result.hash,
-                });
-                // this.storage.set("project_hash_"+result.project,result.hash);
-            }
+            _this.projects.push({
+                project: result.project,
+                hash: result.hash,
+            });
         }).catch(function (e) {
             _this.toastCtrl.create({
-                message: _this.translateService.instant(e.error),
+                message: _this.translateService.instant(e),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -4001,6 +4002,27 @@ var ProjectsPage = (function () {
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["b" /* DocsPage */], {
             project: project.project,
             hash: project.hash,
+        });
+    };
+    ProjectsPage.prototype.remove = function (project) {
+        var _this = this;
+        this.projectService.remove(project.project).then(function (result) {
+            // this.validSecurity = true
+            // this.storage.set("security",this.security);
+            _this.projects = _this.projects.filter(function (p) { return p != project; });
+            if (result.projects.length == 0) {
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant("There is no projects created yet. Please create one now."),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            }
+        }).catch(function (error) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant(error),
+                duration: 3000,
+                position: "top"
+            }).present();
         });
     };
     ProjectsPage.prototype.logout = function () {
@@ -4072,15 +4094,7 @@ ProjectsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'PROJECTS TITLE\' | translate}}</ion-title>\n    <ion-buttons end>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">\n        <ion-icon name="log-out"></ion-icon>\n      </button>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">\n        <ion-icon name="contact"></ion-icon>\n      </button>\n      <button right ion-button icon-only (click)="lang($event)" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding rtl>\n  <ion-card>\n  <ion-item-divider>\n    {{\'CURRENT PROJECTS\' | translate}}\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">{{\'GO\' | translate}}</button>\n    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">{{\'DELETE\' | translate}}</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>{{\'NO PROJECT IS FOUND\' | translate}}</ion-item>\n  <ion-item-divider>\n    {{\'NEW PROJECT\' | translate}}\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>{{\'PROJECT NAME\' | translate}}</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">{{\'CREATE NEW PROJECT\' | translate}}</button>\n	</ion-item>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */],
-        __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */],
-        __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__["a" /* ConfigurationService */],
-        __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */]) === "function" && _h || Object, typeof (_j = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _j || Object])
 ], ProjectsPage);
 
 var LoginModal = (function () {
@@ -4114,9 +4128,10 @@ LoginModal = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'page-login',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'LOGIN PAGE TITLE\' | translate}}</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card *ngIf="!validSecurity">\n    <ion-card-header>{{\'LOGIN MODAL TITLE\' | translate}}</ion-card-header>\n    <ion-card-content>\n      <form (ngSubmit)="login()">\n        <ion-item>\n          <ion-label fixed>{{\'USERNAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="username" name="username"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label fixed>{{\'PASSWORD\' | translate}}</ion-label>\n          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>\n        </ion-item>\n        <button type="submit" ion-button block>{{\'LOGIN\' | translate}}</button>\n      </form>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_k = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]) === "function" && _k || Object, typeof (_l = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _l || Object, typeof (_m = typeof __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */]) === "function" && _m || Object, typeof (_o = typeof __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */]) === "function" && _o || Object, typeof (_p = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _p || Object])
 ], LoginModal);
 
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
 //# sourceMappingURL=projects.js.map
 
 /***/ }),
@@ -4223,9 +4238,9 @@ var DocsPage = (function () {
     };
     DocsPage.prototype.udpipe = function (sentence) {
         var _this = this;
-        var that = this;
         this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
-            that.list.push({ filename: result.filename, firstline: result.firstline });
+            _this.newFilename = "";
+            _this.list.push({ filename: result.filename, firstline: result.firstline });
         }).catch(function (err) {
             _this.toastCtrl.create({
                 message: _this.translateService.instant(err),
@@ -4257,16 +4272,9 @@ var DocsPage = (function () {
 }());
 DocsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'MANAGE PROJECT\' | translate}}: {{project}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="openConfig()" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid>\n    <ion-row>\n      <ion-col col-12>\n        <ion-list>\n          <ion-item *ngFor="let i of list">\n            {{i.filename}}\n            <ion-note>{{i.firstline}}</ion-note>\n            <button ion-button outline item-end icon-left (click)="goto(i.filename)">{{\'GO\' | translate}}</button>\n            <a ion-button outline item-end icon-left href="{{myconfig.getValue(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">{{\'DOWNLOAD\' | translate}}</a>\n            <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">{{\'DELETE\' | translate}}</button>\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-card>\n        <ion-item>\n          <!-- <ion-label >Text</ion-label> -->\n          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n        </ion-item>\n        <ion-item-divider>\n        </ion-item-divider>\n        <ion-item>\n          <ion-label fixed>{{\'FILENAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="newFilename"></ion-input>\n          <button ion-button outline item-end icon-left (click)="udpipe(text)">{{\'GO\' | translate}}</button>\n        </ion-item>\n      </ion-card>\n    </ion-row>\n    <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n      <ion-card>\n        <ion-card-header>\n          {{\'UPLOADING FILES\' | translate}}\n        </ion-card-header>\n        <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n        <ion-list>\n          <ion-item-divider>\n            {{\'FILE LIST\' | translate}}\n          </ion-item-divider>\n          <ion-item *ngFor="let item of uploader.queue">\n            <ion-avatar item-start>\n              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n            </ion-avatar>\n            <h2>{{ item?.file?.name }}</h2>\n            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n            <div *ngIf="uploader.isHTML5">\n              <div class="progress" style="margin-bottom: 0;">\n                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n              </div>\n            </div>\n            <ion-row>\n              <ion-col>\n                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                  <ion-icon name="cloud-upload"></ion-icon>\n                  <div>{{\'Upload\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                  <ion-icon name="undo"></ion-icon>\n                  <div>{{\'Cancel\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.remove()">\n                  <ion-icon name="trash"></ion-icon>\n                  <div>{{\'Remove\' | translate}}</div>\n                </button>\n              </ion-col>\n            </ion-row>\n          </ion-item>\n        </ion-list>\n        <ion-item-divider>\n          {{\'UPLOAD A NEW FILE(S)\' | translate}}\n        </ion-item-divider>\n        <button ion-button (click)="uploadbutton.click()" icon-only>\n          <ion-icon name="cloud-upload"></ion-icon>\n          <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n        </button>\n      </ion-card>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
+        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'MANAGE PROJECT\' | translate}}: {{project}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="openConfig()" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid>\n    <ion-row>\n      <ion-col col-12>\n        <ion-list>\n          <ion-item *ngFor="let i of list">\n            {{i.filename}}\n            <ion-note>{{i.firstline}}</ion-note>\n            <button ion-button outline item-end icon-left (click)="goto(i.filename)">{{\'GO\' | translate}}</button>\n            <a ion-button outline item-end icon-left href="{{myconfig.getValue(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">{{\'DOWNLOAD\' | translate}}</a>\n            <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">{{\'DELETE\' | translate}}</button>\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-card>\n        <ion-item>\n          <!-- <ion-label >Text</ion-label> -->\n          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag" rows="7"></ion-textarea>\n        </ion-item>\n        <ion-item-divider>\n        </ion-item-divider>\n        <ion-item>\n          <ion-label fixed>{{\'FILENAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="newFilename" required></ion-input>\n          <button ion-button outline item-end icon-left (click)="udpipe(text)">{{\'GO\' | translate}}</button>\n        </ion-item>\n      </ion-card>\n    </ion-row>\n    <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n      <ion-card>\n        <ion-card-header>\n          {{\'UPLOADING FILES\' | translate}}\n        </ion-card-header>\n        <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n        <ion-list>\n          <ion-item-divider>\n            {{\'FILE LIST\' | translate}}\n          </ion-item-divider>\n          <ion-item *ngFor="let item of uploader.queue">\n            <ion-avatar item-start>\n              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n            </ion-avatar>\n            <h2>{{ item?.file?.name }}</h2>\n            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n            <div *ngIf="uploader.isHTML5">\n              <div class="progress" style="margin-bottom: 0;">\n                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n              </div>\n            </div>\n            <ion-row>\n              <ion-col>\n                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                  <ion-icon name="cloud-upload"></ion-icon>\n                  <div>{{\'Upload\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                  <ion-icon name="undo"></ion-icon>\n                  <div>{{\'Cancel\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.remove()">\n                  <ion-icon name="trash"></ion-icon>\n                  <div>{{\'Remove\' | translate}}</div>\n                </button>\n              </ion-col>\n            </ion-row>\n          </ion-item>\n        </ion-list>\n        <ion-item-divider>\n          {{\'UPLOAD A NEW FILE(S)\' | translate}}\n        </ion-item-divider>\n        <button ion-button (click)="uploadbutton.click()" icon-only>\n          <ion-icon name="cloud-upload"></ion-icon>\n          <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n        </button>\n      </ion-card>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__["a" /* ConfigurationService */],
-        __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
-        __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _h || Object])
 ], DocsPage);
 
 
@@ -4328,7 +4336,7 @@ var ConfigModal = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */]),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */])
+    __metadata("design:type", typeof (_j = typeof __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */]) === "function" && _j || Object)
 ], ConfigModal.prototype, "editor", void 0);
 ConfigModal = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -4336,9 +4344,10 @@ ConfigModal = __decorate([
         // styleUrls: ['./app.component.css'],
         template: "\n  <ion-header>\n  <ion-navbar>\n    <ion-title>{{'Configuration File' | translate}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)=\"saveConfig()\" tabindex=\"-1\">\n        <ion-icon name=\"cloud-upload\"></ion-icon>\n      </button>\n    </ion-buttons>\n\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n<json-editor [style.height.%]=\"90\" [options]=\"editorOptions\" [data]=\"config\"></json-editor>\n                    <div [hidden]=\"!configErrors\" class=\"configErrors\">{{configErrors}}</div>\n                    <!--<textarea [style.height.%]=\"90\" [style.width.%]=\"100\" [(ngModel)]=\"configStr\"></textarea>-->\n                    <!--<button ion-button item-end (click)=\"saveConfig(i)\">{{'SAVE' | translate}}</button>-->\n                    </ion-content>\n",
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */], __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */]])
+    __metadata("design:paramtypes", [typeof (_k = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _k || Object, typeof (_l = typeof __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */]) === "function" && _l || Object, typeof (_m = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _m || Object, typeof (_o = typeof __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */]) === "function" && _o || Object])
 ], ConfigModal);
 
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 //# sourceMappingURL=docs.js.map
 
 /***/ })

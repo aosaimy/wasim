@@ -81,9 +81,9 @@ export class DocsPage {
   	})
   }
   udpipe(sentence){
-	    var that = this
 	  	this.conlluService.udpipe(this.project,this.hash,sentence,this.newFilename,this.configService.getConfig(this.project).language).then((result)=>{
-	  			that.list.push({filename:result.filename,firstline:result.firstline})
+        this.newFilename = ""
+	  			this.list.push({filename:result.filename,firstline:result.firstline})
 	  	}).catch(err=>{
         this.toastCtrl.create({
             message: this.translateService.instant(err),

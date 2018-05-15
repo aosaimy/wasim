@@ -125,7 +125,8 @@
               <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />
               <ng-template #other_content>
                 <span class="form" #spanForm>{{elem.getForm()}}</span>
-                <span class="postag">{{config.useUD ? config.tags['U:'+elem.upostag]?.desc : config.tags['X:'+elem.xpostag]?.desc}}</span>
+                <span class="postag">{{ config.tags['X:'+elem.xpostag] ? config.tags['X:'+elem.xpostag].desc : elem.xpostag}}</span>
+                <span class="postag upostag" *ngIf="config.useUD">{{ config.tags['U:'+elem.upostag] ? config.tags['U:'+elem.upostag].desc : elem.upostag}}</span>
                 <span class="lemma">/{{elem.lemma}}/</span>
                 <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>
               </ng-template>

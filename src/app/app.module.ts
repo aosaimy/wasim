@@ -10,15 +10,13 @@ import { ConfigService } from '../providers/config-service';
 import { GuidelinesService } from '../providers/guidelines-service';
 import { ProjectService } from '../providers/project-service';
 import { AnnotatePage } from '../pages/annotate/annotate';
-import { TranslateService, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ComponentsModule } from '../components/components.module';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DocsPage } from '../pages/docs/docs';
 import { ProjectsPage,LoginModal } from '../pages/projects/projects';
 import { NotMultiTag } from '../pipes/not-multi-tag';
 import { IsNextSentence } from '../pipes/is-next-sentence';
-import { Http, HttpModule} from '@angular/http';
+import { HttpModule} from '@angular/http';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';

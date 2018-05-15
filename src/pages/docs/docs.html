@@ -33,13 +33,13 @@
       <ion-card>
         <ion-item>
           <!-- <ion-label >Text</ion-label> -->
-          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>
+          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag" rows="7"></ion-textarea>
         </ion-item>
         <ion-item-divider>
         </ion-item-divider>
         <ion-item>
           <ion-label fixed>{{'FILENAME' | translate}}</ion-label>
-          <ion-input [(ngModel)]="newFilename"></ion-input>
+          <ion-input [(ngModel)]="newFilename" required></ion-input>
           <button ion-button outline item-end icon-left (click)="udpipe(text)">{{'GO' | translate}}</button>
         </ion-item>
       </ion-card>
