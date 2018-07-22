@@ -40,7 +40,7 @@ export class AnnotatePage {
   */
   tagsRow = 0;
   done=false
-  conlluEditorType = "info"
+  conlluEditorType = "pretty"
   config = new ConfigJSON()
   // sentenceTags: { tag: string, desc: string, fn: number }[] = null
 
@@ -204,7 +204,6 @@ export class AnnotatePage {
   //   })
   // }
   showAlertMessage = false;
-
   _info = null
   get info() {
     if(this._info)
@@ -217,8 +216,29 @@ export class AnnotatePage {
     obj.tokens_no = this.doc.sentences.map(s=>s.tokens().length).reduce((p,c)=>p+=c,0)
     obj.types_no = [].concat(...this.doc.sentences.map(s=>s.tokens().map(e=>e.form))).filter((e,i,arr)=>arr.indexOf(e)==i).length
     obj.mwe_no = this.doc.sentences.map(s=>s.elements.filter(el=>el.isMultiword).length).reduce((p,c)=>p+=c,0)
+    obj.missing_features = {}
+    obj.upos = {}
+    this.config.allutags.forEach(t=>{
+      obj.missing_features[t.tag]={}
+      obj.upos[t.tag] = 0
+    })
+    this.doc.sentences.forEach(s=>{
+      s.elements.forEach(e=>{
+        obj.upos[e.upostag]++
+        let miss = e.morphFeatsMissing()
+        miss.forEach(m=>{
+          obj.missing_features[e.upostag][m] = obj.missing_features[e.upostag][m]+1 || 1
+        })
+      })
+    })
+    this.config.allutags.forEach(t=>obj.missing_features[t.tag]=Object.keys(obj.missing_features[t.tag]).map(k=>[k,obj.missing_features[t.tag][k]]))
+    console.log(obj.missing_features)
     this._info = obj
     return obj
+  }
+  set info(argv) {
+    this._info = argv
+    this._info = this.info
   }
   addNote(event=null) {
     if(event)

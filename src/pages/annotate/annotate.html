@@ -69,7 +69,7 @@
               rtl:configService.isRtl(project)}"></ion-input>
           </ion-item>
           <ion-item *ngFor="let feat of highlight.element.features; let i=index">
-            <ion-label color="primary" stacked>{{config.getFeature(feat.key).desc}}</ion-label>
+            <ion-label color="primary" stacked>{{feat.key}}</ion-label>
             <ion-select [(ngModel)]="feat.value" interface="popover">
               <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>
             </ion-select>
@@ -175,7 +175,22 @@
               <ion-item><ion-icon name="cart" item-start></ion-icon>Tokens #: {{info.tokens_no}}</ion-item>
               <ion-item><ion-icon name="cart" item-start></ion-icon>Types #: {{info.types_no}}</ion-item>
               <ion-item><ion-icon name="cart" item-start></ion-icon>Multi Word Tokens #: {{info.mwe_no}}</ion-item>
+              <ion-list>
+                <div *ngFor="let upos of config.allutags">
+                      <ion-item-divider color="light">{{upos.tag}} (#={{info.upos[upos.tag]}})</ion-item-divider>
+                        <ion-item *ngFor="let m of info.missing_features[upos.tag]">
+                          {{m[0]}}:{{m[1]}} {{m[1]/info.upos[upos.tag]*100}}%
+                        </ion-item>
+                  </div>
+              </ion-list>
+              <ion-item>
+                <button small class='topbar_button' ion-button icon-only tabindex="-1" (click)="info = null">
+                  <ion-icon name="sync"></ion-icon>
+                </button>
+              </ion-item>
+
             </ion-list>
+
           </ion-card>
         </ion-row>
       </ion-col>
