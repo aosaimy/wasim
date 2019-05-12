@@ -18,7 +18,7 @@ Text annotation of highly inflectional languages (including Arabic) requires key
 Wasim has been tested on four case studies and these features proved to be useful.
 
 ## Demo
-You can use use wasim via a demo project [here](http://wasim-app.al-osaimy.com/#/docs/temp/92694396fc7f1d510e44931e31f6c379).
+You can use use wasim via a demo project [arabic](http://wasim-app.al-osaimy.com/#/docs/Arabic_Demo/0ba7ceda3bf41feca9da68a90a41b6e6) and [english](http://wasim-app.al-osaimy.com/#/docs/English_Demo/19fbc05a669a5f8a5a9dcef26120c0ec) .
 
 You can create projects using the username: demo, password: demo [http://wasim-app.al-osaimy.com](http://wasim-app.al-osaimy.com)
 
