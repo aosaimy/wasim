@@ -527,7 +527,9 @@ div.jsoneditor-tree .jsoneditor-schema-error {
   background: url("../assets/icon/jsoneditor-icons.svg")  -168px -48px;
 }
 /* ContextMenu - main menu */
-
+json-editor > div {
+  height: 100%;
+}
 div.jsoneditor-contextmenu-root {
   position: relative;
   width: 0;
@@ -538,6 +540,13 @@ div.jsoneditor-contextmenu {
   position: absolute;
   box-sizing: content-box;
   z-index: 99999;
+}
+
+div.jsoneditor-menu {
+  display: none;
+}
+div.jsoneditor-statusbar {
+  display: none;
 }
 
 div.jsoneditor-contextmenu ul,

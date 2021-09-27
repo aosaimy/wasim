@@ -20,21 +20,18 @@ export class GuiderComponent {
   @Input() project : string = ""
   @Input() hash : string = ""
   @Input() config : ConfigJSON
-  constructor(private navParams: NavParams,
-    public guidelinesService: GuidelinesService,
+  constructor(public guidelinesService: GuidelinesService,
     public events: Events,
-    public toastCtrl: ToastController,
-    public viewCtrl: ViewController) {
-      // this.config = navParams.data.config
-      this.guidelinesService.load(navParams.data.project,navParams.data.hash).then(x=>{
-      // this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
-        }).catch(x=>{
-            this.toastCtrl.create({
-              message: 'No guider is found: ' + x,
-              duration: 3000,
-              position: "top"
-            }).present()
-        })
+    public toastCtrl: ToastController) {
+      // this.guidelinesService.load(this.project,this.hash).then(x=>{
+      // // this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
+      //   }).catch(x=>{
+      //       this.toastCtrl.create({
+      //         message: 'No guider is found: ' + x,
+      //         duration: 3000,
+      //         position: "top"
+      //       }).present()
+      //   })
   }
   toggle(e){
     e.showDetails = e.showDetails || false;
@@ -53,12 +50,14 @@ export class GuiderComponent {
      // console.log(element,option)
   }
   ngOnChanges(changes: SimpleChanges) {
-    this.options= this.guidelinesService.get(this.type,this.element.form).options
-    if(this.options)
-      this.options.forEach(e=>e.showDetails=false)
+    this.guidelinesService.load(this.project,this.hash).then(x=>{
+      this.options= this.guidelinesService.get(this.type,this.element.form).options
+      if(this.options)
+        this.options.forEach(e=>e.showDetails=false)
 
-    if(this.show())
-      this.events.publish("stats",{action:"showGuider",elements:this.element})
+      if(this.show())
+        this.events.publish("stats",{action:"showGuider",elements:this.element})
+    })
   }
 
 }

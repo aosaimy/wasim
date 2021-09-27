@@ -38,19 +38,10 @@ export class ProjectsPage {
 
   new_project = ""
   create(){
-  	this.projectService.create(this.new_project)
-  		.then((result:{ok:boolean,hash:string,project:string,error:string})=>{
-  			this.projects.push({
-  				project: result.project,
-  				hash: result.hash,
-  			})
-  	}).catch(e=>{
-         this.toastCtrl.create({
-          message: this.translateService.instant(e),
-          duration: 3000,
-          position: "top"
-        }).present()
-    })
+   let projectCreateModal = this.modalCtrl.create(ProjectCreateModal,{projectPage: this},{
+      showBackdrop: true,
+     });
+     projectCreateModal.present();
   }
   goto(project){
     this.navCtrl.push(DocsPage,{
@@ -63,7 +54,7 @@ export class ProjectsPage {
       // this.validSecurity = true
       // this.storage.set("security",this.security);
       this.projects = this.projects.filter(p=> p!=project)
-      if(result.projects.length == 0){
+      if(this.projects.length == 0){
         this.toastCtrl.create({
             message: this.translateService.instant("There is no projects created yet. Please create one now."),
             duration: 3000,
@@ -71,8 +62,9 @@ export class ProjectsPage {
           }).present()
       }
     }).catch(error=>{
+      console.error(error)
         this.toastCtrl.create({
-            message: this.translateService.instant(error),
+            message: this.translateService.instant(""+error),
             duration: 3000,
             position: "top"
           }).present()
@@ -143,7 +135,6 @@ export class ProjectsPage {
 }
 
 
-
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -170,5 +161,69 @@ export class LoginModal {
 
     })
  }
+}
+
+
+@Component({
+  selector: 'project-create',
+  templateUrl: 'project-create.html',
+})
+
+export class ProjectCreateModal {
+
+  remote_repo= ""
+  askMA= true
+  askMemMA= true
+  askGuider= true
+  project= ""
+  language= "arabic"
+  debug= false
+  isRtl= true
+  useUD= false
+  projectPage
+ constructor(public viewCtrl: ViewController, params: NavParams,private translateService: TranslateService,private projectService: ProjectService,    public toastCtrl: ToastController) {
+   this.projectPage = params.data.projectPage
+ }
+ createProject(){
+   this.projectService.create(this.project, {
+      remote_repo : this.remote_repo,
+      askMA : this.askMA,
+      askMemMA : this.askMemMA,
+      askGuider : this.askGuider,
+      project : this.project,
+      language : this.language,
+      debug : this.debug,
+      isRtl : this.isRtl,
+      useUD : this.useUD,
+   })
+      .then((result:{ok:boolean,hash:string,project:string,error:string})=>{
+        this.projectPage.projects.push({
+          project: result.project,
+          hash: result.hash,
+        })
+        this.viewCtrl.dismiss({project:result.project})
+    }).catch(e=>{
+         this.toastCtrl.create({
+          message: this.translateService.instant("Error: "+e),
+          duration: 3000,
+          position: "top"
+        }).present()
+    })
+
+ }
+ // login() {
+ //    this.projectService.login(this.username,this.password)
+ //      .then((result:{ok:boolean,error:string})=>{
+ //        this.viewCtrl.dismiss({username:this.username})
+ //    })
+ //      .catch(e=>{
+ //          this.toastCtrl.create({
+ //            message: this.translateService.instant(e),
+ //            duration: 3000,
+ //            position: "top"
+ //          }).present()
+
+ //    })
+ // }
 
 }

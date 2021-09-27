@@ -30,6 +30,7 @@ export class DocsPage {
   public newFilename = ""
   public text = ""
   public list : {filename:string, firstline:string}[]= []
+  config : ConfigJSON
   // public config :ConfigJSON = ""
 
   constructor(public navCtrl: NavController,
@@ -53,6 +54,15 @@ export class DocsPage {
     this.uploader.onSuccessItem = function (item: any) {
     	that.list.push(item.file.name)
     }
+   this.configService.load(this.project, this.hash).then(s=>{
+     this.config = s
+    }).catch(x=>{
+      this.toastCtrl.create({
+          message: this.translateService.instant('Conllu File loading Error: ') + this.translateService.instant(x),
+          duration: 3000,
+          position: "top"
+        }).present()
+    })
 
 
   	conlluService.getList(this.project,this.hash).then((result) =>{
@@ -65,13 +75,20 @@ export class DocsPage {
 	          position: "top"
 	        }).present()
   	})
+    .catch(e=>{
+      this.toastCtrl.create({
+            message: this.translateService.instant(e),
+            duration: 3000,
+            position: "top"
+          }).present()
+    })
   }
 
   goto(id){
     this.navCtrl.push(AnnotatePage,{
       project: this.project,
       hash: this.hash,
-    id: id,
+      id: id,
     })
   }
   remove(filename){
@@ -81,7 +98,7 @@ export class DocsPage {
   	})
   }
   udpipe(sentence){
-	  	this.conlluService.udpipe(this.project,this.hash,sentence,this.newFilename,this.configService.getConfig(this.project).language).then((result)=>{
+	  	this.conlluService.udpipe(this.project,this.hash,sentence,this.newFilename,this.config.language).then((result)=>{
         this.newFilename = ""
 	  			this.list.push({filename:result.filename,firstline:result.firstline})
 	  	}).catch(err=>{
@@ -108,6 +125,7 @@ export class DocsPage {
     let loginModal = this.modalCtrl.create(ConfigModal,{
       project: this.project,
       hash: this.hash,
+      config: this.config,
     },{
        enableBackdropDismiss: true
      });
@@ -129,6 +147,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
     <ion-title>{{'Configuration File' | translate}}</ion-title>
     <ion-buttons end>
       <button right ion-button icon-only (click)="saveConfig()" tabindex="-1">
+        {{ "Save" || translate }}
         <ion-icon name="cloud-upload"></ion-icon>
       </button>
     </ion-buttons>
@@ -136,10 +155,10 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
   </ion-navbar>
 </ion-header>
 <ion-content padding rtl>
-<json-editor [style.height.%]="90" [options]="editorOptions" [data]="config"></json-editor>
+<div style="height:100%;">
+  <json-editor [options]="editorOptions" [data]="config"></json-editor>
+</div>
                     <div [hidden]="!configErrors" class="configErrors">{{configErrors}}</div>
-                    <!--<textarea [style.height.%]="90" [style.width.%]="100" [(ngModel)]="configStr"></textarea>-->
-                    <!--<button ion-button item-end (click)="saveConfig(i)">{{'SAVE' | translate}}</button>-->
                     </ion-content>
 `,
 })
@@ -156,7 +175,8 @@ export class ConfigModal {
  // configStr : string = ""
  public project = ""
  public hash = ""
-   public editorOptions: JsonEditorOptions;
+ public editorOptions: JsonEditorOptions;
+ public height = "600";
 
 
  @ViewChild(JsonEditorComponent) editor: JsonEditorComponent;
@@ -165,15 +185,13 @@ export class ConfigModal {
    // console.log('UserId', params.get('userId'));
    this.project = params.data.project
    this.hash = params.data.hash
+   this.config = params.data.config.orig
+   console.log(this.config)
    this.editorOptions = new JsonEditorOptions()
    this.editorOptions.schema = ConfigJSON.validation
-  this.editorOptions.modes = ['code', 'tree']; // set all allowed modes
+   // this.editorOptions.modes = ['code']; // set all allowed modes
+   this.editorOptions.mode = 'code';
 
-   this.configService.load(this.project, this.hash).then(s=>{
-     this.config = s
-    }).catch(x=>{
-      // this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
-    })
  }
   configErrors=""
   saveConfig(){

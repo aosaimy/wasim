@@ -84,48 +84,6 @@ page-annotate {
     &.rtl {
       float: right;
     }
-    &.ADJ {
-      background-color: rgba(227, 186, 179, 0.4);
-    }
-    &.ADP {
-      background-color: rgba(236, 240, 241, 0.4);
-    }
-    &.ADV {
-      background-color: rgba(245, 241, 213, 0.4);
-    }
-    &.CCONJ {
-      background-color: rgba(184, 189, 192, 0.4);
-    }
-    &.DET {
-      background-color: rgba(180, 214, 198, 0.4);
-    }
-    &.NOUN {
-      background-color: rgba(217, 206, 196, 0.4);
-    }
-    &.NUM {
-      background-color: rgba(236, 240, 241, 0.4);
-    }
-    &.PART {
-      background-color: rgba(227, 186, 179, 0.4);
-    }
-    &.PRON {
-      background-color: rgba(184, 189, 192, 0.4);
-    }
-    &.PROPN {
-      background-color: rgba(180, 214, 198, 0.4);
-    }
-    &.PUNCT {
-      background-color: rgba(227, 186, 179, 0.4);
-    }
-    &.SCONJ {
-      background-color: rgba(236, 240, 241, 0.4);
-    }
-    &.VERB {
-      background-color: rgba(217, 215, 134, 0.4);
-    }
-    &.X {
-      background-color: rgba(184, 189, 192, 0.4);
-    }
     &.highlight {
       box-sizing: border-box;
       box-shadow: inset 0px -5px 0px blue; // background-color: rgba(255, 255, 0, 1); // span.postag {
@@ -203,14 +161,18 @@ page-annotate {
     max-height: 100%;
     .sentence {
       width: 100%;
-    }
-    .sentence:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-    .sentence:nth-child(odd) {
-      background-color: rgba(0, 0, 0, 0.05);
+      opacity: 0.4;
+      &.isCurrentSentence{
+        opacity: 1;
+      }
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      &:nth-child(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
     }
   }
 
@@ -867,4 +829,170 @@ ion-input.form_input {
   text-align: center;
   direction: rtl;
   line-height: 3em;
+}
+
+
+.ma-selectize-popover-page {
+  .analysis {
+    // border-bottom: 3px solid black;
+    .topbar {
+      width: 100%;
+      direction: rtl;
+      .lemma {
+        color: #495c68;
+        // font-size: small;
+        font-family: KawkabMonoLight;
+        display: inline-block;
+        min-width: 10em;
+      }
+      .doctrue:before{
+        content: "\00a0\00a0";
+        background-color: #6f42c1;
+      }
+
+      .title {
+        // color: white;
+        font-size: 1.2vw;
+        direction: rtl;
+        padding: 0.5vw;
+        // display: inline-block;
+        text-align: center;
+        min-width: 30%;
+        display: inline-block;
+        .by {
+          display: inline-block;
+          direction: ltr;
+          color: green;
+        }
+      }
+      .counter {
+        border: 2px green solid;
+        padding: 0 5px;
+        margin-left: 5px;
+        // float: right;
+        display: inline-block;
+        border-radius: 50%;
+        width: 3vw;
+        height: 2vw;
+        text-align: center;
+      }
+    }
+    .elements {
+      list-style: none;
+      margin: 0;
+      direction: rtl;
+      .element2 {
+        display: inline-block;
+        // position: relative;
+        padding: 0.2em 0.5em 0.2em 0.5em;
+        // border: 1px blue solid;
+        border-radius: 8px;
+        margin: 2px;
+        text-align: center;
+        font-family: KawkabMonoLight;
+        min-width: 4em;
+        font-size: 0.8vw;
+        position: relative;
+
+        &:first-child {
+          margin-right: 0pt;
+        }
+        &:first-child:before {
+          content: "";
+          position: absolute;
+          right: 0px;
+          font-size: 18pt;
+        }
+        & {
+          margin-right: 20px;
+        }
+        & .form {
+          // float: right;
+          // display: inline-block;
+          margin-left: 0.2em;
+        }
+        & .pos {
+          // float: left;
+          color: green;
+          margin-left: 0.2em;
+          font-family: initial;
+        }
+        &:before {
+          content: "+";
+          position: absolute;
+          right: -1em;
+          // font-size: 18pt;
+        }
+      }
+    }
+  }
+
+
+  .selectize-control {
+    // height: 94.9vh !important;
+  }
+  .selectize-dropdown-content {
+    // max-height: 90% !important;
+  }
+  .morphfeats {
+    font-size: 0.6em
+  }
+  .morphfeats div{
+    display: inline;
+    padding: 3px;
+  }
+  .selected {
+    // background-color: #ffffe5
+  }
+  .selectize-dropdown-content>div {
+    // background-color: #eee;
+    color: #495c68;
+    border-bottom: 2px #ddd solid;
+  }
+  // .docfalse{
+  //   background-color: green
+  // }
+}
+
+.ADJ {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+.ADP {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+.ADV {
+  background-color: rgba(245, 241, 213, 0.4);
+}
+.CCONJ {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+.DET {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+.NOUN {
+  background-color: rgba(217, 206, 196, 0.4);
+}
+.NUM {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+.PART {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+.PRON {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+.PROPN {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+.PUNCT {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+.SCONJ {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+.VERB {
+  background-color: rgba(217, 215, 134, 0.4);
+}
+.X {
+  background-color: rgba(184, 189, 192, 0.4);
 }

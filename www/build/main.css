@@ -26089,62 +26089,6 @@ page-annotate .element.rtl {
   float: right;
 }
 
-page-annotate .element.ADJ {
-  background-color: rgba(227, 186, 179, 0.4);
-}
-
-page-annotate .element.ADP {
-  background-color: rgba(236, 240, 241, 0.4);
-}
-
-page-annotate .element.ADV {
-  background-color: rgba(245, 241, 213, 0.4);
-}
-
-page-annotate .element.CCONJ {
-  background-color: rgba(184, 189, 192, 0.4);
-}
-
-page-annotate .element.DET {
-  background-color: rgba(180, 214, 198, 0.4);
-}
-
-page-annotate .element.NOUN {
-  background-color: rgba(217, 206, 196, 0.4);
-}
-
-page-annotate .element.NUM {
-  background-color: rgba(236, 240, 241, 0.4);
-}
-
-page-annotate .element.PART {
-  background-color: rgba(227, 186, 179, 0.4);
-}
-
-page-annotate .element.PRON {
-  background-color: rgba(184, 189, 192, 0.4);
-}
-
-page-annotate .element.PROPN {
-  background-color: rgba(180, 214, 198, 0.4);
-}
-
-page-annotate .element.PUNCT {
-  background-color: rgba(227, 186, 179, 0.4);
-}
-
-page-annotate .element.SCONJ {
-  background-color: rgba(236, 240, 241, 0.4);
-}
-
-page-annotate .element.VERB {
-  background-color: rgba(217, 215, 134, 0.4);
-}
-
-page-annotate .element.X {
-  background-color: rgba(184, 189, 192, 0.4);
-}
-
 page-annotate .element.highlight {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -26227,6 +26171,11 @@ page-annotate #sentences {
 
 page-annotate #sentences .sentence {
   width: 100%;
+  opacity: 0.4;
+}
+
+page-annotate #sentences .sentence.isCurrentSentence {
+  opacity: 1;
 }
 
 page-annotate #sentences .sentence:after {
@@ -26931,6 +26880,168 @@ ion-input.form_input {
   line-height: 3em;
 }
 
+.ma-selectize-popover-page .analysis .topbar {
+  width: 100%;
+  direction: rtl;
+}
+
+.ma-selectize-popover-page .analysis .topbar .lemma {
+  color: #495c68;
+  font-family: KawkabMonoLight;
+  display: inline-block;
+  min-width: 10em;
+}
+
+.ma-selectize-popover-page .analysis .topbar .doctrue:before {
+  content: "\00a0\00a0";
+  background-color: #6f42c1;
+}
+
+.ma-selectize-popover-page .analysis .topbar .title {
+  font-size: 1.2vw;
+  direction: rtl;
+  padding: 0.5vw;
+  text-align: center;
+  min-width: 30%;
+  display: inline-block;
+}
+
+.ma-selectize-popover-page .analysis .topbar .title .by {
+  display: inline-block;
+  direction: ltr;
+  color: green;
+}
+
+.ma-selectize-popover-page .analysis .topbar .counter {
+  border: 2px green solid;
+  padding: 0 5px;
+  margin-left: 5px;
+  display: inline-block;
+  border-radius: 50%;
+  width: 3vw;
+  height: 2vw;
+  text-align: center;
+}
+
+.ma-selectize-popover-page .analysis .elements {
+  list-style: none;
+  margin: 0;
+  direction: rtl;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2 {
+  display: inline-block;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border-radius: 8px;
+  margin: 2px;
+  text-align: center;
+  font-family: KawkabMonoLight;
+  min-width: 4em;
+  font-size: 0.8vw;
+  position: relative;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2:first-child {
+  margin-right: 0pt;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2:first-child:before {
+  content: "";
+  position: absolute;
+  right: 0px;
+  font-size: 18pt;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2 {
+  margin-right: 20px;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2 .form {
+  margin-left: 0.2em;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2 .pos {
+  color: green;
+  margin-left: 0.2em;
+  font-family: initial;
+}
+
+.ma-selectize-popover-page .analysis .elements .element2:before {
+  content: "+";
+  position: absolute;
+  right: -1em;
+}
+
+.ma-selectize-popover-page .morphfeats {
+  font-size: 0.6em;
+}
+
+.ma-selectize-popover-page .morphfeats div {
+  display: inline;
+  padding: 3px;
+}
+
+.ma-selectize-popover-page .selectize-dropdown-content > div {
+  color: #495c68;
+  border-bottom: 2px #ddd solid;
+}
+
+.ADJ {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+.ADP {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+.ADV {
+  background-color: rgba(245, 241, 213, 0.4);
+}
+
+.CCONJ {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+
+.DET {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+
+.NOUN {
+  background-color: rgba(217, 206, 196, 0.4);
+}
+
+.NUM {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+.PART {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+.PRON {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+
+.PROPN {
+  background-color: rgba(180, 214, 198, 0.4);
+}
+
+.PUNCT {
+  background-color: rgba(227, 186, 179, 0.4);
+}
+
+.SCONJ {
+  background-color: rgba(236, 240, 241, 0.4);
+}
+
+.VERB {
+  background-color: rgba(217, 215, 134, 0.4);
+}
+
+.X {
+  background-color: rgba(184, 189, 192, 0.4);
+}
+
 page-docs {
   /* Default class applied to drop zones on over */
 }
@@ -27417,6 +27528,10 @@ div.jsoneditor-tree .jsoneditor-schema-error {
 }
 
 /* ContextMenu - main menu */
+json-editor > div {
+  height: 100%;
+}
+
 div.jsoneditor-contextmenu-root {
   position: relative;
   width: 0;
@@ -27428,6 +27543,14 @@ div.jsoneditor-contextmenu {
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
   z-index: 99999;
+}
+
+div.jsoneditor-menu {
+  display: none;
+}
+
+div.jsoneditor-statusbar {
+  display: none;
 }
 
 div.jsoneditor-contextmenu ul,

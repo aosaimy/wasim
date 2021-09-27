@@ -127,12 +127,13 @@ export class ProjectService {
         })
 	  });
 	}
-	create(project: string) {
+	create(project: string, config: {}) {
 	  // var this = this
 	  // don't have the data yet
 	  return new Promise((resolve,reject) => {
 	     this.http.post(this.myconfig.getValue("server")+"projects_create",{
 				// "security": security,
+        "config": config,
 				"project": project,
         },this.options)
 	      .map(res => res.json())

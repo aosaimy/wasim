@@ -27,8 +27,11 @@
     		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">{{'DELETE' | translate}}</button>
     	</ion-item>
   	</ion-list>
-	<ion-item *ngIf='projects.length === 0'>{{'NO PROJECT IS FOUND' | translate}}</ion-item>
-  <ion-item-divider>
+  <ion-item *ngIf='projects.length === 0'>{{'NO PROJECT IS FOUND' | translate}}</ion-item>
+	<ion-item >
+    <button ion-button color="secondary" outline item-end icon-left (click)="create()">{{'CREATE NEW PROJECT' | translate}}</button>
+  </ion-item>
+<!--   <ion-item-divider>
     {{'NEW PROJECT' | translate}}
   </ion-item-divider>
 	<ion-item >
@@ -36,5 +39,5 @@
 	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>
 		<button ion-button outline item-end icon-left (click)="create()">{{'CREATE NEW PROJECT' | translate}}</button>
 	</ion-item>
-  </ion-card>
+ -->  </ion-card>
 </ion-content>

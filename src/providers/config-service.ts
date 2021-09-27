@@ -37,9 +37,13 @@ export class ConfigService {
   }
 
   config : {[id:string]:ConfigJSON } = {}
+  default_config : any = null
 
 
-  load(project:string, hash: string,) {
+  extend(default_config, config) {
+    Object.assign
+  }
+  load(project:string, hash: string) {
 	  if (this.config[project]) {
 	    // already loaded data
 	    return Promise.resolve(this.config[project]);
@@ -53,10 +57,18 @@ export class ConfigService {
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        if(data.ok){
-            var config = new ConfigJSON(data.config)
+            if(!this.default_config)
+              this.default_config = data.default
+            var merged = Object.assign({}, this.default_config, data.config)
+            merged.keyboardShortcuts = Object.assign({}, this.default_config.keyboardShortcuts, data.config.keyboardShortcuts)
+            merged.mf = Object.assign({}, this.default_config.mf, data.config.mf)
+            merged["MF.vs.POS"] = Object.assign({}, this.default_config["MF.vs.POS"], data.config["MF.vs.POS"])
+            var config = new ConfigJSON(merged, data.config)
+
             config.project = project
             config.hash = hash
-            config.keyboardShortcuts.forEach(e=>{
+            Object.keys(config.keyboardShortcuts).forEach(i=>{
+              var e = config.keyboardShortcuts[i]
               e.keys = []
               if(e.metaKey)
                 e.keys.push("⌘")
@@ -108,7 +120,12 @@ export class ConfigService {
 	        	// if(data.default)
 	        	// 	that.config.default = data.default
 	        	reject(data.error)
-	      });
+	      }, error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+          else
+            reject(error.message)
+        });
 	  });
 	}
 
@@ -127,23 +144,15 @@ export class ConfigService {
 	      .subscribe(data => {
 	        if(data.ok){
 	        	resolve();
-            config.isRtl = this.isRtl(project)
-	        	this.config[project] = new ConfigJSON(config)
+	        	this.config[project] = new ConfigJSON(Object.assign(this.default_config, config), config)
 	        }
 	        else
 	        	reject(data.error)
 	      });
 	  });
 	}
-	getConfig(project) : ConfigJSON{
-		return this.config[project] ? this.config[project] : this.config.default
-	}
-	rtls = ["arabic","qac"]
-	isRtl(project){
-    if(this.getConfig(project).isRtl != undefined)
-      return this.getConfig(project).isRtl
-		return this.rtls.indexOf(this.getConfig(project).language) >= 0
-
-	}
+	// getConfig(project) : ConfigJSON{
+	// 	return this.config[project] ? this.config[project] : this.config.default
+	// }
 
 }

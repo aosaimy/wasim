@@ -18,13 +18,56 @@
   <ion-grid>
     <ion-row>
       <ion-col col-12>
-        <ion-list>
+        <ion-list ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}">
+          <ion-item>
+            <button ion-button color="secondary" outline item-end icon-left (click)="goto('NEWFILE')">{{'NEWFILE' | translate}}</button>
+            <button ion-button outline (click)="uploadbutton.click()" item-end>
+              <ion-icon name="cloud-upload"></ion-icon>
+              <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />
+            </button>
+          </ion-item>
+
+          <ion-item *ngFor="let item of uploader.queue; index as i">
+            <ion-avatar item-start>
+              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>
+              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>
+              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> {{i+1}}
+            </ion-avatar>
+            <h2>{{ item?.file?.name }}</h2>
+            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:'.2' }} MB</p>
+            <div *ngIf="uploader.isHTML5">
+              <div class="progress" style="margin-bottom: 0;">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+              </div>
+            </div>
+            <ion-row>
+              <ion-col>
+                <button ion-button outline icon-end clear (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                  <ion-icon name="cloud-upload"></ion-icon>
+                  <div>{{'Upload' | translate}}</div>
+                </button>
+                <button ion-button outline icon-end clear (click)="item.cancel()" [disabled]="!item.isUploading">
+                  <ion-icon name="undo"></ion-icon>
+                  <div>{{'Cancel' | translate}}</div>
+                </button>
+                <button ion-button outline icon-end clear (click)="item.remove()">
+                  <ion-icon name="trash"></ion-icon>
+                  <div>{{'Remove' | translate}}</div>
+                </button>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+
           <ion-item *ngFor="let i of list">
             {{i.filename}}
             <ion-note>{{i.firstline}}</ion-note>
             <button ion-button outline item-end icon-left (click)="goto(i.filename)">{{'GO' | translate}}</button>
             <a ion-button outline item-end icon-left href="{{myconfig.getValue('server')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">{{'DOWNLOAD' | translate}}</a>
             <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">{{'DELETE' | translate}}</button>
+          </ion-item>
+          <ion-item>
+            <button ion-button color="secondary" outline item-end icon-left (click)="goto('NEWFILE')">{{'NEWFILE' | translate}}</button>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -44,23 +87,11 @@
         </ion-item>
       </ion-card>
     </ion-row>
-    <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}">
+    <!-- <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}">
       <ion-card>
         <ion-card-header>
           {{'UPLOADING FILES' | translate}}
         </ion-card-header>
-        <!--                 <table class="table">
-                    <thead>
-                        <tr>
-                            <th width="50%">Name</th>
-                            <th>Size</th>
-                            <th>Progress</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
- -->
         <ion-list>
           <ion-item-divider>
             {{'FILE LIST' | translate}}
@@ -104,6 +135,6 @@
           <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />
         </button>
       </ion-card>
-    </ion-row>
+    </ion-row> -->
   </ion-grid>
 </ion-content>

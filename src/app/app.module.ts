@@ -13,7 +13,7 @@ import { AnnotatePage } from '../pages/annotate/annotate';
 import { ComponentsModule } from '../components/components.module';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { DocsPage } from '../pages/docs/docs';
-import { ProjectsPage,LoginModal } from '../pages/projects/projects';
+import { ProjectsPage,LoginModal,ProjectCreateModal } from '../pages/projects/projects';
 import { NotMultiTag } from '../pipes/not-multi-tag';
 import { IsNextSentence } from '../pipes/is-next-sentence';
 import { HttpModule} from '@angular/http';
@@ -30,10 +30,11 @@ export function loadConfiguration(configurationService: ConfigurationService): (
 }
 export const deepLinkConfig: DeepLinkConfig = {
   links: [
+    { component: AnnotatePage, name: 'Annotate Page', segment: '',defaultHistory: [ ] },
     { component: AnnotatePage, name: 'Annotate Page', segment: 'annotate/:project/:hash/:id/:position',defaultHistory: [ ProjectsPage] },
     { component: AnnotatePage, name: 'Annotate Page', segment: 'annotate/:project/:hash/:id',defaultHistory: [ ProjectsPage] },
     { component: DocsPage, name: 'Documents Page', segment: 'docs/:project/:hash',defaultHistory: [ ProjectsPage] },
-    { component: ProjectsPage, name: 'Projects Page', segment: 'projects',defaultHistory: [ ] }
+    { component: ProjectsPage, name: 'Projects Page', segment: 'projects',defaultHistory: [ ] },
   ]
 };
 // export function createTranslateLoader(http: Http) {
@@ -49,6 +50,7 @@ export const deepLinkConfig: DeepLinkConfig = {
     DocsPage,
     ProjectsPage,
     LoginModal,
+    ProjectCreateModal,
     FileSelectDirective,
     FileDropDirective,
   ],
@@ -65,6 +67,7 @@ export const deepLinkConfig: DeepLinkConfig = {
     DocsPage,
     ProjectsPage,
     LoginModal,
+    ProjectCreateModal,
     AnnotatePage
   ],
   providers: [

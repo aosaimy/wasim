@@ -5,7 +5,7 @@ import { Http , Headers, RequestOptionsArgs } from '@angular/http';
 import { RequestOptions, Request, RequestMethod} from '@angular/http';
 import 'rxjs/add/operator/map';
 import { ConlluDocument, ConlluSentence, ConlluElement } from 'conllu-dao';
-
+import {Md5} from 'ts-md5/dist/md5'
 
 /*
   Generated class for the WordService provider.
@@ -34,7 +34,7 @@ export class WordService {
       // Next, we process the data and resolve the promise with the new data.
 
 
-       this.http.post(this.myconfig.getValue("server")+'ma', {sentence:sentence})
+       this.http.post(this.myconfig.getValue("server")+'ma?'+Md5.hashStr(sentence), {sentence:sentence})
         .map(res => res.json())
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
@@ -48,7 +48,7 @@ export class WordService {
           ****/
 
           var doc = new ConlluDocument(config)
-          var parsed = doc.parse(data.rs.join("\n").trim(),x=>{
+          var parsed = doc.parse(data.rs.trim(),x=>{
             return console.warn("Parsing Conllu Error of MA Results:",x)
           },true);
 

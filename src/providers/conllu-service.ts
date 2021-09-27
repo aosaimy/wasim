@@ -18,36 +18,28 @@ export class ConlluService {
   	public myconfig: ConfigurationService) {
   }
   data = {}
+  initialConllU = `1\tThis\t_\tconj\tconj\t_\t0\t_\t_\t_
+2\tis\t_\tprep\tprep\t_\t0\t_\t_\t_
+3\tjust\t_\tadv\tadv\t_\t0\t_\t_\t_
+3\ta\t_\tdet\tdet\t_\t0\t_\t_\t_
+3\tsample\t_\tnoun\tnoun\t_\t0\t_\t_\t_
+`
   options = new RequestOptions({ withCredentials: true });
   load(project:string, hash: string, pageid: string) {
-	  if (this.data[project+"-"+pageid]) {
+    if (this.data[project+"-"+pageid]) {
+      // already loaded data
+      return Promise.resolve(this.data[project+"-"+pageid]);
+    }
+	  if (pageid=="NEWFILE") {
 	    // already loaded data
-	    return Promise.resolve(this.data[project+"-"+pageid]);
+	    return Promise.resolve(this.initialConllU);
 	  }
 	  // don't have the data yet
 	  return new Promise<string>((resolve,reject) => {
-	    // We're using Angular HTTP provider to request the data,
-	    // then on the response, it'll map the JSON data to a parsed JS object.
-	    // Next, we process the data and resolve the promise with the new data.
-
-	 //    let opts:RequestOptionsArgs = {
-	 //    	headers : new Headers({
-	 //    		'Content-Type': 'application/json; charset=utf-8',
-	 //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
-	 //    	}),
-	 //    	// 'body': JSON.stringify()
-		// }
-
 	     this.http.post(this.myconfig.getValue("server")+"conllu_get",{
 				"project": project,
 				"hash": hash,
 				"file": pageid,
-				// "argv": {
-				// 	// "t": tool,
-				// 	"d": false,
-				// 	// "align": true,
-				// 	"strict": true
-				// }
 			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
@@ -63,7 +55,13 @@ export class ConlluService {
             console.error(data.error)
 	        	reject(data.error)
           }
-	      });
+	      }, error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+          else
+            reject(error.message)
+
+        });
 	  });
 	}
 	projects = {}
@@ -72,7 +70,7 @@ export class ConlluService {
 	    return Promise.resolve(this.projects[project]);
 	  }
 	  // don't have the data yet
-	  return new Promise(resolve => {
+	  return new Promise((resolve, reject) => {
 	     this.http.post(this.myconfig.getValue("server")+"conllu_list",{
 				"project": project,
 				"hash": hash,
@@ -86,7 +84,12 @@ export class ConlluService {
 	        	this.projects[project] = data;
 	        }
         	resolve(data);
-	      });
+	      },error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+          else
+            reject(error.message)
+        });
 	  });
 	}
   	udpipe(project:string,hash:string, sentence:string,newFilename:string, language: string) {
@@ -117,7 +120,7 @@ export class ConlluService {
 	      });
 	  });
 	}
-	save(project:string, hash: string, pageid: string, file: string) {
+	save(project:string, hash: string, pageid: string, filename: string) {
 	  // don't have the data yet
 	  return new Promise<any>((resolve,reject) => {
 	    // We're using Angular HTTP provider to request the data,
@@ -136,16 +139,23 @@ export class ConlluService {
 				"project": project,
 				"hash": hash,
 				"pageid": pageid,
-				"data" : file
+				"data" : filename
 			},this.options)
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        // we've got back the raw data, now generate the core schedule data
 	        // and save the data for later reference
 	        if(data.ok){
-            this.data[project+"-"+pageid] = file
-            if(this.projects[project])
-              this.projects[project].files.find(x=>x.filename==pageid).firstline = file.split("\n")[0]
+            this.data[project+"-"+pageid] = filename
+            if(this.projects[project]){
+              var file = this.projects[project].files.find(x=>x.filename==pageid)
+              if(file==null){
+                this.projects[project].files.push({filename: pageid, firstline:""})
+                file = this.projects[project].files.slice(-1)[0] // get the last item
+              }
+              file.firstline = filename.split("\n")[0]
+            }
+
         		resolve(data);
           }
         	else

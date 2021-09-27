@@ -57,6 +57,7 @@ export class GuidelinesService {
 	        // and save the data for later reference
 	        // data = data;
 	        if(data.ok){
+            this.guidelines.loaded = true
 	        	data.guides.forEach(v=>{
 	        		if(v.ok){
                 this.guidelines[v.type] = v.data

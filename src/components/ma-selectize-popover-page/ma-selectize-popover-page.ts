@@ -1,6 +1,5 @@
 import { ConlluElement } from 'conllu-dao';
-// import { AnnotatePage } from '../../pages/annotate/annotate';
-import { Component, ViewChild } from '@angular/core';
+import { Input, Component, ViewChild } from '@angular/core';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Events, ViewController, NavController, NavParams } from 'ionic-angular';
 import { ConfigJSON } from '../../providers/config-json.class';
@@ -12,13 +11,16 @@ import { ConfigJSON } from '../../providers/config-json.class';
 })
 export class MASelectizePopoverPageComponent {
 
-  element: ConlluElement = null;
-  analyses: ConlluElement[] = [];
+  @Input() element: ConlluElement = null;
+  @Input() analyses: ConlluElement[] = [];
+  @Input() config : ConfigJSON = null
+  @Input() project = ""
+  @Input() hash = ""
+  @Input() mode :string = ""
+  @Input() showContext :boolean = true
+
   path: string = null;
   myconfig = {}
-  config : ConfigJSON = null
-  project = ""
-  hash = ""
   pageid = ""
   dismissed = false
   options = []
@@ -27,7 +29,6 @@ export class MASelectizePopoverPageComponent {
   diacsOptions: any[] = [];
   // rank = 1;
   selected = {form:""}
-  mode :string = ""
 
   // @ViewChild('diacs') diacsGroup: RadioGroup;
 
@@ -47,7 +48,7 @@ export class MASelectizePopoverPageComponent {
             value: e.id,
             counter: i,
             title: i,
-            // score: e._miscs["SCORE"],
+            // score: e._miscs["Score"],
             lemma: (e.children.length > 0 ? e.children.map(ee=>ee.lemma).join(" ") : e.lemma),
             isMemMA: e._miscs["DOCID"]!==undefined,
             miscs: e._miscs,
@@ -72,11 +73,13 @@ export class MASelectizePopoverPageComponent {
       this.myselectize.selectize.focus()
       this.myselectize.selectize.okayToClose = true
     },500);
-    var allpop = (document.querySelector(".popover-content") as HTMLElement).offsetHeight
-    var inp = (document.querySelector(".selectize-input") as HTMLElement).offsetHeight
-    var ll = document.querySelector(".selectize-dropdown-content") as HTMLElement
-    ll.style.height = allpop - inp + "px"
-    ll.style["max-height"] = allpop - inp + "px"
+    // if(document.querySelector(".popover-content")){
+      var allpop = (document.querySelector(".popover-content") as HTMLElement).offsetHeight
+      var inp = (document.querySelector(".selectize-input") as HTMLElement).offsetHeight
+      var ll = document.querySelector(".selectize-dropdown-content") as HTMLElement
+      ll.style.height = allpop - inp + "px"
+      ll.style["max-height"] = allpop - inp + "px"
+    // }
   }
 
   selectize_config = function(){
@@ -148,11 +151,8 @@ export class MASelectizePopoverPageComponent {
           if(that.mode == "view"){
             if(el._miscs["DOCID"]!==this.pageid)
               that.iab.create(['/#/annotate',that.project,that.hash,el._miscs["DOCID"],el._miscs["SENTID"]+"-"+el._miscs["ELEMID"]].join("/"));
-            else{
-              // if(el.isMultiword)
-              //   el = el.children[0]
+            else
               that.events.publish('highlight:change', el);
-            }
 
           }else if(that.mode == "change"){
             let c = that.element.changeWith(el);

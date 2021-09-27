@@ -73,7 +73,7 @@ export class ConfigJSON {
       tagset: string ="";
       users: string[] = [];
       debug: boolean = false;
-      keyboardShortcuts: KeyboardJSON[] = [];
+      keyboardShortcuts: {[id:string]:KeyboardJSON} = {};
 
       MfVsPos:{} = {};
       MfVsPos_upostag:boolean = true;
@@ -91,8 +91,10 @@ export class ConfigJSON {
       loaded: boolean = false
       undoSize: number = 5
       features: { [id:string]: {tag:string,desc:string}} = {};
+      orig = {}
 
-      constructor(data?: any){
+      constructor(data?: any, orig: any = {}){
+        this.orig = orig // the original JSON
         if(data){
             this.remote_repo = data.remote_repo
             this.language = data.language
@@ -120,6 +122,23 @@ export class ConfigJSON {
       }
       getFeature(key) : {tag:string,desc:string}{
         return this.features[key] || {tag:"N/A:"+key, desc : "n/a:"+key}
+      }
+
+      getAction(e){
+        var id = Object.keys(this.keyboardShortcuts)
+          .find(i=>{
+            var v = this.keyboardShortcuts[i]
+            return (v.code == e.code) &&
+                   // (v.key!=undefined && v.key == e.key) &&
+                   ((v.metaKey==true) == e.metaKey) &&
+                   ((v.shiftKey==true) == e.shiftKey) &&
+                   ((v.altKey==true) == e.altKey) &&
+                   ((v.ctrlKey==true) == e.ctrlKey) &&
+                   true
+          })
+        if(!id)
+          return null
+        return this.keyboardShortcuts[id]
       }
       // getFeatures(xpostag){
       //   return this.alltags.find(x=>x.tag==this.xpostag)
@@ -312,13 +331,12 @@ export class ConfigJSON {
             "default": true,
             "type": "boolean"
         },
+
         "keyboardShortcuts": {
-            "default": [
-            ],
-            "items": {
+            "additionalProperties": {
                 "$ref": "#/definitions/KeyboardJSON"
             },
-            "type": "array"
+            "type": "object"
         },
         "language": {
             "default": "qac",
