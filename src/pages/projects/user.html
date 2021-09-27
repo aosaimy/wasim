@@ -1,14 +1,14 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>معلومات المستحدم</ion-title>
+    <ion-title>{{'USER PROFILE' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding rtl>
    <ion-card *ngIf="!validSecurity">
-   <ion-card-header>تسجيل الدخول</ion-card-header>
+   <ion-card-header>{{'LOGIN' | translate}}</ion-card-header>
    <ion-card-content>
      <ion-item>
-      <ion-label fixed>اسم المستخدم</ion-label>
+      <ion-label fixed>{{'USERNAME' | translate}}</ion-label>
       <ion-input [ngModel]="username" disabled></ion-input>
       </ion-item>
     </ion-card-content>

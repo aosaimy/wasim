@@ -5,6 +5,9 @@ conllu-editor {
     min-width: 5em;
     display: inline-block
   }
+  .conllu-cell:after {
+    content: '  ';
+  }
 
   .conllu-cell-0 {
     color: #005cc5;

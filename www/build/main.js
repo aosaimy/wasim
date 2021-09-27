@@ -1,168 +1,14 @@
 webpackJsonp([0],{
 
-/***/ 106:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DocsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__ = __webpack_require__(290);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__annotate_annotate__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(30);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-/**
- * Generated class for the DocsPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
-var DocsPage = (function () {
-    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, toastCtrl) {
-        var _this = this;
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.conlluService = conlluService;
-        this.myconfig = myconfig;
-        this.configService = configService;
-        this.toastCtrl = toastCtrl;
-        this.uploader = new __WEBPACK_IMPORTED_MODULE_2_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.get("server") + "conllu_upload" });
-        this.hasBaseDropZoneOver = false;
-        this.hasAnotherDropZoneOver = false;
-        this.project = "";
-        this.hash = "";
-        this.newFilename = "";
-        this.text = "";
-        this.list = [];
-        this.config = "";
-        this.configErrors = "";
-        if (!navParams.data.project) {
-            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__projects_projects__["b" /* ProjectsPage */]);
-        }
-        else {
-            this.project = navParams.data.project;
-            this.hash = navParams.data.hash;
-        }
-        var that = this;
-        this.uploader.authToken = this.project + ":" + this.hash;
-        this.uploader.onSuccessItem = function (item) {
-            that.list.push(item.file.name);
-        };
-        conlluService.getList(this.project, this.hash).then(function (result) {
-            if (result.ok)
-                _this.list = result.files;
-            else
-                _this.toastCtrl.create({
-                    message: result.error,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-        });
-        this.configService.load(this.project, this.hash).then(function (s) {
-            _this.config = JSON.stringify(_this.configService.getConfig(_this.project), null, 4);
-        }).catch(function (x) {
-            // this.config = JSON.stringify(this.configService.getConfig(this.project),null,4)
-        });
-    }
-    DocsPage.prototype.goto = function (id) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__annotate_annotate__["a" /* AnnotatePage */], {
-            project: this.project,
-            hash: this.hash,
-            id: id,
-        });
-    };
-    DocsPage.prototype.remove = function (filename) {
-        var _this = this;
-        this.conlluService.remove(this.project, this.hash, filename).then(function (s) {
-            if (s.ok)
-                _this.list.splice(_this.list.findIndex(function (x) { return x.filename == filename; }), 1);
-        });
-    };
-    DocsPage.prototype.udpipe = function (sentence) {
-        var _this = this;
-        var that = this;
-        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.configService.getConfig(this.project).language).then(function (result) {
-            that.list.push({ filename: result.filename, firstline: result.firstline });
-        }).catch(function (err) {
-            _this.toastCtrl.create({
-                message: err,
-                duration: 3000,
-                position: "top"
-            }).present();
-        });
-    };
-    DocsPage.prototype.saveConfig = function () {
-        var _this = this;
-        try {
-            this.configService.save(this.project, this.hash, JSON.parse(this.config)).then(function (e) {
-                _this.toastCtrl.create({
-                    message: "Config file has been updated successfully.",
-                    duration: 3000,
-                    position: "top"
-                }).present();
-            }).catch(function (e) {
-                throw ({ message: e });
-            });
-        }
-        catch (e) {
-            console.dir(e);
-            this.configErrors = e.message;
-        }
-    };
-    DocsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad DocsPage');
-    };
-    DocsPage.prototype.fileOverBase = function (e) {
-        this.hasBaseDropZoneOver = e;
-    };
-    DocsPage.prototype.fileOverAnother = function (e) {
-        this.hasAnotherDropZoneOver = e;
-    };
-    return DocsPage;
-}());
-DocsPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>إدارة المشروع: {{project}}</ion-title>\n    </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <ion-grid>\n        <ion-row>\n            <ion-col col-12>\n                <ion-list>\n                    <ion-item *ngFor="let i of list">\n                        {{i.filename}}\n                        <ion-note>{{i.firstline}}</ion-note>\n                        <button ion-button outline item-end icon-left (click)="goto(i.filename)">اذهب</button>\n                        <a ion-button outline item-end icon-left href="{{myconfig.get(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">تحميل</a>\n                        <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">احذف</button>\n                    </ion-item>\n                </ion-list>\n            </ion-col>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-item>\n                    <!-- <ion-label >Text</ion-label> -->\n                    <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag"></ion-textarea>\n                </ion-item>\n                  <ion-item-divider>\n                  </ion-item-divider>\n                <ion-item>\n                    <ion-label fixed>اسم الملف</ion-label>\n                    <ion-input [(ngModel)]="newFilename"></ion-input>\n                    <button ion-button outline item-end icon-left (click)="udpipe(text)">اذهب</button>\n                </ion-item>\n            </ion-card>\n        </ion-row>\n        <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n            <ion-card>\n                <ion-card-header>\n                    رفع الملفات\n                </ion-card-header>\n                <!--                 <table class="table">\n                    <thead>\n                        <tr>\n                            <th width="50%">Name</th>\n                            <th>Size</th>\n                            <th>Progress</th>\n                            <th>Status</th>\n                            <th>Actions</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n -->\n                <ion-list>\n                  <ion-item-divider>\n                    قائمة الملفات\n                  </ion-item-divider>\n\n                    <ion-item *ngFor="let item of uploader.queue">\n                        <ion-avatar item-start>\n                            <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n                            <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n                            <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n                        </ion-avatar>\n                        <h2>{{ item?.file?.name }}</h2>\n                        <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n                        <div *ngIf="uploader.isHTML5">\n                            <div class="progress" style="margin-bottom: 0;">\n                                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n                            </div>\n                        </div>\n                        <ion-row>\n                            <ion-col>\n                                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                                    <ion-icon name="cloud-upload"></ion-icon>\n                                    <div>Upload</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                                    <ion-icon name="undo"></ion-icon>\n                                    <div>Cancel</div>\n                                </button>\n                                <button ion-button icon-left clear small (click)="item.remove()">\n                                    <ion-icon name="trash"></ion-icon>\n                                    <div>Remove</div>\n                                </button>\n                            </ion-col>\n                        </ion-row>\n                    </ion-item>\n                </ion-list>\n                  <ion-item-divider>\n                    رفع ملف/ملفات جديدة\n                  </ion-item-divider>\n                    <button ion-button (click)="uploadbutton.click()" icon-only >\n                        <ion-icon name="cloud-upload"></ion-icon>\n                        <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n                    </button>\n\n            </ion-card>\n        </ion-row>\n        <ion-row>\n            <ion-card>\n                <ion-card-header>\n                    Configuration File\n                </ion-card-header>\n                <ion-card-content>\n                    <div [hidden]="!configErrors" class="configErrors">{{configErrors}}</div>\n                    <ion-textarea rows="15" [(ngModel)]="config"></ion-textarea>\n                    <button ion-button item-end (click)="saveConfig(i)">حفظ</button>\n                </ion-card-content>\n            </ion-card>\n        </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
-    }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
-        __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["b" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
-], DocsPage);
-
-//# sourceMappingURL=docs.js.map
-
-/***/ }),
-
-/***/ 109:
+/***/ 124:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConlluService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -190,6 +36,7 @@ var ConlluService = (function () {
         this.http = http;
         this.myconfig = myconfig;
         this.data = {};
+        this.initialConllU = "1\tThis\t_\tconj\tconj\t_\t0\t_\t_\t_\n2\tis\t_\tprep\tprep\t_\t0\t_\t_\t_\n3\tjust\t_\tadv\tadv\t_\t0\t_\t_\t_\n3\ta\t_\tdet\tdet\t_\t0\t_\t_\t_\n3\tsample\t_\tnoun\tnoun\t_\t0\t_\t_\t_\n";
         this.options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true });
         this.projects = {};
     }
@@ -199,18 +46,12 @@ var ConlluService = (function () {
             // already loaded data
             return Promise.resolve(this.data[project + "-" + pageid]);
         }
+        if (pageid == "NEWFILE") {
+            // already loaded data
+            return Promise.resolve(this.initialConllU);
+        }
         // don't have the data yet
         return new Promise(function (resolve, reject) {
-            // We're using Angular HTTP provider to request the data,
-            // then on the response, it'll map the JSON data to a parsed JS object.
-            // Next, we process the data and resolve the promise with the new data.
-            //    let opts:RequestOptionsArgs = {
-            //    	headers : new Headers({
-            //    		'Content-Type': 'application/json; charset=utf-8',
-            //    		// 'Access-Control-Allow-Origin': 'http://localhost:8100'
-            //    	}),
-            //    	// 'body': JSON.stringify()
-            // }
             _this.http.post(_this.myconfig.getValue("server") + "conllu_get", {
                 "project": project,
                 "hash": hash,
@@ -230,6 +71,11 @@ var ConlluService = (function () {
                     console.error(data.error);
                     reject(data.error);
                 }
+            }, function (error) {
+                if (error.status != 200)
+                    reject("Server is not working properly. url=" + _this.myconfig.getValue("server"));
+                else
+                    reject(error.message);
             });
         });
     };
@@ -240,7 +86,7 @@ var ConlluService = (function () {
             return Promise.resolve(this.projects[project]);
         }
         // don't have the data yet
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             _this.http.post(_this.myconfig.getValue("server") + "conllu_list", {
                 "project": project,
                 "hash": hash,
@@ -254,6 +100,11 @@ var ConlluService = (function () {
                     _this.projects[project] = data;
                 }
                 resolve(data);
+            }, function (error) {
+                if (error.status != 200)
+                    reject("Server is not working properly. url=" + _this.myconfig.getValue("server"));
+                else
+                    reject(error.message);
             });
         });
     };
@@ -284,7 +135,7 @@ var ConlluService = (function () {
             });
         });
     };
-    ConlluService.prototype.save = function (project, hash, pageid, file) {
+    ConlluService.prototype.save = function (project, hash, pageid, filename) {
         var _this = this;
         // don't have the data yet
         return new Promise(function (resolve, reject) {
@@ -302,16 +153,22 @@ var ConlluService = (function () {
                 "project": project,
                 "hash": hash,
                 "pageid": pageid,
-                "data": file
+                "data": filename
             }, _this.options)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (data) {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 if (data.ok) {
-                    _this.data[project + "-" + pageid] = file;
-                    if (_this.projects[project])
-                        _this.projects[project].files.find(function (x) { return x.filename == pageid; }).firstline = file.split("\n")[0];
+                    _this.data[project + "-" + pageid] = filename;
+                    if (_this.projects[project]) {
+                        var file = _this.projects[project].files.find(function (x) { return x.filename == pageid; });
+                        if (file == null) {
+                            _this.projects[project].files.push({ filename: pageid, firstline: "" });
+                            file = _this.projects[project].files.slice(-1)[0]; // get the last item
+                        }
+                        file.firstline = filename.split("\n")[0];
+                    }
                     resolve(data);
                 }
                 else
@@ -363,41 +220,873 @@ ConlluService = __decorate([
 
 /***/ }),
 
-/***/ 117:
+/***/ 125:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = __webpack_require__(67);
+class ConlluElement {
+    // represents CoNLL-U word or multiword token
+    constructor(fields, lineidx, line, sentence) {
+        /*
+         * ConllU.Element: represents CoNLL-U word or multiword token
+         */
+        this._id = "";
+        this.form = "";
+        this.lemma = "";
+        this.upostag = "";
+        this._xpostag = "";
+        this.issues = [];
+        // private feats : string = "";
+        this.head = "";
+        this.deprel = "";
+        this.deps = "";
+        this._miscs = {};
+        this.lineidx = "";
+        this.line = "";
+        this.isSeg = -1;
+        this.parent = null;
+        this.children = [];
+        this.features = [];
+        this.analysis = [];
+        this.isMultiword = false;
+        this.sentence = sentence;
+        this.id = fields[0];
+        this.form = fields[1];
+        this.lemma = fields[2];
+        this.upostag = fields[3];
+        this.feats = fields[5];
+        this.xpostag = fields[4];
+        this.head = fields[6];
+        this.deprel = fields[7];
+        this.deps = fields[8];
+        this.misc = fields[9];
+        this.lineidx = lineidx;
+        this.line = line;
+    }
+    get id() {
+        return this._id;
+    }
+    set id(args) {
+        this._id = args;
+        this.isMultiword = this._isMultiword();
+    }
+    get xpostag() {
+        return this._xpostag;
+    }
+    set xpostag(argv) {
+        if (this.isMultiword) {
+            this._xpostag = "_";
+            return;
+        }
+        this._xpostag = this.sentence.document.mapTagToXpostag(argv);
+        this.upostag = this.sentence.document.mapTagToUpostag(this._xpostag, this.upostag);
+        if (this.sentence.document.config.mapTagToXpostag === false)
+            return;
+        // remove feats
+        var tag = this.sentence.document.config.alltags.find(x => x.tag == this._xpostag);
+        if (!tag)
+            return;
+        else if (Array.isArray(tag.features)) {
+            this.features = this.features.filter(x => tag.features.indexOf(x.key) >= 0);
+            // this.features = tag.features.map(x=>this.features.find(y=>y.key==x)||x).map(x=>typeof x =="string" ?{key:x,value:"_"}:x)
+            // console.log(this.features)
+        }
+    }
+    set misc(args) {
+        this._miscs = {};
+        if (args == undefined)
+            return;
+        if (args == "_")
+            return;
+        args.split("|").forEach(text => {
+            var arr = text.split("=");
+            this._miscs[arr[0]] = arr[1];
+        });
+    }
+    get misc() {
+        return Object.keys(this._miscs).map(key => {
+            return this._miscs[key] ? key + "=" + this._miscs[key] : undefined;
+        }).filter(x => x != undefined).sort().join("|") || "_";
+    }
+    set feats(args) {
+        this.features = [];
+        if (args == undefined)
+            return;
+        if (args == "_")
+            return;
+        // args.split("|").forEach(text => {
+        //     var arr = text.split("=")
+        //     this.features.push({key:arr[0],value:arr[1]})
+        // })
+        var featarr = args.split('|');
+        for (let i = 0; i < featarr.length; i++) {
+            var feat = featarr[i];
+            var m = feat.match(util_1.Util.featureRegex);
+            if (!m) {
+                continue;
+            }
+            var name = m[1], valuestr = m[2];
+            var values = valuestr.split(',');
+            for (let j = 0; j < values.length; j++) {
+                var value = values[j];
+                let m = value.match(util_1.Util.featureValueRegex);
+                if (!m) {
+                    continue;
+                }
+                this.features.push({ key: name, value: value });
+            }
+        }
+    }
+    get feats() {
+        return this.features.map(v => {
+            return v.key + "=" + v.value;
+        }).sort().join("|") || "_";
+    }
+    ;
+    setFeature(key, value) {
+        var i = this.features.findIndex(x => x.key == key);
+        if (i >= 0)
+            if (value)
+                this.features[i].value = value;
+            else
+                this.features.splice(i, 1);
+        else
+            this.features.push({ key: key, value: value });
+    }
+    copy(from) {
+        this.form = from.form;
+        this.lemma = from.lemma;
+        this.upostag = from.upostag;
+        this.xpostag = from.xpostag;
+        this.feats = from.feats;
+        this.head = from.head;
+        this.deprel = from.deprel;
+        this.deps = from.deps;
+        this.misc = from.misc;
+    }
+    getContext(span = 2) {
+        var elems = this.sentence.tokens();
+        // var eindex = elems.findIndex(e=>e==(this.parent || this))
+        var eindex = elems.indexOf(this.parent || this);
+        return elems.filter((e, i) => i >= eindex - span && i <= eindex + span);
+    }
+    isSameAs(element) {
+        return this.children.length == element.children.length &&
+            this.children.filter((c, i) => !c.isSameAs(element.children[i])).length == 0 &&
+            this.form == element.form &&
+            // this.lemma == element.lemma &&
+            this.upostag == element.upostag &&
+            this.xpostag == element.xpostag &&
+            this.feats == element.feats &&
+            this.head == element.head &&
+            this.deprel == element.deprel &&
+            this.deps == element.deps;
+    }
+    copyMorphInfo(from) {
+        this.upostag = from.upostag;
+        this.xpostag = from.xpostag;
+        this.feats = from.feats;
+        this.head = from.head;
+        this.deprel = from.deprel;
+        this.deps = from.deps;
+        this.misc = from.misc;
+    }
+    morphFeatsMissing() {
+        var tag = this.sentence.document.config.alltags.find(x => x.tag == this.xpostag);
+        if (!tag) {
+            // Util.reportError("tag was not found!", this.xpostag)
+            return [];
+        }
+        else if (!tag.features) {
+            util_1.Util.reportError("tag has no list of possible morph feats!" + this.xpostag);
+            return [];
+        }
+        else
+            return tag.features.filter(x => !this.features.find(y => y.key == x));
+    }
+    changeWith(el) {
+        if (el.parent) {
+            util_1.Util.reportError("ERROR: changeWith cannot be used with a child element");
+            el = el.parent;
+        }
+        // parent vs. parent
+        // var i = this.sentence.elements.findIndex(x=>x==this)
+        var i = this.sentence.elements.indexOf(this);
+        // if(el.isMultiword){
+        // Array.prototype.splice.apply(this.sentence.elements,[i,1,el].concat(el.children))
+        var c = el.clone();
+        // c now has elements where first is parent and rest is children
+        // var parent = c[0]
+        c.analysis = this.analysis;
+        c.sentence = this.sentence;
+        c.children.forEach(e => {
+            e.sentence = this.sentence;
+            // e._miscs["FROM_MA"]=true
+        });
+        // console.log(c.sentence.validate(),this.children.length);
+        // console.log([i,1+this.children.length].concat([c,...c.children]))
+        Array.prototype.splice.apply(this.sentence.elements, [i, 1 + (this.parent ? this.parent.children.length : this.children.length)].concat([c, ...c.children]));
+        // console.log(this.sentence.elements.length)
+        this.sentence.refix(true);
+        if (c.isMultiword)
+            return c.children[0];
+        else
+            return c;
+    }
+    clone() {
+        var e = new ConlluElement([this.id, this.form,
+            this.lemma,
+            this.upostag,
+            this.xpostag,
+            this.feats,
+            this.head,
+            this.deprel,
+            this.deps,
+            this.misc], this.lineidx, this.line, this.sentence);
+        e.isMultiword = this.isMultiword;
+        e.analysis = this.analysis;
+        e.sentence = this.sentence;
+        e.children = this.children.map(ee => {
+            let eee = ee.clone();
+            eee.parent = e;
+            return eee;
+        });
+        return e;
+    }
+    // cloneParent  (){
+    //     var all = []
+    //     var parent = this.clone()
+    //     return [parent].concat(this.children.map(e=>{
+    //         e.parent = parent;
+    //         return e.clone()
+    //     }))
+    // }
+    toConllU(includeId = true, includeChildren = true) {
+        if (includeChildren) {
+            if (this.isMultiword) {
+                return [this, ...this.children].map(e => e.toConllU(includeId, false)).join("\n");
+            }
+            else
+                return this.toConllU(includeId, false);
+        }
+        var line = [includeId ? this.id : "",
+            this.form,
+            this.lemma,
+            this.upostag,
+            this.xpostag,
+            this.feats,
+            this.head,
+            this.deprel,
+            this.deps,
+            includeId ? this.misc : ""];
+        return line.join("\t");
+    }
+    // constraints that hold for all fields
+    validateField(field, name = 'field', allowSpace = false) {
+        if (field === undefined) {
+            this.issues.push('invalid ' + name);
+            return false;
+        }
+        else if (field.length === 0) {
+            this.issues.push(name + ' must not be empty: "' + field + '"');
+            return false;
+        }
+        else if (util_1.Util.hasSpace(field) && !allowSpace) {
+            this.issues.push(name + ' must not contain space: "' + field + '"');
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    ;
+    getForm() {
+        // console.log(elem)
+        if (!this.parent)
+            return this.form;
+        var prev = this.parent.children[this.isSeg - 1];
+        var prevStr = prev ? prev.form.replace(/[ًٌٍَُِّْ۟]*$/, "").substr(-1) : "";
+        var next = this.parent.children[this.isSeg + 1];
+        var nextStr = next ? next.form.charAt(0) : "";
+        var meLast = this.form.replace(/[ًٌٍَُِّْ۟]*$/, "");
+        meLast = meLast.charAt(meLast.length - 1);
+        var meFirst = this.form.charAt(0);
+        if (-this.parent.isSeg == this.isSeg + 1)
+            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") + this.form;
+        else if (this.isSeg == 0)
+            return this.form + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
+        else
+            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") +
+                this.form
+                + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
+    }
+    validateId(id) {
+        if (!this.validateField(id, 'ID')) {
+            return false;
+        }
+        else if (id.match(/^\d+$/)) {
+            if (id === '0') {
+                this.issues.push('ID indices must start from 1: "' + id + '"');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else if (id.match(/^(\d+)-(\d+)$/)) {
+            var m = id.match(/^(\d+)-(\d+)$/);
+            if (!m) {
+                util_1.Util.reportError('internal error');
+                return false;
+            }
+            var start = parseInt(m[1], 10), end = parseInt(m[2], 10);
+            if (end < start) {
+                this.issues.push('ID ranges must have start <= end: "' + id + '"');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else if (id.match(/^(\d+)\.(\d+)$/)) {
+            m = id.match(/^(\d+)\.(\d+)$/);
+            if (!m) {
+                util_1.Util.reportError('internal error');
+                return false;
+            }
+            var iPart = parseInt(m[1], 10), fPart = parseInt(m[2], 10);
+            if (iPart == 0 || fPart == 0) {
+                this.issues.push('ID indices must start from 1: "' + id + '"');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            this.issues.push('ID must be integer, range, or decimal: "' + id + '"');
+            return false;
+        }
+    }
+    ;
+    validateForm(form) {
+        return this.validateField(form, 'FORM', true);
+    }
+    ;
+    validateLemma(lemma) {
+        return this.validateField(lemma, 'LEMMA', true);
+    }
+    ;
+    validateUpostag(upostag) {
+        return this.validateField(upostag, 'UPOSTAG');
+    }
+    ;
+    validateXpostag(xpostag) {
+        return this.validateField(xpostag, 'XPOSTAG');
+    }
+    ;
+    validateFeats(feats) {
+        if (!this.validateField(feats, 'FEATS')) {
+            return false;
+        }
+        else if (feats === '_') {
+            return true;
+        }
+        var initialIssueCount = this.issues.length;
+        var featarr = feats.split('|');
+        var featmap = {};
+        var prevName = "";
+        for (let i = 0; i < featarr.length; i++) {
+            var feat = featarr[i];
+            var m = feat.match(util_1.Util.featureRegex);
+            if (!m) {
+                // TODO more descriptive issue
+                this.issues.push('invalid FEATS entry: "' + feat + '"');
+                continue;
+            }
+            var name = m[1], valuestr = m[2];
+            if (prevName !== "" &&
+                name.toLowerCase() < prevName.toLowerCase()) {
+                this.issues.push('features must be ordered alphabetically ' +
+                    '(case-insensitive): "' + name + '" < "' + prevName + '"');
+                var noIssue = false;
+            }
+            prevName = name;
+            var values = valuestr.split(',');
+            var valuemap = {}, validValues = [];
+            for (let value of values) {
+                let m = value.match(util_1.Util.featureValueRegex);
+                if (!m) {
+                    this.issues.push('invalid FEATS value: "' + value + '"');
+                    continue;
+                }
+                if (valuemap[value] !== undefined) {
+                    this.issues.push('duplicate feature value: "' + value + '"');
+                    continue;
+                }
+                valuemap[value] = true;
+                validValues.push(value);
+            }
+            if (featmap[name] !== undefined) {
+                this.issues.push('duplicate feature name: "' + name + '"');
+                continue;
+            }
+            if (validValues.length !== 0) {
+                featmap[name] = validValues;
+            }
+        }
+        return this.issues.length === initialIssueCount;
+    }
+    ;
+    validateHead(head) {
+        // TODO: consider checking that DEPREL is "root" iff HEAD is 0.
+        if (head === null) {
+            return true; // exceptional case for ConlluElement.repair()
+        }
+        else if (!this.validateField(head, 'HEAD')) {
+            return false;
+        }
+        else if (this.isEmptyNode() && head === '_') {
+            return true; // underscore permitted for empty nodes.
+        }
+        else if (head === '_') {
+            return true; // AboBander Only
+        }
+        else if (!head.match(/^\d+$/)) {
+            this.issues.push('HEAD must be an ID or zero: "' + head + '"');
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    ;
+    validateDeprel(deprel) {
+        if (!this.validateField(deprel, 'DEPREL')) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    ;
+    validateDeps(deps) {
+        // TODO: consider checking that deprel is "root" iff head is 0.
+        if (!this.validateField(deps, 'DEPS')) {
+            return false;
+        }
+        else if (deps === '_') {
+            return true;
+        }
+        var deparr = deps.split('|');
+        var prevHead = null;
+        // TODO: don't short-circuit on first error
+        for (let i = 0; i < deparr.length; i++) {
+            var dep = deparr[i];
+            var m = dep.match(/^(\d+(?:\.\d+)?):(\S+)$/);
+            if (!m) {
+                // TODO more descriptive issue
+                this.issues.push('invalid DEPS: "' + deps + '"');
+                return false;
+            }
+            var head = m[1], deprel = m[2];
+            if (prevHead !== null &&
+                parseFloat(head) < parseFloat(prevHead)) {
+                this.issues.push('DEPS must be ordered by head index');
+                return false;
+            }
+            prevHead = head;
+        }
+        return true;
+    }
+    ;
+    validateMisc(misc) {
+        if (!this.validateField(misc, 'MISC')) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    ;
+    validHeadReference(elementById) {
+        return (this.head === '_' || this.head === null || this.head === '0' ||
+            elementById[this.head] !== undefined);
+    }
+    ;
+    isWord() {
+        // word iff ID is an integer
+        return !!this.id.match(/^\d+$/);
+    }
+    ;
+    _isMultiword() {
+        return !!this.id.match(/^\d+-\d+$/);
+    }
+    ;
+    isEmptyNode() {
+        return !!this.id.match(/^\d+\.\d+$/);
+    }
+    ;
+    rangeFrom() {
+        let val = this.id.match(/^(\d+)-\d+$/);
+        if (val)
+            return parseInt(val[1], 10);
+        return -1;
+    }
+    ;
+    rangeTo() {
+        let val = this.id.match(/^\d+-(\d+)$/);
+        if (val)
+            return parseInt(val[1], 10);
+        return -1;
+    }
+    ;
+    isToken(inRange) {
+        // token iff multiword or not included in a multiword range
+        return this.isMultiword || !inRange[this.id];
+    }
+    ;
+    // return list of (DEPENDENT, HEAD, DEPREL) lists
+    dependencies(skipHead = false) {
+        var elemDeps = [];
+        if (!skipHead && this.head !== '_' && this.head !== null) {
+            elemDeps.push([this.id, this.head, this.deprel]);
+        }
+        if (this.deps != '_') {
+            var deparr = this.deps.split('|');
+            for (let i = 0; i < deparr.length; i++) {
+                var dep = deparr[i];
+                var m = dep.match(util_1.Util.dependencyRegex);
+                if (m) {
+                    elemDeps.push([this.id, m[1], m[2]]);
+                }
+                else {
+                    util_1.Util.reportError('internal error: dependencies(): invalid DEPS ' +
+                        this.deps);
+                }
+            }
+        }
+        return elemDeps;
+    }
+    // Check validity of the element. Return list of strings
+    // representing issues found in validation (empty list if none).
+    validate() {
+        var issues = [];
+        this.validateId(this.id);
+        this.validateForm(this.form);
+        // multiword tokens (elements with range IDs) are (locally) valid
+        // iff all remaining fields (3-10) contain just an underscore.
+        if (this.isMultiword) {
+            if (this.lemma != '_' ||
+                this.upostag != '_' ||
+                this.xpostag != '_' ||
+                this.feats != '_' ||
+                this.head != '_' ||
+                this.deprel != '_' ||
+                this.deps != '_' //||
+            // this.misc != '_'
+            ) {
+                this.issues.push('non-underscore field for multiword token');
+            }
+            return issues;
+        }
+        // if we're here, not a multiword token.
+        this.validateLemma(this.lemma);
+        this.validateUpostag(this.upostag);
+        this.validateXpostag(this.xpostag);
+        this.validateFeats(this.feats);
+        this.validateHead(this.head);
+        this.validateDeprel(this.deprel);
+        this.validateDeps(this.deps);
+        this.validateMisc(this.misc);
+        return issues;
+    }
+    ;
+    // Attempt to repair a non-valid element. Return true iff the
+    // element is valid following repair, false otherwise.
+    repair(log) {
+        log = (log !== undefined ? log : util_1.Util.nullLogger);
+        if (!this.validateId(this.id)) {
+            return false; // can't be helped
+        }
+        if (!this.validateForm(this.form)) {
+            log('repair: blanking invalid FORM');
+            this.form = '<ERROR>';
+        }
+        if (this.isMultiword) {
+            // valid as long as everything is blank
+            this.lemma = '_';
+            this.upostag = '_';
+            this.xpostag = '_';
+            this.feats = '_';
+            this.head = '_';
+            this.deprel = '_';
+            this.deps = '_';
+            // this.misc = '_';
+            return true;
+        }
+        // if we're here, not a multiword token.
+        if (!this.validateLemma(this.lemma)) {
+            log('repair: blanking invalid LEMMA');
+            this.lemma = '<ERROR>';
+        }
+        if (!this.validateUpostag(this.upostag)) {
+            log('repair: blanking invalid UPOSTAG');
+            this.upostag = '_'; // TODO: not valid
+        }
+        if (!this.validateXpostag(this.xpostag)) {
+            log('repair: blanking invalid XPOSTAG');
+            this.xpostag = '_';
+        }
+        if (!this.validateFeats(this.feats)) {
+            log('repair: blanking invalid FEATS ' + this.toConllU(false));
+            this.feats = '_';
+        }
+        if (!this.validateHead(this.head)) {
+            log('repair: blanking invalid HEAD');
+            this.head = ""; // note: exceptional case
+        }
+        if (!this.validateDeprel(this.deprel)) {
+            log('repair: blanking invalid DEPREL');
+            this.deprel = '_'; // TODO: not valid
+        }
+        if (!this.validateDeps(this.deps)) {
+            log('repair: blanking invalid DEPS');
+            this.deps = '_';
+        }
+        if (!this.validateMisc(this.misc)) {
+            log('repair: blanking invalid MISC');
+            this.misc = '_';
+        }
+        var issues = this.validate();
+        return issues.length === 0;
+    }
+    ;
+}
+exports.ConlluElement = ConlluElement;
+//# sourceMappingURL=element.js.map
+
+/***/ }),
+
+/***/ 126:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config_json_class__ = __webpack_require__(36);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+// import { Config } from 'ionic-angular';
+
+
+
+
+// import { Sentence} from '../pages/annotate/conllu';
+// import 'rxjs/add/operator/map';
+/*
+  Generated class for the WordService provider.
+
+  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
+  for more info on providers and Angular 2 DI.
+*/
+var desc = { "saveFile": "Convert to Conll then Save",
+    "syncConllU": "Convert to Conll",
+    "diactric": "Add a diactric",
+    "nav": "Move next/prev Word",
+    "undo": "Undo last action (move backward in action history)",
+    "redo": "Move forward in action history",
+    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
+    "tag": "Assign current segment a new tag",
+    "tag_ma": "Ask a morphological analyser for help",
+    "tag_morphofeatures": "Assign morphological features",
+    "diac": "Mark the last character with a diacritic",
+    "more": "Show more less-frequent tags" };
+var ConfigService = (function () {
+    function ConfigService(http, myconfig) {
+        this.http = http;
+        this.myconfig = myconfig;
+        this.config = {};
+        this.default_config = null;
+        this.config.default = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */]();
+    }
+    ConfigService.prototype.extend = function (default_config, config) {
+        Object.assign;
+    };
+    ConfigService.prototype.load = function (project, hash) {
+        var _this = this;
+        if (this.config[project]) {
+            // already loaded data
+            return Promise.resolve(this.config[project]);
+        }
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "get_config", {
+                project: project,
+                hash: hash
+            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    if (!_this.default_config)
+                        _this.default_config = data.default;
+                    var merged = Object.assign({}, _this.default_config, data.config);
+                    merged.keyboardShortcuts = Object.assign({}, _this.default_config.keyboardShortcuts, data.config.keyboardShortcuts);
+                    merged.mf = Object.assign({}, _this.default_config.mf, data.config.mf);
+                    merged["MF.vs.POS"] = Object.assign({}, _this.default_config["MF.vs.POS"], data.config["MF.vs.POS"]);
+                    var config = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](merged, data.config);
+                    config.project = project;
+                    config.hash = hash;
+                    Object.keys(config.keyboardShortcuts).forEach(function (i) {
+                        var e = config.keyboardShortcuts[i];
+                        e.keys = [];
+                        if (e.metaKey)
+                            e.keys.push("⌘");
+                        if (e.shiftKey)
+                            e.keys.push("⇧");
+                        if (e.altKey)
+                            e.keys.push("⎇");
+                        if (!e.code)
+                            e.code = "";
+                        var code = e.code
+                            .replace(/^Key/, "")
+                            .replace("ArrowLeft", "⇦")
+                            .replace("ArrowRight", "⇨")
+                            .replace("Enter", "⏎");
+                        if (code)
+                            e.keys.push(code);
+                        var params = e.params ? e.params.join() : "";
+                        if (e.code.indexOf("Digit") == 0)
+                            params = "";
+                        if (e.code.indexOf("F" + params) == 0)
+                            params = "";
+                        e.desc = desc[e.action + params] || desc[e.action] || e.action;
+                    });
+                    config.alltags.forEach(function (xx, i, arr) {
+                        arr[i].mapFrom = arr[i].mapFrom || [""];
+                    });
+                    if (config.MfVsPos) {
+                        config.alltags.forEach(function (xx, i, arr) {
+                            arr[i].features = Object.keys(config.mf).filter(function (x) { return config.MfVsPos[x].indexOf(config.MfVsPos_upostag ? xx.mapToConllU : xx.tag) >= 0; });
+                        });
+                    }
+                    else {
+                        console.error("config['MF.vs.POS'] is missing");
+                    }
+                    config.allxtags = config.alltags.map(function (x) { return x.tag; });
+                    // config.allutags = data.config.alltags.map(x=>x.mapToConllU).sort().filter(function(el,i,a){return i==a.indexOf(el);}) // sort and unique
+                    config.tags = {};
+                    config.alltags.forEach(function (x) { return config.tags["X:" + x.tag] = x; });
+                    // config.allutags.forEach(x=>config.tags["U:"+x.tag]=x)
+                    config.tags["X:_"] = { tag: "_", desc: "_" };
+                    config.tags["U:_"] = { tag: "_", desc: "_" };
+                    config.features = {};
+                    Object.keys(config.mf).forEach(function (k) { return config.mf[k].forEach(function (v) { return config.features[k + "=" + v.tag] = v; }); });
+                    _this.config[project] = config;
+                    resolve(_this.config[project]);
+                }
+                else
+                    // if(data.default)
+                    // 	that.config.default = data.default
+                    reject(data.error);
+            }, function (error) {
+                if (error.status != 200)
+                    reject("Server is not working properly. url=" + _this.myconfig.getValue("server"));
+                else
+                    reject(error.message);
+            });
+        });
+    };
+    ConfigService.prototype.save = function (project, hash, config) {
+        var _this = this;
+        config = JSON.parse(JSON.stringify(config));
+        delete config.hash;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "save_config", {
+                project: project,
+                hash: hash,
+                config: config
+            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.ok) {
+                    resolve();
+                    _this.config[project] = new __WEBPACK_IMPORTED_MODULE_3__config_json_class__["a" /* ConfigJSON */](Object.assign(_this.default_config, config), config);
+                }
+                else
+                    reject(data.error);
+            });
+        });
+    };
+    return ConfigService;
+}());
+ConfigService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _b || Object])
+], ConfigService);
+
+var _a, _b;
+//# sourceMappingURL=config-service.js.map
+
+/***/ }),
+
+/***/ 146:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
 }
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 117;
+webpackEmptyAsyncContext.id = 146;
 
 /***/ }),
 
-/***/ 159:
+/***/ 189:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
-	return new Promise(function(resolve, reject) { reject(new Error("Cannot find module '" + req + "'.")); });
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
 }
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 159;
+webpackEmptyAsyncContext.id = 189;
 
 /***/ }),
 
-/***/ 202:
+/***/ 232:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -413,12 +1102,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 var ProjectService = (function () {
     function ProjectService(http, myconfig) {
         this.http = http;
@@ -445,6 +1128,31 @@ var ProjectService = (function () {
                 if (data.ok) {
                     _this.username = data.username;
                     _this._list = data;
+                    resolve(data);
+                }
+                else
+                    reject(data.error);
+            }, function (error) {
+                if (error.status != 200)
+                    reject("Server is not working properly. url=" + _this.myconfig.getValue("server"));
+            });
+        });
+    };
+    ProjectService.prototype.remove = function (project) {
+        var _this = this;
+        // don't have the data yet
+        return new Promise(function (resolve, reject) {
+            _this.http.post(_this.myconfig.getValue("server") + "projects_remove", {
+                project: project
+            }, _this.options)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                // we've got back the raw data, now generate the core schedule data
+                // and save the data for later reference
+                // data = data;
+                if (data.ok) {
+                    if (_this._list.projects.length > 0)
+                        _this._list.projects = _this._list.projects.filter(function (p) { return project; });
                     resolve(data);
                 }
                 else
@@ -503,20 +1211,24 @@ var ProjectService = (function () {
             });
         });
     };
-    ProjectService.prototype.create = function (project) {
+    ProjectService.prototype.create = function (project, config) {
         var _this = this;
         // var this = this
         // don't have the data yet
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             _this.http.post(_this.myconfig.getValue("server") + "projects_create", {
                 // "security": security,
+                "config": config,
                 "project": project,
             }, _this.options)
                 .map(function (res) { return res.json(); })
                 .subscribe(function (data) {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
-                resolve(data);
+                if (data.ok)
+                    resolve(data);
+                else
+                    reject(data.error);
             });
         });
     };
@@ -532,7 +1244,7 @@ ProjectService = __decorate([
 
 /***/ }),
 
-/***/ 207:
+/***/ 237:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -540,19 +1252,19 @@ ProjectService = __decorate([
 /* unused harmony export Highlight */
 /* unused harmony export Stats */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_word_service__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_config_service__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_tags_selector_tags_selector__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_help_popover_help_popover__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__docs_docs__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_conllu_dao__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_word_service__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_config_service__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_config_json_class__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_help_popover_help_popover__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_conllu_dao__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_conllu_dao__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -569,11 +1281,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 // import { GuidelinesService } from '../../providers/guidelines-service';
 
 
 // import { SegmentorPopoverPageComponent } from '../../components/segmentor-popover-page/segmentor-popover-page';
-
+// import { TagsSelectorComponent } from '../../components/tags-selector/tags-selector';
 // import { HighlightComponent } from '../../components/highlight/highlight';
 // import { GetFormPopoverComponent } from '../../components/get-form-popover/get-form-popover';
 // import { GuiderComponent } from '../../components/guider/guider';
@@ -592,39 +1305,42 @@ var AnnotatePage = (function () {
     function AnnotatePage(navCtrl, popoverCtrl, navParams, 
         // public data: Data,
         // public http: Http,
-        renderer, events, wordservice, conlluService, configService, loadingCtrl, alertCtrl, toastCtrl) {
+        renderer, zone, events, wordservice, conlluService, configService, translateService, loadingCtrl, alertCtrl, toastCtrl) {
         var _this = this;
         this.navCtrl = navCtrl;
         this.popoverCtrl = popoverCtrl;
         this.navParams = navParams;
         this.renderer = renderer;
+        this.zone = zone;
         this.events = events;
         this.wordservice = wordservice;
         this.conlluService = conlluService;
         this.configService = configService;
+        this.translateService = translateService;
         this.loadingCtrl = loadingCtrl;
         this.alertCtrl = alertCtrl;
         this.toastCtrl = toastCtrl;
         /*
         Tags bar
         */
-        // @Output() public myEventEmitted: EventEmitter<any> = new EventEmitter();
         this.tagsRow = 0;
         this.done = false;
-        this.config = new __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigJSON */]();
+        this.conlluEditorType = "ma";
+        this.config = new __WEBPACK_IMPORTED_MODULE_5__providers_config_json_class__["a" /* ConfigJSON */]();
         // conllu : ConllU = new ConllU().Document();
-        this.log = "";
+        this.log = [];
         this.doc = null;
         this.documentJson = {};
         this.project = "";
         this.hash = "";
+        this.searchResults = [];
+        this.last_cretiera = {};
         this.pageid = "";
         this.editable = false;
         // isConlluHidden = false
         this.copyElement = null;
         // @ViewChild('conllu-editor') conlluEditor: ConlluEditorComponent;
-        this.highlight = new Highlight(this.events);
-        this._conlluRaw = "1-3 \u0648\u0639\u0646\u0647\u0627   _   _   _   _   _   _   _   _\n1   \u0648\u064E  _   conj    conj    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-0\n2   \u0639\u064E\u0646\u0647\u0627   \u0639\u064E\u0646_1   prep    prep    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-1\n3   _   _   3fs_pron    3fs_pron    _   0   _   _   ANALSIS#=1/1|TOOL=MA|ID=1-2\n";
+        this.highlight = new Highlight(this, this.events, this.zone);
         this.stats = new Stats(this.events);
         this.preventKeyboard = false;
         // presentSegmentorFormPopover() {
@@ -641,28 +1357,45 @@ var AnnotatePage = (function () {
         //   })
         // }
         this.showAlertMessage = false;
-        this.searchResults = [];
-        this.last_cretiera = {};
+        this._info = null;
         this.wasReversed = false;
+        this.keyboardFunc = function (event) {
+            _this.zone.run(function () {
+                _this.keyboardShortcuts(event);
+            });
+        };
+        this.currentTags = this.getTags();
         this.undoArr = [];
         this.redoArr = [];
         var loading = this.loadingCtrl.create({
             content: 'Loading...'
         });
+        this._conlluRaw = this.conlluService.initialConllU;
         loading.present();
-        if (!navParams.data.project) {
-            //TODO change
-            console.log("invalid params: ", navParams.data);
-            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_10__projects_projects__["b" /* ProjectsPage */]);
-        }
-        else {
+        if (navParams.data.project) {
             this.project = navParams.data.project;
             this.hash = navParams.data.hash;
             if (navCtrl.getViews().length == 0)
-                navCtrl.insert(1, __WEBPACK_IMPORTED_MODULE_9__docs_docs__["a" /* DocsPage */], {
+                navCtrl.insert(1, __WEBPACK_IMPORTED_MODULE_9__docs_docs__["b" /* DocsPage */], {
                     project: this.project,
                     hash: this.hash
                 });
+        }
+        if (!navParams.data.id && navCtrl.length() > 1) {
+            navCtrl.pop();
+            return;
+        }
+        else {
+            this.pageid = navParams.data.id;
+        }
+        if (!navParams.data.project) {
+            //TODO change
+            console.log("invalid params: ", navParams.data);
+            // navCtrl.setRoot(ProjectsPage)
+            this.pageid = "NEWFILE";
+            // navParams.data.id = "NEWFILE"
+            this.project = "NEWPROJECT";
+            this.hash = "TEST";
         }
         // on highlight change, scroll the ConllU Raw view and the main words view to proper location
         this.events.subscribe("highlight:change", function (element, scrollToConllRaw, scrollToElement) {
@@ -683,25 +1416,34 @@ var AnnotatePage = (function () {
                         sa.scrollTop = ea.offsetTop - sa.offsetTop - 150;
                 }, 100);
         });
-        if (!navParams.data.id && navCtrl.length() > 1) {
-            navCtrl.pop();
+        if (this.pageid == "NEWFILE") {
+            this.conlluEditorType = "textarea";
+            this.toastCtrl.create({
+                message: this.translateService.instant('Please enter the CoNLL-U content into the textarea.'),
+                duration: 3000,
+                position: "top"
+            }).present();
         }
-        else {
-            this.pageid = navParams.data.id;
-        }
-        Promise.all([this.configService.load(this.project, this.hash), this.conlluService.load(this.project, this.hash, this.pageid)])
+        Promise.all([
+            this.configService.load(this.project, this.hash),
+            this.conlluService.load(this.project, this.hash, this.pageid) //.catch(e=>{console.warn(e)})
+        ])
             .then(function (arr) {
             loading.dismiss();
             _this.config = arr[0]; //this.configService.getConfig(this.project)
-            if (_this.myTags)
-                _this.myTags.config = _this.config;
+            if (_this.pageid == "NEWFILE") {
+                _this.config.askMA = false;
+                _this.config.askMemMA = false;
+            }
+            _this.currentTags = _this.getTags();
             _this.doc = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluDocument"](_this.config);
+            // this.doc.sentences.forEach(s=>s.elements.forEach(e=>e._miscs["Score"] = "0"))
             _this.conlluRaw = arr[1].trim();
-            _this.done = /(\n|^)# done/.test(_this.conlluRaw);
             var match = _this.conlluRaw.match(/^# (?:done|notdone).*\|highlight=([^\|\n]*)/);
+            _this.done = /(\n|^)# done/.test(_this.conlluRaw);
             setTimeout(function () {
                 if (navParams.data.position) {
-                    console.log("here", navParams.data.position);
+                    // console.log("here",navParams.data.position)
                     _this.highlightElement(navParams.data.position.replace("-", ":"));
                 }
                 else if (match)
@@ -709,15 +1451,14 @@ var AnnotatePage = (function () {
                 else
                     _this.highlightElement('S1:1');
             });
-        }).catch(function (x) {
+        })
+            .catch(function (x) {
+            loading.dismiss();
             _this.toastCtrl.create({
-                message: 'Conllu File loading Error: ' + x,
+                message: _this.translateService.instant('Conllu/Config File loading Error: ') + _this.translateService.instant(x),
                 duration: 3000,
                 position: "top"
             }).present();
-            console.error('Conllu File loading Error: ' + x);
-            console.trace(x);
-            loading.dismiss();
         });
     }
     Object.defineProperty(AnnotatePage.prototype, "conlluRaw", {
@@ -726,16 +1467,15 @@ var AnnotatePage = (function () {
         },
         set: function (argv) {
             this._conlluRaw = argv;
-            this.log = "";
+            // this.log = []
             // console.log("Here",this.conlluRaw)
             var that = this;
-            this.doc.parse(this.conlluRaw, function (s) {
-                that.log = that.log + s + '\n';
-            }, false); //.toBrat(logger, true);
+            this.doc.parse(this._conlluRaw);
+            console.log(this.doc.validate());
             // if(typeof highlightRef  == "string")
             // this.highlightElement(highlightRef)
-            if (this.config.askMA)
-                this.askMA();
+            // if(this.config.askMA)
+            //   this.askMA()
             if (this.config.askMemMA)
                 this.askMemMA();
             // console.log(JSON.parse(JSON.stringify(this.doc)))
@@ -750,24 +1490,63 @@ var AnnotatePage = (function () {
         // console.log('ngAfterViewInit AnnotatePage');
         // this.renderer.invokeElementMethod(document.querySelector(".highlight"), 'focus', []);
     };
+    Object.defineProperty(AnnotatePage.prototype, "info", {
+        get: function () {
+            if (this._info)
+                return this._info;
+            var obj = {};
+            if (!this.doc)
+                return {};
+            obj.sent_no = this.doc.sentences.length;
+            obj.elem_no = this.doc.sentences.map(function (s) { return s.elements.length; }).reduce(function (p, c) { return p += c; }, 0);
+            obj.tokens_no = this.doc.sentences.map(function (s) { return s.tokens().length; }).reduce(function (p, c) { return p += c; }, 0);
+            obj.types_no = [].concat.apply([], this.doc.sentences.map(function (s) { return s.tokens().map(function (e) { return e.form; }); })).filter(function (e, i, arr) { return arr.indexOf(e) == i; }).length;
+            obj.mwe_no = this.doc.sentences.map(function (s) { return s.elements.filter(function (el) { return el.isMultiword; }).length; }).reduce(function (p, c) { return p += c; }, 0);
+            obj.missing_features = {};
+            obj.upos = {};
+            this.config.allutags.forEach(function (t) {
+                obj.missing_features[t.tag] = {};
+                obj.upos[t.tag] = 0;
+            });
+            this.doc.sentences.forEach(function (s) {
+                s.elements.forEach(function (e) {
+                    obj.upos[e.upostag]++;
+                    var miss = e.morphFeatsMissing();
+                    miss.forEach(function (m) {
+                        obj.missing_features[e.upostag][m] = obj.missing_features[e.upostag][m] + 1 || 1;
+                    });
+                });
+            });
+            this.config.allutags.forEach(function (t) { return obj.missing_features[t.tag] = Object.keys(obj.missing_features[t.tag]).map(function (k) { return [k, obj.missing_features[t.tag][k]]; }); });
+            console.log(obj.missing_features);
+            this._info = obj;
+            return obj;
+        },
+        set: function (argv) {
+            this._info = argv;
+            this._info = this.info;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AnnotatePage.prototype.addNote = function (event) {
         var _this = this;
         if (event === void 0) { event = null; }
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Note',
-            message: "Please enter the note to be saved on the element. Old message is: " + (this.highlight.element._miscs["NOTE"] || "Nothing"),
+            title: this.translateService.instant('Note'),
+            message: this.translateService.instant("Please enter the note to be saved on the element."),
             inputs: [
                 {
                     name: 'note',
-                    placeholder: 'Title',
+                    placeholder: this.translateService.instant('Title'),
                     value: this.highlight.element._miscs["NOTE"]
                 },
             ],
             buttons: [
                 {
-                    text: 'Save',
+                    text: this.translateService.instant('Save'),
                     handler: function (data) {
                         _this.highlight.element._miscs["NOTE"] = data.note.replace(/ /g, "_");
                         _this.syncConllU();
@@ -789,8 +1568,10 @@ var AnnotatePage = (function () {
             this.events.publish('highlight:change', elem);
         else {
             console.error("highlighted non existing element", highlightRef);
-            this.highlightElement();
+            if (highlightRef != 'S1:1')
+                this.highlightElement();
         }
+        this.askMAOneSentence(this.highlight.sentence);
     };
     AnnotatePage.prototype.search = function (event) {
         var _this = this;
@@ -798,28 +1579,29 @@ var AnnotatePage = (function () {
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Search',
-            message: "Show previous taggings in corpus",
+            title: this.translateService.instant('Search'),
+            message: this.translateService.instant("Show previous taggings in corpus"),
             inputs: [
                 {
                     name: 'form',
-                    placeholder: 'Word Form'
+                    placeholder: this.translateService.instant('Word Form'),
+                    value: this.highlight.element.parent ? this.highlight.element.parent.form : this.highlight.element.form
                 },
             ],
             buttons: [
                 {
-                    text: 'Search',
+                    text: this.translateService.instant('Search'),
                     handler: function (data) {
                         _this.wordservice.askMemMA(data.form, _this.config)
                             .then(function (elements) {
                             _this.viewElementsPopup(elements[0], null);
                         }).catch(function (s) {
                             _this.toastCtrl.create({
-                                message: 'Error: ' + s,
+                                message: _this.translateService.instant('Error: ') + _this.translateService.instant(s),
                                 duration: 3000,
                                 position: "top"
                             }).present();
-                            console.error('Error: ' + s);
+                            console.error('Error: ', s);
                         });
                     }
                 }
@@ -827,56 +1609,92 @@ var AnnotatePage = (function () {
         });
         prompt.present();
     };
+    AnnotatePage.prototype.changeFileName = function (event) {
+        var _this = this;
+        if (event === void 0) { event = null; }
+        if (this.pageid != "NEWFILE")
+            return;
+        if (event)
+            event.preventDefault();
+        var prompt = this.alertCtrl.create({
+            title: this.translateService.instant('Filename'),
+            message: this.translateService.instant("Change filename"),
+            inputs: [
+                {
+                    name: 'filename',
+                    placeholder: this.translateService.instant('Filename')
+                },
+            ],
+            buttons: [
+                {
+                    text: this.translateService.instant('Change'),
+                    handler: function (data) {
+                        if (_this.conlluService.projects[_this.project].files.find(function (x) { return x.filename == data.filename; }) == null) {
+                            _this.pageid = data.filename;
+                            _this.saveFile();
+                        }
+                        else {
+                            _this.toastCtrl.create({
+                                message: _this.translateService.instant('Filename already exist'),
+                                duration: 1000
+                            }).present();
+                        }
+                    }
+                }
+            ]
+        });
+        return prompt.present();
+    };
     AnnotatePage.prototype.find = function (event) {
         var _this = this;
         if (event === void 0) { event = null; }
         if (event)
             event.preventDefault();
         var prompt = this.alertCtrl.create({
-            title: 'Find',
-            message: "Find an element within this document",
+            title: this.translateService.instant('Find'),
+            message: this.translateService.instant("Find an element within this document"),
             inputs: [
                 {
                     name: 'form',
-                    placeholder: 'Word Form',
+                    placeholder: this.translateService.instant('Word Form'),
                     value: this.last_cretiera.form
                 },
                 {
                     name: 'xpos',
-                    placeholder: 'XPOS tag',
+                    placeholder: this.translateService.instant('XPOS tag'),
                     value: this.last_cretiera.xpos
                 },
                 {
                     name: 'upos',
-                    placeholder: 'UPOS tag',
+                    placeholder: this.translateService.instant('UPOS tag'),
                     value: this.last_cretiera.upos
                 },
                 {
                     name: 'feats',
-                    placeholder: 'Feat=Val',
+                    placeholder: this.translateService.instant('Feat=Val'),
                     value: this.last_cretiera.feats
                 },
                 {
                     name: 'misc',
-                    placeholder: 'Misc=Val',
+                    placeholder: this.translateService.instant('Misc=Val'),
                     value: this.last_cretiera.misc
                 },
                 {
                     name: 'lemma',
-                    placeholder: 'Lemma',
+                    placeholder: this.translateService.instant('Lemma'),
                     value: this.last_cretiera.lemma
                 },
             ],
         });
         if (this.copyElement)
             prompt.addButton({
-                text: 'Find and Replace All',
+                text: this.translateService.instant('Find and Replace All'),
                 role: 'destructive',
                 handler: function (cretiera) {
                     _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                     if (!_this.copyElement) {
                         _this.toastCtrl.create({
-                            message: 'No copied element',
+                            message: _this.translateService.instant('No copied element'),
                             duration: 1000
                         }).present();
                     }
@@ -888,6 +1706,7 @@ var AnnotatePage = (function () {
                             if (_this.copyElement.isMultiword) {
                                 var c = e.changeWith(_this.copyElement);
                                 c._miscs["FROM"] = "PASTE";
+                                c._miscs["Score"] = "1.00";
                             }
                             else
                                 e.copy(_this.copyElement);
@@ -896,13 +1715,13 @@ var AnnotatePage = (function () {
                 }
             });
         prompt.addButton({
-            text: 'Find All',
+            text: this.translateService.instant('Find All'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 _this.searchResults = _this.doc.find(cretiera);
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -912,7 +1731,7 @@ var AnnotatePage = (function () {
             }
         });
         prompt.addButton({
-            text: 'Find All (Unique)',
+            text: this.translateService.instant('Find All (Unique)'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 var uniq = {};
@@ -925,7 +1744,7 @@ var AnnotatePage = (function () {
                 });
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -935,13 +1754,13 @@ var AnnotatePage = (function () {
             }
         });
         prompt.addButton({
-            text: 'Find Next',
+            text: this.translateService.instant('Find Next'),
             handler: function (cretiera) {
                 _this.last_cretiera = JSON.parse(JSON.stringify(cretiera));
                 _this.searchResults = _this.doc.find(cretiera);
                 if (_this.searchResults.length === 0) {
                     _this.toastCtrl.create({
-                        message: 'No results were found',
+                        message: _this.translateService.instant('No results were found'),
                         duration: 1000
                     }).present();
                 }
@@ -979,7 +1798,7 @@ var AnnotatePage = (function () {
         });
         if (!r)
             return this.toastCtrl.create({
-                message: 'No more results were found',
+                message: this.translateService.instant('No more results were found'),
                 duration: 1000
             }).present();
         // if(r.isMultiword)
@@ -990,17 +1809,17 @@ var AnnotatePage = (function () {
         var _this = this;
         if (this.showAlertMessage) {
             var alertPopup = this.alertCtrl.create({
-                title: 'Exit',
-                message: 'Changes are not saved. Are you sure?',
+                title: this.translateService.instant('Exit'),
+                message: this.translateService.instant('Changes are not saved. Are you sure?'),
                 buttons: [{
-                        text: 'Exit',
+                        text: this.translateService.instant('Exit'),
                         handler: function () {
                             _this.showAlertMessage = false;
                             _this.navCtrl.pop();
                         }
                     },
                     {
-                        text: 'Stay',
+                        text: this.translateService.instant('Stay'),
                         handler: function () {
                             // need to do something if the user stays?
                         }
@@ -1016,7 +1835,7 @@ var AnnotatePage = (function () {
         var _this = this;
         var options = Object.keys(this.config.mf).filter(function (x) { return _this.config.MfVsPos[x].indexOf(_this.config.MfVsPos_upostag ? _this.highlight.element.upostag : _this.highlight.element.xpostag) >= 0; });
         if (options.length > 0) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_5__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */], {
                 element: this.highlight.element,
                 config: this.config,
                 options: options
@@ -1030,7 +1849,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No morphological features is needed for this tag: ' + this.config.getXPosTag(this.highlight.element.xpostag).desc,
+                message: this.translateService.instant('No morphological features is needed for this tag: ') + this.config.getXPosTag(this.highlight.element.xpostag).desc,
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1048,7 +1867,6 @@ var AnnotatePage = (function () {
         this.events.publish("stats", { action: "mouse", element: e });
     };
     AnnotatePage.prototype.keyboardShortcuts = function (e) {
-        console.log(e);
         var highlighNode = document.querySelector(".highlight");
         if (e.target != document.querySelector("body")
             && e.target && e.target.className.indexOf("element") == -1) {
@@ -1064,20 +1882,11 @@ var AnnotatePage = (function () {
         if (!this.config)
             return false;
         if (e.code == "Escape")
-            this.copyElement = false;
-        var action = this.config.keyboardShortcuts
-            .filter(function (v) {
-            return (v.code == e.code) &&
-                // (v.key!=undefined && v.key == e.key) &&
-                ((v.metaKey == true) == e.metaKey) &&
-                ((v.shiftKey == true) == e.shiftKey) &&
-                ((v.altKey == true) == e.altKey) &&
-                ((v.ctrlKey == true) == e.ctrlKey) &&
-                true;
-        });
-        if (action.length == 1) {
+            this.copyElement = null;
+        var action = this.config.getAction(e);
+        if (action != null) {
             this.events.publish("stats", { action: "keyboard", event: e, code: action });
-            this.doAction(action[0].action, action[0].params, e);
+            this.doAction(action.action, action.params, e);
         }
         else
             this.events.publish("stats", { action: "keyboard", event: e });
@@ -1133,6 +1942,7 @@ var AnnotatePage = (function () {
         if (this.copyElement.isMultiword) {
             var c = this.highlight.element.changeWith(this.copyElement);
             c._miscs["FROM"] = "PASTE";
+            c._miscs["Score"] = "1.00";
             this.events.publish('highlight:change', c);
         }
         else
@@ -1144,54 +1954,68 @@ var AnnotatePage = (function () {
             this.highlight.element.copyMorphInfo(this.copyElement);
     };
     AnnotatePage.prototype.new_sentence = function (e) {
-        var _this = this;
         if (e === void 0) { e = null; }
         //TODO: this should be moved to conllu.ts
         if (!this.highlight.element)
             return;
         this.showAlertMessage = true;
-        var sindex = this.doc.sentences.indexOf(this.highlight.sentence);
         var eindex = this.highlight.sentence.elements.indexOf(this.highlight.element);
-        // check if last segment
-        if (this.highlight.sentence.elements[eindex + 1]
-            && this.highlight.element.parent != null
-            && this.highlight.element.parent == this.highlight.sentence.elements[eindex + 1].parent) {
-            //TODO show warning
-            return;
+        if (eindex == this.highlight.sentence.elements.length - 1)
+            this.highlight.sentence.joinNextSentence();
+        else if (eindex < this.highlight.sentence.elements.length - 1) {
+            try {
+                this.highlight.sentence.newSentenceAt(this.highlight.element);
+            }
+            catch (e) {
+                this.toastCtrl.create({
+                    message: this.translateService.instant(e.message),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            }
         }
-        var before = this.highlight.sentence.elements.slice(0, eindex + 1);
-        var after = this.highlight.sentence.elements.slice(eindex + 1);
-        if (after.length == 0) {
-            // do reverse. join with next sentence
-            if (!this.doc.sentences[sindex + 1])
-                return;
-            after = this.doc.sentences[sindex + 1].elements;
-            after.forEach(function (e) {
-                e.sentence = _this.highlight.sentence;
-            });
-            this.highlight.sentence.elements = this.highlight.sentence.elements.concat(after);
-            this.doc.sentences.splice(sindex + 1, 1);
-            this.highlight.sentence.refix(true);
-            this.doc.fixSentenceIds();
-        }
-        else {
-            // sentence should be splitted
-            this.highlight.sentence.elements = before;
-            //re count the second sentence
-            var counter_1 = 1;
-            after.forEach(function (e) {
-                if (!e.isMultiword)
-                    e.id = "" + counter_1++;
-                else {
-                    var arr = e.id.split("-");
-                    e.id = counter_1 + "-" + (counter_1 + parseInt(arr[1]) - parseInt(arr[0]));
-                }
-            });
-            var sent = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluSentence"]("new", after, [], this.doc);
-            this.doc.sentences.splice(sindex + 1, 0, sent);
-            this.doc.fixSentenceIds();
-            // console.log(this.doc)
-        }
+        // var sindex = this.doc.sentences.indexOf(this.highlight.sentence)
+        // var eindex = this.highlight.sentence.elements.indexOf(this.highlight.element)
+        // // check if last segment
+        // if (this.highlight.sentence.elements[eindex + 1]
+        //   && this.highlight.element.parent != null
+        //   && this.highlight.element.parent == this.highlight.sentence.elements[eindex + 1].parent){
+        //   //TODO show warning
+        //   return;
+        // }
+        // var before = this.highlight.sentence.elements.slice(0, eindex + 1)
+        // var after = this.highlight.sentence.elements.slice(eindex + 1)
+        // if (after.length == 0) {
+        //   // do reverse. join with next sentence
+        //   if (!this.doc.sentences[sindex + 1])
+        //     return
+        //   after = this.doc.sentences[sindex + 1].elements
+        //   after.forEach(e => {
+        //     e.sentence = this.highlight.sentence
+        //   })
+        //   this.highlight.sentence.elements = this.highlight.sentence.elements.concat(after);
+        //   this.doc.sentences.splice(sindex + 1, 1)
+        //   this.highlight.sentence.refix(true)
+        //   this.doc.fixSentenceIds()
+        // }
+        // else {
+        //   // sentence should be splitted
+        //   this.highlight.sentence.elements = before;
+        //   //re count the second sentence
+        //   let counter = 1;
+        //   after.forEach(e => {
+        //     if (!e.isMultiword)
+        //       e.id = "" + counter++;
+        //     else {
+        //       var arr = e.id.split("-")
+        //       e.id = counter + "-" + (counter + parseInt(arr[1]) - parseInt(arr[0]))
+        //     }
+        //   })
+        //   var sent = new ConlluSentence("new", after, [],this.doc)
+        //   this.doc.sentences.splice(sindex + 1, 0, sent)
+        //   this.doc.fixSentenceIds()
+        //   // console.log(this.doc)
+        // }
         this.saveForUndo();
     };
     AnnotatePage.prototype.clone = function (e) {
@@ -1268,14 +2092,14 @@ var AnnotatePage = (function () {
         // this.highlight.element = this.highlight.sentence.elements[eindex]
         this.saveForUndo();
     };
-    AnnotatePage.prototype.tag_ma = function (analyses, e) {
+    AnnotatePage.prototype.tag_ma = function (analyses) {
         var _this = this;
         if (analyses === void 0) { analyses = []; }
         var el = this.highlight.element.parent || this.highlight.element;
         if (analyses.length == 0)
             analyses = el.analysis; //.filter((e,i)=>! this.viewMode || e._miscs["DOCID"]!==this.pageid && e._miscs["DOCID"]!==undefined)
         if (analyses) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
                 element: el,
                 analyses: analyses,
                 hash: this.hash,
@@ -1292,7 +2116,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No Analysis Found for this word: ' + el.form,
+                message: this.translateService.instant('No Analysis Found for this word: ') + el.form,
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1300,12 +2124,50 @@ var AnnotatePage = (function () {
         this.events.publish("stats", { action: "tag_ma", element: this.highlight.element });
         this.showAlertMessage = true;
     };
+    AnnotatePage.prototype.getAnalysis = function (element, mode) {
+        var _this = this;
+        if (mode === void 0) { mode = "view"; }
+        if (element && element.parent)
+            element = element.parent;
+        if (!element || !element.analysis)
+            return [];
+        return element.analysis
+            .map(function (e, i) {
+            var lemma = (e.children.length > 0 ? e.children.map(function (ee) { return ee.lemma; }).join(" ") : e.lemma).replace(/(^_|_$)/, " ");
+            return {
+                value: e.id,
+                counter: i,
+                title: i,
+                // score: e._miscs["Score"],
+                lemma: lemma,
+                gloss: e._miscs["Gloss"] ? e._miscs["Gloss"].split(";") : [],
+                isMemMA: e._miscs["DOCID"] !== undefined,
+                score: e._miscs["Score"],
+                miscs: e._miscs,
+                sent: e._miscs["SENT"] ? e._miscs["SENT"].replace(/±/g, " ") : (mode == "view" ? e.getContext().map(function (e) { return e.form; }).join(" ") : ""),
+                elements: (e.children.length > 0 ? e.children : [e]),
+                forsearch: (e.children.length > 0 ? e.children : [e]).map(function (e) {
+                    return e.form + " " +
+                        _this.config.getXPosTag(e.xpostag).desc + " " +
+                        _this.config.getUPosTag(e.upostag).desc + " " +
+                        e.features.map(function (e) { return _this.config.getFeature(e.key + "=" + e.value).desc; }).join(" ");
+                }).join(" "),
+                o: e,
+            };
+        });
+    };
+    AnnotatePage.prototype.ionViewDidLoad = function () {
+        document.addEventListener('keydown', this.keyboardFunc);
+    };
+    AnnotatePage.prototype.ionViewWillLeave = function () {
+        document.removeEventListener('keydown', this.keyboardFunc);
+    };
     AnnotatePage.prototype.viewElementsPopup = function (analyses, e) {
         var _this = this;
         if (analyses === void 0) { analyses = []; }
         if (e === void 0) { e = null; }
         if (analyses.length !== 0) {
-            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_6__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
+            var popover = this.popoverCtrl.create(__WEBPACK_IMPORTED_MODULE_7__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */], {
                 analyses: analyses,
                 hash: this.hash,
                 project: this.project,
@@ -1321,7 +2183,7 @@ var AnnotatePage = (function () {
         }
         else {
             this.toastCtrl.create({
-                message: 'No Analysis Found. ',
+                message: this.translateService.instant('No Analysis Found'),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -1361,8 +2223,7 @@ var AnnotatePage = (function () {
         }
         else if (ev.code == "ArrowLeft") {
             if (ev.target.selectionStart == ev.target.value.length && ev.target.value == elem.form) {
-                console.log("here");
-                this.nav("word_left");
+                this.nav("word_next");
             }
         }
         else if (ev.code == "Escape") {
@@ -1371,13 +2232,12 @@ var AnnotatePage = (function () {
         }
         else if (ev.code == "ArrowRight") {
             if (ev.target.selectionStart == 0 && ev.target.value == elem.form) {
-                console.log("here");
-                this.nav("word_right");
+                this.nav("word_prev");
             }
         }
         else if (ev.code == "Enter") {
             if (ev.target.value == elem.form) {
-                // ev.target.blur()
+                ev.target.blur();
                 return;
             }
             // delete the node
@@ -1433,6 +2293,7 @@ var AnnotatePage = (function () {
     };
     AnnotatePage.prototype.doAction = function (action, params, e) {
         var _this = this;
+        if (e === void 0) { e = null; }
         switch (action) {
             case "nav":
                 // console.log("doAction")
@@ -1481,7 +2342,14 @@ var AnnotatePage = (function () {
                 this.new_sentence(e);
                 break;
             case "tag_ma":
-                this.tag_ma([], e);
+                var el3 = this.highlight.element.parent || this.highlight.element;
+                if (el3.analysis.length > 0) {
+                    // let analysis = el3.analysis//.filter((e,i)=>! this.viewMode || e._miscs["DOCID"]!==this.pageid && e._miscs["DOCID"]!==undefined)
+                    this.tag_ma(el3.analysis);
+                }
+                break;
+            case "done":
+                this.highlight.element._miscs["Score"] = "1.00";
                 break;
             case "tag_ma_previous":
                 var el2_1 = this.highlight.element.parent || this.highlight.element;
@@ -1493,7 +2361,7 @@ var AnnotatePage = (function () {
                     return e != el2_1 &&
                         e.form.replace(/[ًٌٍَُِّْ]/g, "") == el2_1.form.replace(/[ًٌٍَُِّْ]/g, "");
                 }); }));
-                this.tag_ma(analyses, e);
+                this.tag_ma(analyses);
                 e.preventDefault();
                 break;
             case "edit_memMa":
@@ -1522,21 +2390,27 @@ var AnnotatePage = (function () {
                 this.delete(e);
                 break;
             case "assignXTag":
-                var fn_1 = this.myTags.getTags()[params[0] - 1];
-                if (fn_1) {
-                    this.highlight.element.xpostag = fn_1.tag;
-                    this.highlight.element.upostag = this.config.alltags.find(function (x) { return x.tag == fn_1.tag; }).mapToConllU;
+                var fn = this.getTags()[params[0] - 1];
+                if (fn) {
+                    this.highlight.element.xpostag = fn.tag;
+                    // this.highlight.element.upostag = this.config.alltags.find(x=>x.tag==fn.tag).mapToConllU
+                    this.saveForUndo();
                 }
-                this.saveForUndo();
                 break;
             case "showOtherUTags":
-                this.myTags.increaseTagsRow();
+                this.increaseTagsRow();
                 break;
             case "assignSentenceTag":
-                fn_1 = this.config.sentenceTags[parseInt(params[0]) - 1];
-                if (fn_1)
-                    this.highlight.sentence.tag = fn_1.tag;
+                fn = this.config.sentenceTags[parseInt(params[0]) - 1];
+                if (fn)
+                    this.highlight.sentence.tag = fn.tag;
                 this.saveForUndo();
+                break;
+            case "assignAnalysis":
+                this.assignAnalysis(parseInt(params[0]) - 1);
+                break;
+            case "sad":
+                this.sad();
                 break;
             case "saveFile":
                 this.saveFile(e);
@@ -1550,7 +2424,7 @@ var AnnotatePage = (function () {
                 if (e)
                     e.preventDefault();
                 var doc = new __WEBPACK_IMPORTED_MODULE_11_conllu_dao__["ConlluDocument"](this.config);
-                doc.parse(this.doc.toConllU(), function (s) { this.log = this.log + s + '\n'; }, true);
+                doc.parse(this.doc.toConllU());
                 break;
             case "validate":
                 if (e)
@@ -1558,13 +2432,13 @@ var AnnotatePage = (function () {
                 var issues = this.doc.validate();
                 if (issues.length > 0)
                     this.toastCtrl.create({
-                        message: 'Several issues were found',
+                        message: this.translateService.instant('Several issues were found'),
                         duration: 3000,
                         position: "top"
                     }).present();
                 else
                     this.toastCtrl.create({
-                        message: 'No issues were found',
+                        message: this.translateService.instant('No issues were found'),
                         duration: 3000,
                         position: "top"
                     }).present();
@@ -1579,22 +2453,88 @@ var AnnotatePage = (function () {
                 break;
         }
     };
+    AnnotatePage.prototype.getTags = function () {
+        console.log(this.config);
+        return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map(function (x, i) {
+            x.fn = i + 1;
+            return x;
+        });
+    };
+    AnnotatePage.prototype.increaseTagsRow = function () {
+        this.tagsRow++;
+        this.currentTags = this.getTags();
+        if (this.currentTags.length == 0) {
+            this.tagsRow = 0;
+            this.currentTags = this.getTags();
+        }
+    };
+    AnnotatePage.prototype.goToLowestScore = function () {
+        var min = 1000;
+        var minElem = null;
+        for (var _i = 0, _a = this.doc.sentences; _i < _a.length; _i++) {
+            var sent = _a[_i];
+            for (var _b = 0, _c = sent.elements; _b < _c.length; _b++) {
+                var elem = _c[_b];
+                if (elem.isMultiword)
+                    continue;
+                if (elem._miscs["Score"] == undefined) {
+                    this.events.publish('highlight:change', elem);
+                    return;
+                }
+                if (elem._miscs["Score"] < min) {
+                    min = elem._miscs["Score"];
+                    minElem = elem;
+                }
+            }
+        }
+        this.events.publish('highlight:change', minElem);
+    };
+    AnnotatePage.prototype.sad = function () {
+        // var element = this.highlight.element.parent ? this.highlight.element.parent : this.highlight.element
+        if (this.highlight.element._miscs["Score"] == '1.00')
+            this.goToLowestScore();
+        else {
+            this.highlight.element._miscs["Score"] = '1.00';
+        }
+    };
+    AnnotatePage.prototype.assignAnalysis = function (index) {
+        var element = this.highlight.element.parent ? this.highlight.element.parent : this.highlight.element;
+        var analysis = element.analysis[index];
+        console.log(analysis);
+        if (analysis) {
+            var c = element.changeWith(analysis);
+            this.highlight.element = c;
+            [c].concat(c.children).forEach(function (cc) {
+                cc._miscs["FROM"] = "MA";
+                cc._miscs["Score"] = "1.00";
+                delete cc._miscs["SENT"];
+                delete cc._miscs["DOCID"];
+                delete cc._miscs["ELEMID"];
+                delete cc._miscs["SENTID"];
+                delete cc._miscs["WID"];
+            });
+        }
+        this.events.publish("stats", { action: "tag_ma", element: this.highlight.element });
+        this.showAlertMessage = true;
+        this.saveForUndo();
+    };
     AnnotatePage.prototype.showCommands = function (e) {
         var _this = this;
         console.log("showCommands");
         var alert = this.alertCtrl.create();
         alert.setTitle('List of Commands');
-        this.config.keyboardShortcuts.forEach(function (e, i) {
+        Object.keys(this.config.keyboardShortcuts).forEach(function (i, ii) {
+            var e = _this.config.keyboardShortcuts[i];
             alert.addInput({
                 type: 'radio',
                 label: e.keys.length + e.keys.join("+") + " || " + e.action + (e.params && e.params.length > 0 ? " {" + e.params.join() + "} " : ""),
                 value: i + "",
-                checked: i == 0
+                checked: ii == 0
             });
         });
         alert.addButton('Cancel');
         alert.addButton({
-            text: 'OK',
+            text: this.translateService.instant('OK'),
             handler: function (index) {
                 _this.doAction(_this.config.keyboardShortcuts[index].action, _this.config.keyboardShortcuts[index].params, null);
             }
@@ -1607,9 +2547,9 @@ var AnnotatePage = (function () {
         if (!this.highlight.element)
             return;
         var x = null;
-        if (direction == "word_left")
+        if (direction == "word_next")
             x = this.highlight.sentence.elements.find(function (x) { return !x.isMultiword && parseInt(x.id) == parseInt(_this.highlight.element.id) + 1; });
-        else if (direction == "word_right")
+        else if (direction == "word_prev")
             x = this.highlight.sentence.elements.find(function (x) { return !x.isMultiword && parseInt(x.id) == (parseInt(_this.highlight.element.id) - 1); });
         if (x) {
             this.events.publish('highlight:change', x);
@@ -1623,6 +2563,7 @@ var AnnotatePage = (function () {
                 y = this.doc.sentences[sindex - 1];
             if (!y)
                 return;
+            // this.askMAOneSentence(y)
             if (y.elements.length != 0) {
                 this.events.publish('highlight:change', y.elements.filter(function (x) { return !x.isMultiword; })[0]);
                 return;
@@ -1639,6 +2580,13 @@ var AnnotatePage = (function () {
         if (askToMarkIsDone === void 0) { askToMarkIsDone = true; }
         if (e)
             e.preventDefault();
+        if (this.pageid == "NEWFILE") {
+            this.changeFileName();
+            // this.toastCtrl.create({
+            //   message: "Please save filename to a different name and save again."
+            // }).present()
+            return;
+        }
         // this.navCtrl.getActive().
         if (askToMarkIsDone && this.done) {
             this.doc.sentences[0].comments.unshift("# update " + this.stats.getLine(this.highlight.element));
@@ -1646,17 +2594,17 @@ var AnnotatePage = (function () {
         }
         else if (askToMarkIsDone) {
             var alertPopup = this.alertCtrl.create({
-                title: 'Mark as done?',
-                message: 'Do you want to mark it as done?',
+                title: this.translateService.instant('Mark as done?'),
+                message: this.translateService.instant('Do you want to mark it as done?'),
                 buttons: [{
-                        text: '(Y)es',
+                        text: this.translateService.instant('Yes'),
                         handler: function () {
                             _this.doc.sentences[0].comments.unshift("# done " + _this.stats.getLine(_this.highlight.element));
                             _this.saveFile(null, false);
                         }
                     },
                     {
-                        text: '(N)o',
+                        text: this.translateService.instant('No'),
                         handler: function () {
                             _this.doc.sentences[0].comments.unshift("# notdone " + _this.stats.getLine(_this.highlight.element));
                             _this.saveFile(null, false);
@@ -1669,7 +2617,7 @@ var AnnotatePage = (function () {
             this._conlluRaw = this.doc.toConllU();
             this.conlluService.save(this.project, this.hash, this.pageid, this.conlluRaw).then(function (s) {
                 _this.toastCtrl.create({
-                    message: 'File was successfully saved. Status:' + (s.isDone ? "Done" : "Not Done"),
+                    message: _this.translateService.instant('File was successfully saved. Status:' + (s.isDone ? "Done" : "Not Done")),
                     duration: 3000,
                     position: "top"
                 }).present();
@@ -1677,11 +2625,11 @@ var AnnotatePage = (function () {
                 _this.showAlertMessage = false;
             }).catch(function (reason) {
                 _this.toastCtrl.create({
-                    message: 'Error: ' + reason,
+                    message: _this.translateService.instant('Error: ') + _this.translateService.instant(reason),
                     duration: 3000,
                     position: "top"
                 }).present();
-                console.error('Error: ' + reason);
+                console.error('Error: ', reason);
             });
         }
     };
@@ -1689,10 +2637,25 @@ var AnnotatePage = (function () {
         if (e === void 0) { e = null; }
         this._conlluRaw = this.doc.toConllU();
         this.toastCtrl.create({
-            message: 'Conll-U representation has been updated.',
+            message: this.translateService.instant('Conll-U representation has been updated'),
             duration: 3000,
             position: "top"
         }).present();
+    };
+    AnnotatePage.prototype.download = function () {
+        //make sure there is a tab after each span
+        // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
+        // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
+        // console.log(this.conlluRaw)
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.conlluRaw);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        var filename = this.pageid;
+        if (!/\.conllu$/.test(filename))
+            filename += ".conllu";
+        downloadAnchorNode.setAttribute("download", filename);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     };
     AnnotatePage.prototype.saveForUndo = function (newConllRaw) {
         if (newConllRaw === void 0) { newConllRaw = null; }
@@ -1715,62 +2678,71 @@ var AnnotatePage = (function () {
     //
     // }
     // maResult = null
-    AnnotatePage.prototype.askMA = function () {
+    AnnotatePage.prototype.askMAOneSentence = function (sentence, which) {
         var _this = this;
-        Promise.all(this.doc.sentences.map(function (s, i) {
-            return _this.wordservice.askMA(s.tokens().map(function (e) { return e.form; }).join(" "), _this.config)
-                .then(function (elements) {
-                var counter = 1;
-                s.elements.forEach(function (e) {
-                    if (e.parent)
-                        return;
-                    // if(!this.maResult[i])
-                    //   return console.error(i,this.maResult)
-                    if (!e.analysis)
-                        e.analysis = [];
-                    if (elements[counter])
-                        e.analysis = e.analysis.concat(elements[counter] || []);
-                    // else
-                    // console.log("askMA",e,elements,counter)
-                    counter++;
-                });
+        if (which === void 0) { which = ""; }
+        if (sentence.analysed)
+            return Promise.resolve();
+        if (!this.config.askMA)
+            return Promise.resolve();
+        if (sentence.analysed == "pending")
+            return Promise.resolve();
+        sentence.analysed = "pending";
+        var func = null;
+        if (which == "MemMA")
+            func = this.wordservice.askMemMA(sentence.tokens().map(function (e) { return e.form || "_"; }).join(" "), this.config);
+        else
+            func = this.wordservice.askMA(sentence.tokens().map(function (e) { return e.form || "_"; }).join(" "), this.config);
+        return func.then(function (elements) {
+            var counter = 1;
+            sentence.elements.forEach(function (e) {
+                if (e.parent)
+                    return;
+                // if(!this.maResult[i])
+                //   return console.error(i,this.maResult)
+                if (!e.analysis)
+                    e.analysis = [];
+                if (elements[counter])
+                    e.analysis = e.analysis.concat(elements[counter] || []);
+                // else
+                // console.log("askMA",e,elements,counter)
+                counter++;
             });
-        }))
-            .catch(function (s) {
+            sentence.analysed = true;
+        }).catch(function (s) {
             _this.toastCtrl.create({
-                message: 'Error: ' + s,
+                message: _this.translateService.instant('Error: ') + _this.translateService.instant(s.toString()),
+                duration: 3000,
+            }).present();
+            console.error('Error: ', s);
+        });
+    };
+    AnnotatePage.prototype.askMA = function (sentences, which) {
+        var _this = this;
+        if (sentences === void 0) { sentences = []; }
+        if (which === void 0) { which = ""; }
+        if (["MemMA", "MA"].indexOf(which) < 0)
+            which = "MA";
+        if (sentences.length > 100) {
+            this.toastCtrl.create({
+                message: this.translateService.instant('Warning: Sentences would not be sent to morphological analyser because sentence number') + " > 100",
                 duration: 3000,
                 position: "top"
             }).present();
-            console.error('Error: ' + s);
+            return;
+        }
+        Promise.all(sentences.map(function (s) { return _this.askMAOneSentence(s); })).catch(function (s) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant('Error: ') + _this.translateService.instant(s.toString()),
+                duration: 3000,
+                position: "top"
+            }).present();
+            console.error('Error: ', s);
         });
     };
-    AnnotatePage.prototype.askMemMA = function () {
-        var _this = this;
-        this.doc.sentences.forEach(function (s, i) {
-            _this.wordservice.askMemMA(s.tokens().map(function (e) { return e.form; }).join(" "), _this.config)
-                .then(function (elements) {
-                var counter = 0;
-                s.elements.forEach(function (e) {
-                    if (e.parent)
-                        return;
-                    // if(!this.maResult[i])
-                    //   return console.error(i,this.maResult)
-                    if (elements[counter])
-                        e.analysis = elements[counter].concat(e.analysis || []);
-                    // else if(!Array.isArray(elements[counter]))
-                    // console.log("askMemMA",e,elements,counter)
-                    counter++;
-                });
-            }).catch(function (s) {
-                _this.toastCtrl.create({
-                    message: 'Error: ' + s,
-                    duration: 3000,
-                    position: "top"
-                }).present();
-                console.error('Error: ' + s);
-            });
-        });
+    AnnotatePage.prototype.askMemMA = function (sentences) {
+        if (sentences === void 0) { sentences = []; }
+        this.askMA(sentences, "MemMA");
     };
     AnnotatePage.prototype.showStats = function () {
         this.stats.print();
@@ -1779,33 +2751,21 @@ var AnnotatePage = (function () {
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('lemma'),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */])
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["n" /* RadioGroup */]) === "function" && _a || Object)
 ], AnnotatePage.prototype, "lemmaGroup", void 0);
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('myTags'),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_7__components_tags_selector_tags_selector__["a" /* TagsSelectorComponent */])
-], AnnotatePage.prototype, "myTags", void 0);
 AnnotatePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>ترميز الملف: {{pageid}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="search($event)" tabindex="-1">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <!-- <ion-list> -->\n  <!-- <ion-item *ngFor="">\n    <ion-avatar item-left>\n      <h1></h1>\n    </ion-avatar>\n    <h2>Finn</h2>\n    <h3>Don\'t Know What To Do!</h3>\n    <p>I\'ve had a pretty messed up day. If we just...</p>\n  </ion-item> -->\n  <ion-grid (window:keydown)="keyboardShortcuts($event)" style="height: 100%;">\n    <ion-row>\n<!--       <ion-col style="display:none; margin: 0">\n        <div id="vis"></div>\n        <ion-textarea id="parsed" rows="10" cols="80"></ion-textarea>\n      </ion-col>\n -->      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="config" #myTags [config]="config"></tags-selector>\n          <button class=\'topbar_button\' ion-button tabindex="-1" (click)="syncConllU()">\n            <ion-icon name="sync"></ion-icon>\n          </button>\n          <button *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="showStats()">\n            <ion-icon name="print"></ion-icon>Stats</button>\n          <button class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button tabindex="-1" (click)="undo()">\n            <ion-icon name="undo"></ion-icon> Undo\n          </button>\n          <button class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button tabindex="-1" (click)="redo()">\n            <ion-icon name="redo"></ion-icon> Redo\n          </button>\n          <!-- <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="clone()"><ion-icon name="add"></ion-icon></button> -->\n          <!-- <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="delete()"><ion-icon name="remove"></ion-icon></button> -->\n          <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="saveFile()">\n            <ion-icon name="cloud-upload"></ion-icon> Save\n          </button>\n          <button class=\'topbar_button\' icon-left right ion-button tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n            {{config.isConlluHidden? "Show":"Hide"}} ConllU\n          </button>\n        </ion-row>\n        <!-- <ion-row>\n          <div *ngFor="let tag of sentenceTags;" class="tag" title="{{tag.desc}}" >\n              {{tag.tag}}\n              <span class="fn">F{{tag.fn}}</span>\n          </div>\n        </ion-row> -->\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-2>\n        <ion-row style="height: 95%;">\n          <ion-list *ngIf="highlight.element">\n            <!--         <ion-item>\n          <ion-label color="primary" stacked>Lemma</ion-label>\n          <ion-input [(ngModel)]="highlight.element.lemma"></ion-input>\n        </ion-item>-->\n              <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n                <ion-icon name="apps"></ion-icon>Features</button>\n              <button  color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n                <ion-icon name="menu"></ion-icon>Analyser</button>\n            <!--           <ion-item>\n            <button class=\'topbar_button\' icon-left ion-button tabindex="-1" (click)="mark_misc(\'UNCLEAR\')">\n              <ion-icon name="warning"></ion-icon>Unclear</button>\n            <ion-badge item-end>{{highlight.element.id}}</ion-badge>\n          </ion-item>\n -->\n            <ion-item *ngIf="highlight.element.parent">\n              <ion-label color="primary" stacked>Inflected Word Form</ion-label>\n              <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n            </ion-item>\n            <!--        <ion-item>\n          <ion-label color="primary" stacked>Token form</ion-label>\n          <ion-input [(ngModel)]="highlight.element.form" tabindex="3" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n        </ion-item>\n -->\n            <ion-item (click)="mark_misc(\'UNCLEAR\')">\n              <ion-label>Unclear?</ion-label>\n              <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>Lemma</ion-label>\n              <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:configService.isRtl(project)}"></ion-input>\n            </ion-item>\n            <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n              <ion-label color="primary" stacked>{{feat.key}}</ion-label>\n              <ion-select [(ngModel)]="feat.value" interface="popover">\n                <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n              </ion-select>\n              <!-- <ion-input class="featname" value="{{feat.value}}" tabindex="{{i+4}}"></ion-input> -->\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>XPOS Tag</ion-label>\n              <ion-select [(ngModel)]="highlight.element.xpostag" tabindex="2">\n                <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n              </ion-select>\n            </ion-item>\n            <ion-item>\n              <ion-label color="primary" stacked>UPOS Tag</ion-label>\n              <ion-select [(ngModel)]="highlight.element.upostag">\n                <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n              </ion-select>\n            </ion-item>\n          </ion-list>\n          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n          <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n        </ion-row>\n      </ion-col>\n      <ion-col id="sentences" *ngIf="config">\n        <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              rtl:configService.isRtl(project)}" >\n              <!-- [hidden]=""> -->\n          <div>{{sent.tag}}</div>\n          <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element {{elem.upostag}}" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n              highlight: highlight.element != null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: copyElement != null && (elem == copyElement || elem.parent == copyElement),\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0 }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword">\n            <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n            <ng-template #other_content>\n              <span class="form" #spanForm>{{elem.getForm()}}</span>\n            <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n            <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n            </ng-template>\n          </div>\n        </div>\n      </ion-col>\n      <ion-col col-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <!--         <ion-row *ngIf="editingMode" style="height: 95%;">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="onConlluRawChanged($event)" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n -->\n        <ion-row *ngIf="log.length>0">\n          <ion-item>Error log:</ion-item>\n          <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled">\n          </ion-textarea>\n        </ion-row>\n        <ion-row style="height: 95%; position: relative">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]"></conllu-editor>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse" data-visid="vis" data-inputid="input" data-parsedid="parsed" data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
+        selector: 'page-annotate',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'FILE\' | translate}}: <span (click)=\'changeFileName()\'>{{pageid}}</span></ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="presentHelpFormPopover($event)" tabindex="-1">\n        <ion-icon name="help"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' ion-button icon-only tabindex="-1" (click)="syncConllU()">\n        <ion-icon name="sync"></ion-icon>\n      </button>\n      <button small *ngIf="config?.debug" class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="showStats()">\n        <ion-icon name="print"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="undoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="undo()">\n        <ion-icon name="undo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' [disabled]="redoArr.length==0" icon-left ion-button icon-only tabindex="-1" (click)="redo()">\n        <ion-icon name="redo"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="saveFile()">\n        <ion-icon name="cloud-upload"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="download()">\n        <ion-icon name="cloud-download"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="find($event)">\n        <ion-icon name="search"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left ion-button icon-only tabindex="-1" (click)="search($event)">\n        <ion-icon name="filing"></ion-icon>\n      </button>\n      <button small class=\'topbar_button\' icon-left right ion-button icon-only tabindex="-1" (click)="config.isConlluHidden=!config.isConlluHidden">\n        <ion-icon [name]="config.isConlluHidden? \'eye\':\'eye-off\'"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid style="height: 100%;">\n    <ion-row>\n      <ion-col col-12>\n        <ion-row>\n          <tags-selector *ngIf="highlight.element" [currentTags]="currentTags" [element]="highlight.element" (nextTags)="increaseTagsRow()"></tags-selector>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <ion-row style="height: inherit;">\n      <ion-col col-lg-2 col-sm-3 col-12>\n        <ion-list *ngIf="highlight.element">\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_morphofeatures()">\n            <ion-icon name="apps"></ion-icon>{{ \'Features\' | translate }}\n          </button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="tag_ma()">\n            <ion-icon name="menu"></ion-icon>{{\'Analyser\' | translate}}\n          </button>\n          <button color="dark" outline block icon-left ion-button tabindex="-1" (click)="addNote($event)">\n            <ion-icon name="create"></ion-icon> {{\'Note\' | translate}}\n          </button>\n          <button [color]="highlight.element._miscs[\'Score\'] !== \'1.00\' ? \'dark\' : \'secondary\'" outline block icon-left ion-button tabindex="-1" (click)="sad()">\n            <ion-icon [name]="highlight.element._miscs[\'Score\'] !== \'1.00\' ? \'sad\' : \'happy\'"></ion-icon> {{highlight.element._miscs[\'Score\']}}\n          </button>\n          <ion-item *ngIf="highlight.element.parent">\n            <ion-label color="primary" stacked>{{\'Inflected Word Form\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.parent.form" tabindex="2" [ngClass]="{\n              rtl:config.isRtl}"></ion-input>\n          </ion-item>\n          <ion-item (click)="mark_misc(\'UNCLEAR\')">\n            <ion-label>{{\'Unclear?\' | translate}}</ion-label>\n            <ion-checkbox [(ngModel)]="highlight.element._miscs[\'UNCLEAR\']"></ion-checkbox>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'Lemma\' | translate}}</ion-label>\n            <ion-input [(ngModel)]="highlight.element.lemma" tabindex="4" [ngClass]="{\n              rtl:config.isRtl}"></ion-input>\n          </ion-item>\n          <ion-item *ngFor="let feat of highlight.element.features; let i=index">\n            <ion-label color="primary" stacked>{{feat.key}}</ion-label>\n            <ion-select [(ngModel)]="feat.value" interface="popover">\n              <ion-option *ngFor="let e of config.mf[feat.key];" [value]="e.tag">{{e.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'XPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element._xpostag" tabindex="2">\n              <ion-option *ngFor="let tag of config.alltags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n          <ion-item>\n            <ion-label color="primary" stacked>{{\'UPOS Tag\' | translate}}</ion-label>\n            <ion-select [(ngModel)]="highlight.element.upostag">\n              <ion-option *ngFor="let tag of config.allutags;" [value]="tag.tag">{{tag.tag}}: {{tag.desc}}</ion-option>\n            </ion-select>\n          </ion-item>\n        </ion-list>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialPos" [project]="project" [hash]="hash"> </guider>\n        <guider *ngIf="config.askGuider && highlight.element" [element]="highlight.element" [config]="config" type="specialSeg" [project]="project" [hash]="hash"> </guider>\n      </ion-col>\n      <ion-col *ngIf="config">\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id>2">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n        <ion-row id="sentences">\n          <div *ngFor="let sent of doc?.sentences | isNextSentence: highlight.sentence" class="sentence" [ngClass]="{\n              isCurrentSentence: highlight.sentence == sent,\n              rtl:config.isRtl\n            }">\n            <!-- [hidden]=""> -->\n            <div>{{sent.tag}}</div>\n            <div tabindex="{{elem == highlight.element ? 1 : -1}}" *ngFor="let elem of sent.elements ; let i = index" class="element" [ngClass]="{\n              isCompounds:elem.upostag==\'_\',\n\n              highlight: highlight.element !== null && (elem == highlight.element || elem.parent == highlight.element),\n              copied: (elem == copyElement || elem.parent == copyElement) && copyElement !== null,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              newline2: i%config.rowlength==0,\n              isSeg: elem.isSeg > 0,\n              ADJ : elem.upostag == \'ADJ\',\n              ADP : elem.upostag == \'ADP\',\n              ADV : elem.upostag == \'ADV\',\n              CCONJ : elem.upostag == \'CCONJ\',\n              DET : elem.upostag == \'DET\',\n              NOUN : elem.upostag == \'NOUN\',\n              NUM : elem.upostag == \'NUM\',\n              PART : elem.upostag == \'PART\',\n              PRON : elem.upostag == \'PRON\',\n              PROPN : elem.upostag == \'PROPN\',\n              PUNCT : elem.upostag == \'PUNCT\',\n              SCONJ : elem.upostag == \'SCONJ\',\n              VERB : elem.upostag == \'VERB\',\n              X : elem.upostag == \'X\'\n               }" (click)="events.publish(\'highlight:change\',elem,true,false)" [hidden]="elem.isMultiword" (dblclick)="editable = true">\n              <input *ngIf="editable && elem == highlight.element;else other_content" class="formInput" value="{{elem.form}}" focus="true" (keydown)="keyupFormEditor($event,elem)" (blur)="blurFormEditor($event,elem)" (focus)="resize($event)" (keyup)="resize($event)" />\n              <ng-template #other_content>\n                <span class="form" #spanForm>{{elem.getForm() || \'_\'}}</span>\n                <span class="postag">{{ config.tags[\'X:\'+elem.xpostag] ? config.tags[\'X:\'+elem.xpostag].desc : elem.xpostag}}</span>\n                <span class="postag upostag" *ngIf="config.useUD">{{ config.tags[\'U:\'+elem.upostag] ? config.tags[\'U:\'+elem.upostag].desc : elem.upostag}}</span>\n                <span class="lemma">/{{elem.lemma}}/</span>\n                <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n              </ng-template>\n            </div>\n          </div>\n        </ion-row>\n        <ion-row justify-content-center *ngIf="highlight.sentence?._id<doc?.sentences?.length-1">\n          <ion-icon name="more"></ion-icon>\n        </ion-row>\n      </ion-col>\n\n\n\n\n      <ion-col col-lg-4 id="conlluColumn" *ngIf="!config.isConlluHidden">\n        <ion-segment [(ngModel)]="conlluEditorType" color="secondary">\n          <ion-segment-button value="textarea">\n            <ion-icon name="create"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="pretty">\n            <ion-icon name="menu"></ion-icon>\n          </ion-segment-button>\n          <ion-segment-button value="errors">\n            <ion-icon name="warning" color="danger"></ion-icon>\n            <ion-badge color="danger" [hidden]="doc?.issues.length ==0">{{doc?.issues.length}}</ion-badge>\n          </ion-segment-button>\n          <ion-segment-button value="ma" (click)="askMAOneSentence(highlight.sentence,\'MA\')">\n            <ion-icon name="help-buoy" color="primary"></ion-icon>\n            <ion-badge color="danger" small>{{getAnalysis(highlight.element).length}}</ion-badge>\n          </ion-segment-button>\n          <ion-segment-button value="info">\n            <ion-icon name="information-circle"></ion-icon>\n          </ion-segment-button>\n        </ion-segment>\n        <ion-row *ngIf="conlluEditorType==\'textarea\'">\n          <ion-textarea tabindex="-1" no-text-wrap id="conlluTextArea" [ngModel]="conlluRaw" (change)="conlluRaw = $event.target.value; conlluEditorType=\'pretty\'" style="font-size: 7pt; margin-top:0; width: 100%;"></ion-textarea>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'errors\'">\n          <div *ngFor="let l of doc.issues">{{l}}</div>\n          <!-- <ion-textarea [ngModel]="log" id="errorTextArea" rows="7" cols="80" style="margin-top:0" disabled="disabled"> -->\n          <!-- </ion-textarea> -->\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'pretty\'">\n          <conllu-editor [filename]="project+\'-\'+pageid" [raw]="conlluRaw" [hid]="[highlight.element?._id,highlight.sentence?._id]" (highlightChange)="highlightElement($event)" (rawChange)="conlluRaw=$event"></conllu-editor>\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'ma\'" class="doc ma-selectize-popover-page">\n            <ion-card *ngIf="getAnalysis(highlight.element).length == 0" class="analysis">\n                <ion-card-header text-center>\n                  {{"NO_ANALYSIS" | translate}}\n                </ion-card-header>\n              </ion-card>\n            <ion-card *ngFor="let item of getAnalysis(highlight.element); let i = index" class="analysis">\n                <ion-row text-center>\n                  <button ion-col-1 ion-button small outline (click)="assignAnalysis(i)">{{item.counter+1 < 10? \'F\'+(item.counter+1) : \'CHOOSE\' | translate}}</button>\n                  <h2 style="font-family: KawkabMonoLight;" ion-col> {{item.lemma}}</h2>\n                  <ion-note ion-col-4><div *ngFor="let g of item.gloss" class=\'meaning\' dir="ltr">{{g}}</div></ion-note>\n                  <ion-badge ion-col-1>{{item.score}}</ion-badge>\n                </ion-row>\n                <ion-row no-padding dir="rtl" class="elements">\n                  <ion-col *ngFor="let e of item.elements" class=\'element2\' [ngClass]="{\n                  ADJ : e.upostag == \'ADJ\',\n              ADP : e.upostag == \'ADP\',\n              ADV : e.upostag == \'ADV\',\n              CCONJ : e.upostag == \'CCONJ\',\n              DET : e.upostag == \'DET\',\n              NOUN : e.upostag == \'NOUN\',\n              NUM : e.upostag == \'NUM\',\n              PART : e.upostag == \'PART\',\n              PRON : e.upostag == \'PRON\',\n              PROPN : e.upostag == \'PROPN\',\n              PUNCT : e.upostag == \'PUNCT\',\n              SCONJ : e.upostag == \'SCONJ\',\n              VERB : e.upostag == \'VERB\',\n              X : e.upostag == \'X\'\n            }">\n                    <ion-row>\n                      <ion-col>\n                        {{e.form}}\n                      </ion-col>\n                      <ion-col>\n                        <span class=\'pos\'>{{config.getXPosTag(e.xpostag).desc}}</span>\n                      </ion-col>\n                      <!-- <span class=\'form\'>{{e.form}}</span> -->\n                      <ion-col class=\'morphfeats\'>\n                          <div *ngFor="let ee of e.features " class=\'{{e.key}}\'>{{config.getFeature(ee.key+"="+ee.value).desc}}</div>\n                      </ion-col>\n                    </ion-row>\n                  </ion-col>\n                </ion-row>\n              </ion-card>\n            <!-- </ion-item> -->\n          <!-- </ion-list> -->\n        </ion-row>\n        <ion-row *ngIf="conlluEditorType==\'info\'">\n          <ion-card>\n            <ion-card-header>\n              {{\'Confidence\' | translate}}\n            </ion-card-header>\n            <ion-list>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Sent #:\' | translate}} {{info.sent_no}}\n              </ion-item>\n            </ion-list>\n          </ion-card>\n          <ion-card>\n            <ion-card-header>\n              {{\'Document Information\' | translate}}\n            </ion-card-header>\n            <ion-list>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Sent #:\' | translate}} {{info.sent_no}}\n              </ion-item>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Elem #:\' | translate}} {{info.elem_no}}\n              </ion-item>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Tokens #:\' | translate}} {{info.tokens_no}}\n              </ion-item>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Types #:\' | translate}} {{info.types_no}}\n              </ion-item>\n              <ion-item>\n                <ion-icon name="cart" item-start></ion-icon>{{\'Multi Word Tokens #:\' | translate}} {{info.mwe_no}}\n              </ion-item>\n              <ion-list>\n                <div *ngFor="let upos of config.allutags">\n                  <ion-item-divider color="light">{{upos.tag}} (#={{info.upos[upos.tag]}})</ion-item-divider>\n                  <ion-item *ngFor="let m of info.missing_features[upos.tag]">\n                    {{m[0]}}:{{m[1]}} {{m[1]/info.upos[upos.tag]*100}}%\n                  </ion-item>\n                </div>\n              </ion-list>\n              <ion-item>\n                <button small class=\'topbar_button\' ion-button icon-only tabindex="-1 " (click)="info=null">\n                  <ion-icon name="sync"></ion-icon>\n                </button>\n              </ion-item>\n            </ion-list>\n          </ion-card>\n        </ion-row>\n      </ion-col>\n    </ion-row>\n    <!-- no need to show the intermediate data representation -->\n    <!-- <div class="conllu-parse " data-visid="vis " data-inputid="input " data-parsedid="parsed " data-logid="log"> -->\n  </ion-grid>\n  <!-- </ion-list> -->\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/annotate/annotate.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */],
-        __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */],
-        __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["b" /* ConfigService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* PopoverController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]) === "function" && _g || Object, typeof (_h = typeof __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_word_service__["a" /* WordService */]) === "function" && _h || Object, typeof (_j = typeof __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_conllu_service__["a" /* ConlluService */]) === "function" && _j || Object, typeof (_k = typeof __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_config_service__["a" /* ConfigService */]) === "function" && _k || Object, typeof (_l = typeof __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_10__ngx_translate_core__["c" /* TranslateService */]) === "function" && _l || Object, typeof (_m = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* LoadingController */]) === "function" && _m || Object, typeof (_o = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _o || Object, typeof (_p = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _p || Object])
 ], AnnotatePage);
 
 var Highlight = (function () {
-    function Highlight(events) {
+    function Highlight(annotatePage, events, zone) {
         var _this = this;
+        this.annotatePage = annotatePage;
         this.events = events;
+        this.zone = zone;
         this.sentence = null;
         this.element = null;
         this.ref = "S1:1";
@@ -1814,9 +2774,12 @@ var Highlight = (function () {
                 console.trace("Published an event highlight:change but element is undefined");
                 return;
             }
-            _this.element = element;
-            _this.sentence = element.sentence;
-            _this.ref = "S" + _this.sentence._id + ":" + _this.element._id;
+            zone.run(function () {
+                _this.element = element;
+                _this.sentence = element.sentence;
+                _this.annotatePage.askMAOneSentence(_this.sentence);
+                _this.ref = "S" + _this.sentence._id + ":" + _this.element._id;
+            });
         });
     }
     return Highlight;
@@ -1884,22 +2847,25 @@ var Stats = (function () {
     return Stats;
 }());
 
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
 //# sourceMappingURL=annotate.js.map
 
 /***/ }),
 
-/***/ 208:
+/***/ 238:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao__ = __webpack_require__(209);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_conllu_dao__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ts_md5_dist_md5__ = __webpack_require__(337);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ts_md5_dist_md5___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_ts_md5_dist_md5__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1911,6 +2877,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 // import { Config } from 'ionic-angular';
+
 
 
 
@@ -1941,19 +2908,19 @@ var WordService = (function () {
             // We're using Angular HTTP provider to request the data,
             // then on the response, it'll map the JSON data to a parsed JS object.
             // Next, we process the data and resolve the promise with the new data.
-            _this.http.post(_this.myconfig.getValue("server") + 'ma', { sentence: sentence })
+            _this.http.post(_this.myconfig.getValue("server") + 'ma?' + __WEBPACK_IMPORTED_MODULE_5_ts_md5_dist_md5__["Md5"].hashStr(sentence), { sentence: sentence })
                 .map(function (res) { return res.json(); })
                 .subscribe(function (data) {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 if (!data.ok) {
-                    return reject("MA Results are not valid");
+                    return reject(data.error);
                 }
                 /***
                 ** MA Results
                 ****/
                 var doc = new __WEBPACK_IMPORTED_MODULE_4_conllu_dao__["ConlluDocument"](config);
-                var parsed = doc.parse(data.rs.join("\n").trim(), function (x) {
+                var parsed = doc.parse(data.rs.trim(), function (x) {
                     return console.warn("Parsing Conllu Error of MA Results:", x);
                 }, true);
                 var result = [];
@@ -1998,7 +2965,7 @@ var WordService = (function () {
                 // we've got back the raw data, now generate the core schedule data
                 // and save the data for later reference
                 if (!data.ok) {
-                    return reject("MemMa Results are not valid.");
+                    return reject(data.error);
                 }
                 /***
                 ** MA Results
@@ -2093,31 +3060,14 @@ WordService = __decorate([
 
 /***/ }),
 
-/***/ 209:
+/***/ 239:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var sentence_1 = __webpack_require__(210);
-exports.ConlluSentence = sentence_1.ConlluSentence;
-var element_1 = __webpack_require__(211);
-exports.ConlluElement = element_1.ConlluElement;
-var document_1 = __webpack_require__(293);
-exports.ConlluDocument = document_1.ConlluDocument;
-var util_1 = __webpack_require__(54);
-exports.Util = util_1.Util;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ 210:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __webpack_require__(54);
+const element_1 = __webpack_require__(125);
+const util_1 = __webpack_require__(67);
 class ConlluSentence {
     constructor(sentenceId, elements = [], comments = [], document) {
         /*
@@ -2714,669 +3664,83 @@ class ConlluSentence {
         return true;
     }
     ;
+    joinNextSentence() {
+        var sindex = this.document.sentences.indexOf(this);
+        if (!this.document.sentences[sindex + 1])
+            return;
+        var after = this.document.sentences[sindex + 1].elements;
+        after.forEach(e => e.sentence = this);
+        this.elements = this.elements.concat(after);
+        this.document.sentences.splice(sindex + 1, 1);
+        this.refix(true);
+        this.document.fixSentenceIds();
+    }
+    newSentenceAt(cond) {
+        var sindex = this.document.sentences.indexOf(this);
+        if (Number.isInteger(cond)) {
+            var eindex = cond;
+            var element = this.elements[eindex];
+        }
+        else if (cond instanceof element_1.ConlluElement) {
+            var eindex = this.elements.findIndex(x => x == cond);
+            var element = cond;
+        }
+        else {
+            throw new Error("first argument should be either index of element or the element object");
+        }
+        // fix if multiword
+        if (element.isMultiword) {
+            // console.log(element, element.children.slice(-1)[0])
+            element = element.children.slice(-1)[0];
+            eindex = this.elements.findIndex(x => x == element);
+        }
+        // check if last segment
+        if (this.elements[eindex + 1]
+            && element.parent != null
+            && element.parent == this.elements[eindex + 1].parent) {
+            //TODO show warning
+            throw new Error("Warning: chosen element is not the last segment of a word");
+        }
+        var before = this.elements.slice(0, eindex + 1);
+        var after = this.elements.slice(eindex + 1);
+        if (after.length == 0) {
+            // no sentence can be formed on no elements
+            throw new Error("No sentence can be formed on no elements");
+        }
+        else {
+            // sentence should be splitted
+            this.elements = before;
+            //re count the second sentence
+            let counter = 1;
+            after.forEach(e => {
+                if (!e.isMultiword)
+                    e.id = "" + counter++;
+                else {
+                    var arr = e.id.split("-");
+                    e.id = counter + "-" + (counter + parseInt(arr[1]) - parseInt(arr[0]));
+                }
+            });
+            var sent = new ConlluSentence("new", after, [], this.document);
+            this.document.sentences.splice(sindex + 1, 0, sent);
+            this.document.fixSentenceIds();
+            return sent;
+            // console.log(this.doc)
+        }
+    }
 }
 exports.ConlluSentence = ConlluSentence;
 //# sourceMappingURL=sentence.js.map
 
 /***/ }),
 
-/***/ 211:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __webpack_require__(54);
-class ConlluElement {
-    // represents CoNLL-U word or multiword token
-    constructor(fields, lineidx, line, sentence) {
-        /*
-         * ConllU.Element: represents CoNLL-U word or multiword token
-         */
-        this._id = "";
-        this.form = "";
-        this.lemma = "";
-        this.upostag = "";
-        this._xpostag = "";
-        this.issues = [];
-        // private feats : string = "";
-        this.head = "";
-        this.deprel = "";
-        this.deps = "";
-        this._miscs = {};
-        this.lineidx = "";
-        this.line = "";
-        this.isSeg = -1;
-        this.parent = null;
-        this.children = [];
-        this.features = [];
-        this.analysis = [];
-        this.isMultiword = false;
-        this.sentence = sentence;
-        this.id = fields[0];
-        this.form = fields[1];
-        this.lemma = fields[2];
-        this.upostag = fields[3];
-        this.feats = fields[5];
-        this.xpostag = fields[4];
-        this.head = fields[6];
-        this.deprel = fields[7];
-        this.deps = fields[8];
-        this.misc = fields[9];
-        this.lineidx = lineidx;
-        this.line = line;
-    }
-    get id() {
-        return this._id;
-    }
-    set id(args) {
-        this._id = args;
-        this.isMultiword = this._isMultiword();
-    }
-    get xpostag() {
-        return this._xpostag;
-    }
-    set xpostag(argv) {
-        if (this.isMultiword) {
-            this._xpostag = "_";
-            return;
-        }
-        this._xpostag = this.sentence.document.mapTagToXpostag(argv);
-        this.upostag = this.sentence.document.mapTagToUpostag(this._xpostag, this.upostag);
-        // remove feats
-        var tag = this.sentence.document.config.alltags.find(x => x.tag == this._xpostag);
-        if (!tag)
-            return;
-        else if (Array.isArray(tag.features)) {
-            this.features = this.features.filter(x => tag.features.indexOf(x.key) >= 0);
-            // this.features = tag.features.map(x=>this.features.find(y=>y.key==x)||x).map(x=>typeof x =="string" ?{key:x,value:"_"}:x)
-            // console.log(this.features)
-        }
-    }
-    set misc(args) {
-        this._miscs = {};
-        if (args == undefined)
-            return;
-        if (args == "_")
-            return;
-        args.split("|").forEach(text => {
-            var arr = text.split("=");
-            this._miscs[arr[0]] = arr[1];
-        });
-    }
-    get misc() {
-        return Object.keys(this._miscs).map(key => {
-            return this._miscs[key] ? key + "=" + this._miscs[key] : undefined;
-        }).filter(x => x != undefined).sort().join("|") || "_";
-    }
-    set feats(args) {
-        this.features = [];
-        if (args == undefined)
-            return;
-        if (args == "_")
-            return;
-        // args.split("|").forEach(text => {
-        //     var arr = text.split("=")
-        //     this.features.push({key:arr[0],value:arr[1]})
-        // })
-        var featarr = args.split('|');
-        for (let i = 0; i < featarr.length; i++) {
-            var feat = featarr[i];
-            var m = feat.match(util_1.Util.featureRegex);
-            if (!m) {
-                continue;
-            }
-            var name = m[1], valuestr = m[2];
-            var values = valuestr.split(',');
-            for (let j = 0; j < values.length; j++) {
-                var value = values[j];
-                let m = value.match(util_1.Util.featureValueRegex);
-                if (!m) {
-                    continue;
-                }
-                this.features.push({ key: name, value: value });
-            }
-        }
-    }
-    get feats() {
-        return this.features.map(v => {
-            return v.key + "=" + v.value;
-        }).sort().join("|") || "_";
-    }
-    ;
-    setFeature(key, value) {
-        var i = this.features.findIndex(x => x.key == key);
-        if (i >= 0)
-            if (value)
-                this.features[i].value = value;
-            else
-                this.features.splice(i, 1);
-        else
-            this.features.push({ key: key, value: value });
-    }
-    copy(from) {
-        this.form = from.form;
-        this.lemma = from.lemma;
-        this.upostag = from.upostag;
-        this.xpostag = from.xpostag;
-        this.feats = from.feats;
-        this.head = from.head;
-        this.deprel = from.deprel;
-        this.deps = from.deps;
-        this.misc = from.misc;
-    }
-    getContext(span = 2) {
-        var elems = this.sentence.tokens();
-        // var eindex = elems.findIndex(e=>e==(this.parent || this))
-        var eindex = elems.indexOf(this.parent || this);
-        return elems.filter((e, i) => i >= eindex - span && i <= eindex + span);
-    }
-    isSameAs(element) {
-        return this.children.length == element.children.length &&
-            this.children.filter((c, i) => !c.isSameAs(element.children[i])).length == 0 &&
-            this.form == element.form &&
-            // this.lemma == element.lemma &&
-            this.upostag == element.upostag &&
-            this.xpostag == element.xpostag &&
-            this.feats == element.feats &&
-            this.head == element.head &&
-            this.deprel == element.deprel &&
-            this.deps == element.deps;
-    }
-    copyMorphInfo(from) {
-        this.upostag = from.upostag;
-        this.xpostag = from.xpostag;
-        this.feats = from.feats;
-        this.head = from.head;
-        this.deprel = from.deprel;
-        this.deps = from.deps;
-        this.misc = from.misc;
-    }
-    morphFeatsMissing() {
-        var tag = this.sentence.document.config.alltags.find(x => x.tag == this.xpostag);
-        if (!tag) {
-            // Util.reportError("tag was not found!", this.xpostag)
-            return [];
-        }
-        else if (!tag.features) {
-            util_1.Util.reportError("tag has no list of possible morph feats!" + this.xpostag);
-            return [];
-        }
-        else
-            return tag.features.filter(x => !this.features.find(y => y.key == x));
-    }
-    changeWith(el) {
-        if (el.parent) {
-            util_1.Util.reportError("ERROR: changeWith cannot be used with a child element");
-            el = el.parent;
-        }
-        // parent vs. parent
-        // var i = this.sentence.elements.findIndex(x=>x==this)
-        var i = this.sentence.elements.indexOf(this);
-        // if(el.isMultiword){
-        // Array.prototype.splice.apply(this.sentence.elements,[i,1,el].concat(el.children))
-        var c = el.clone();
-        // c now has elements where first is parent and rest is children
-        // var parent = c[0]
-        c.analysis = this.analysis;
-        c.sentence = this.sentence;
-        c.children.forEach(e => {
-            e.sentence = this.sentence;
-            // e._miscs["FROM_MA"]=true
-        });
-        // console.log(c.sentence.validate(),this.children.length);
-        // console.log([i,1+this.children.length].concat([c,...c.children]))
-        Array.prototype.splice.apply(this.sentence.elements, [i, 1 + (this.parent ? this.parent.children.length : this.children.length)].concat([c, ...c.children]));
-        // console.log(this.sentence.elements.length)
-        this.sentence.refix(true);
-        if (c.isMultiword)
-            return c.children[0];
-        else
-            return c;
-    }
-    clone() {
-        var e = new ConlluElement([this.id, this.form,
-            this.lemma,
-            this.upostag,
-            this.xpostag,
-            this.feats,
-            this.head,
-            this.deprel,
-            this.deps,
-            this.misc], this.lineidx, this.line, this.sentence);
-        e.isMultiword = this.isMultiword;
-        e.analysis = this.analysis;
-        e.sentence = this.sentence;
-        e.children = this.children.map(ee => {
-            let eee = ee.clone();
-            eee.parent = e;
-            return eee;
-        });
-        return e;
-    }
-    // cloneParent  (){
-    //     var all = []
-    //     var parent = this.clone()
-    //     return [parent].concat(this.children.map(e=>{
-    //         e.parent = parent;
-    //         return e.clone()
-    //     }))
-    // }
-    toConllU(includeId = true, includeChildren = true) {
-        if (includeChildren) {
-            if (this.isMultiword) {
-                return [this, ...this.children].map(e => e.toConllU(includeId, false)).join("\n");
-            }
-            else
-                return this.toConllU(includeId, false);
-        }
-        var line = [includeId ? this.id : "",
-            this.form,
-            this.lemma,
-            this.upostag,
-            this.xpostag,
-            this.feats,
-            this.head,
-            this.deprel,
-            this.deps,
-            includeId ? this.misc : ""];
-        return line.join("\t");
-    }
-    // constraints that hold for all fields
-    validateField(field, name = 'field', allowSpace = false) {
-        if (field === undefined) {
-            this.issues.push('invalid ' + name);
-            return false;
-        }
-        else if (field.length === 0) {
-            this.issues.push(name + ' must not be empty: "' + field + '"');
-            return false;
-        }
-        else if (util_1.Util.hasSpace(field) && !allowSpace) {
-            this.issues.push(name + ' must not contain space: "' + field + '"');
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    getForm() {
-        // console.log(elem)
-        if (!this.parent)
-            return this.form;
-        var prev = this.parent.children[this.isSeg - 1];
-        var prevStr = prev ? prev.form.replace(/[ًٌٍَُِّْ]*$/, "").substr(-1) : "";
-        var next = this.parent.children[this.isSeg + 1];
-        var nextStr = next ? next.form.charAt(0) : "";
-        var meLast = this.form.replace(/[ًٌٍَُِّْ]*$/, "");
-        meLast = meLast.charAt(meLast.length - 1);
-        var meFirst = this.form.charAt(0);
-        if (-this.parent.isSeg == this.isSeg + 1)
-            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") + this.form;
-        else if (this.isSeg == 0)
-            return this.form + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
-        else
-            return (util_1.Util.isTatweel(prevStr, meFirst) ? "ـ" : "") +
-                this.form
-                + (util_1.Util.isTatweel(meLast, nextStr) ? "ـ" : "");
-    }
-    validateId(id) {
-        if (!this.validateField(id, 'ID')) {
-            return false;
-        }
-        else if (id.match(/^\d+$/)) {
-            if (id === '0') {
-                this.issues.push('ID indices must start from 1: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else if (id.match(/^(\d+)-(\d+)$/)) {
-            var m = id.match(/^(\d+)-(\d+)$/);
-            if (!m) {
-                util_1.Util.reportError('internal error');
-                return false;
-            }
-            var start = parseInt(m[1], 10), end = parseInt(m[2], 10);
-            if (end < start) {
-                this.issues.push('ID ranges must have start <= end: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else if (id.match(/^(\d+)\.(\d+)$/)) {
-            m = id.match(/^(\d+)\.(\d+)$/);
-            if (!m) {
-                util_1.Util.reportError('internal error');
-                return false;
-            }
-            var iPart = parseInt(m[1], 10), fPart = parseInt(m[2], 10);
-            if (iPart == 0 || fPart == 0) {
-                this.issues.push('ID indices must start from 1: "' + id + '"');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        else {
-            this.issues.push('ID must be integer, range, or decimal: "' + id + '"');
-            return false;
-        }
-    }
-    ;
-    validateForm(form) {
-        return this.validateField(form, 'FORM', true);
-    }
-    ;
-    validateLemma(lemma) {
-        return this.validateField(lemma, 'LEMMA', true);
-    }
-    ;
-    validateUpostag(upostag) {
-        return this.validateField(upostag, 'UPOSTAG');
-    }
-    ;
-    validateXpostag(xpostag) {
-        return this.validateField(xpostag, 'XPOSTAG');
-    }
-    ;
-    validateFeats(feats) {
-        if (!this.validateField(feats, 'FEATS')) {
-            return false;
-        }
-        else if (feats === '_') {
-            return true;
-        }
-        var initialIssueCount = this.issues.length;
-        var featarr = feats.split('|');
-        var featmap = {};
-        var prevName = "";
-        for (let i = 0; i < featarr.length; i++) {
-            var feat = featarr[i];
-            var m = feat.match(util_1.Util.featureRegex);
-            if (!m) {
-                // TODO more descriptive issue
-                this.issues.push('invalid FEATS entry: "' + feat + '"');
-                continue;
-            }
-            var name = m[1], valuestr = m[2];
-            if (prevName !== "" &&
-                name.toLowerCase() < prevName.toLowerCase()) {
-                this.issues.push('features must be ordered alphabetically ' +
-                    '(case-insensitive): "' + name + '" < "' + prevName + '"');
-                var noIssue = false;
-            }
-            prevName = name;
-            var values = valuestr.split(',');
-            var valuemap = {}, validValues = [];
-            for (let value of values) {
-                let m = value.match(util_1.Util.featureValueRegex);
-                if (!m) {
-                    this.issues.push('invalid FEATS value: "' + value + '"');
-                    continue;
-                }
-                if (valuemap[value] !== undefined) {
-                    this.issues.push('duplicate feature value: "' + value + '"');
-                    continue;
-                }
-                valuemap[value] = true;
-                validValues.push(value);
-            }
-            if (featmap[name] !== undefined) {
-                this.issues.push('duplicate feature name: "' + name + '"');
-                continue;
-            }
-            if (validValues.length !== 0) {
-                featmap[name] = validValues;
-            }
-        }
-        return this.issues.length === initialIssueCount;
-    }
-    ;
-    validateHead(head) {
-        // TODO: consider checking that DEPREL is "root" iff HEAD is 0.
-        if (head === null) {
-            return true; // exceptional case for ConlluElement.repair()
-        }
-        else if (!this.validateField(head, 'HEAD')) {
-            return false;
-        }
-        else if (this.isEmptyNode() && head === '_') {
-            return true; // underscore permitted for empty nodes.
-        }
-        else if (head === '_') {
-            return true; // AboBander Only
-        }
-        else if (!head.match(/^\d+$/)) {
-            this.issues.push('HEAD must be an ID or zero: "' + head + '"');
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validateDeprel(deprel) {
-        if (!this.validateField(deprel, 'DEPREL')) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validateDeps(deps) {
-        // TODO: consider checking that deprel is "root" iff head is 0.
-        if (!this.validateField(deps, 'DEPS')) {
-            return false;
-        }
-        else if (deps === '_') {
-            return true;
-        }
-        var deparr = deps.split('|');
-        var prevHead = null;
-        // TODO: don't short-circuit on first error
-        for (let i = 0; i < deparr.length; i++) {
-            var dep = deparr[i];
-            var m = dep.match(/^(\d+(?:\.\d+)?):(\S+)$/);
-            if (!m) {
-                // TODO more descriptive issue
-                this.issues.push('invalid DEPS: "' + deps + '"');
-                return false;
-            }
-            var head = m[1], deprel = m[2];
-            if (prevHead !== null &&
-                parseFloat(head) < parseFloat(prevHead)) {
-                this.issues.push('DEPS must be ordered by head index');
-                return false;
-            }
-            prevHead = head;
-        }
-        return true;
-    }
-    ;
-    validateMisc(misc) {
-        if (!this.validateField(misc, 'MISC')) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    ;
-    validHeadReference(elementById) {
-        return (this.head === '_' || this.head === null || this.head === '0' ||
-            elementById[this.head] !== undefined);
-    }
-    ;
-    isWord() {
-        // word iff ID is an integer
-        return !!this.id.match(/^\d+$/);
-    }
-    ;
-    _isMultiword() {
-        return !!this.id.match(/^\d+-\d+$/);
-    }
-    ;
-    isEmptyNode() {
-        return !!this.id.match(/^\d+\.\d+$/);
-    }
-    ;
-    rangeFrom() {
-        let val = this.id.match(/^(\d+)-\d+$/);
-        if (val)
-            return parseInt(val[1], 10);
-        return -1;
-    }
-    ;
-    rangeTo() {
-        let val = this.id.match(/^\d+-(\d+)$/);
-        if (val)
-            return parseInt(val[1], 10);
-        return -1;
-    }
-    ;
-    isToken(inRange) {
-        // token iff multiword or not included in a multiword range
-        return this.isMultiword || !inRange[this.id];
-    }
-    ;
-    // return list of (DEPENDENT, HEAD, DEPREL) lists
-    dependencies(skipHead = false) {
-        var elemDeps = [];
-        if (!skipHead && this.head !== '_' && this.head !== null) {
-            elemDeps.push([this.id, this.head, this.deprel]);
-        }
-        if (this.deps != '_') {
-            var deparr = this.deps.split('|');
-            for (let i = 0; i < deparr.length; i++) {
-                var dep = deparr[i];
-                var m = dep.match(util_1.Util.dependencyRegex);
-                if (m) {
-                    elemDeps.push([this.id, m[1], m[2]]);
-                }
-                else {
-                    util_1.Util.reportError('internal error: dependencies(): invalid DEPS ' +
-                        this.deps);
-                }
-            }
-        }
-        return elemDeps;
-    }
-    // Check validity of the element. Return list of strings
-    // representing issues found in validation (empty list if none).
-    validate() {
-        var issues = [];
-        this.validateId(this.id);
-        this.validateForm(this.form);
-        // multiword tokens (elements with range IDs) are (locally) valid
-        // iff all remaining fields (3-10) contain just an underscore.
-        if (this.isMultiword) {
-            if (this.lemma != '_' ||
-                this.upostag != '_' ||
-                this.xpostag != '_' ||
-                this.feats != '_' ||
-                this.head != '_' ||
-                this.deprel != '_' ||
-                this.deps != '_' //||
-            // this.misc != '_'
-            ) {
-                this.issues.push('non-underscore field for multiword token');
-            }
-            return issues;
-        }
-        // if we're here, not a multiword token.
-        this.validateLemma(this.lemma);
-        this.validateUpostag(this.upostag);
-        this.validateXpostag(this.xpostag);
-        this.validateFeats(this.feats);
-        this.validateHead(this.head);
-        this.validateDeprel(this.deprel);
-        this.validateDeps(this.deps);
-        this.validateMisc(this.misc);
-        return issues;
-    }
-    ;
-    // Attempt to repair a non-valid element. Return true iff the
-    // element is valid following repair, false otherwise.
-    repair(log) {
-        log = (log !== undefined ? log : util_1.Util.nullLogger);
-        if (!this.validateId(this.id)) {
-            return false; // can't be helped
-        }
-        if (!this.validateForm(this.form)) {
-            log('repair: blanking invalid FORM');
-            this.form = '<ERROR>';
-        }
-        if (this.isMultiword) {
-            // valid as long as everything is blank
-            this.lemma = '_';
-            this.upostag = '_';
-            this.xpostag = '_';
-            this.feats = '_';
-            this.head = '_';
-            this.deprel = '_';
-            this.deps = '_';
-            // this.misc = '_';
-            return true;
-        }
-        // if we're here, not a multiword token.
-        if (!this.validateLemma(this.lemma)) {
-            log('repair: blanking invalid LEMMA');
-            this.lemma = '<ERROR>';
-        }
-        if (!this.validateUpostag(this.upostag)) {
-            log('repair: blanking invalid UPOSTAG');
-            this.upostag = '_'; // TODO: not valid
-        }
-        if (!this.validateXpostag(this.xpostag)) {
-            log('repair: blanking invalid XPOSTAG');
-            this.xpostag = '_';
-        }
-        if (!this.validateFeats(this.feats)) {
-            log('repair: blanking invalid FEATS ' + this.toConllU(false));
-            this.feats = '_';
-        }
-        if (!this.validateHead(this.head)) {
-            log('repair: blanking invalid HEAD');
-            this.head = ""; // note: exceptional case
-        }
-        if (!this.validateDeprel(this.deprel)) {
-            log('repair: blanking invalid DEPREL');
-            this.deprel = '_'; // TODO: not valid
-        }
-        if (!this.validateDeps(this.deps)) {
-            log('repair: blanking invalid DEPS');
-            this.deps = '_';
-        }
-        if (!this.validateMisc(this.misc)) {
-            log('repair: blanking invalid MISC');
-            this.misc = '_';
-        }
-        var issues = this.validate();
-        return issues.length === 0;
-    }
-    ;
-}
-exports.ConlluElement = ConlluElement;
-//# sourceMappingURL=element.js.map
-
-/***/ }),
-
-/***/ 212:
+/***/ 240:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SelectizePopoverPageComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3397,7 +3761,7 @@ var SelectizePopoverPageComponent = (function () {
         this.navParams = navParams;
         this.viewCtrl = viewCtrl;
         this.element = null;
-        this.config = new __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */]();
+        this.config = new __WEBPACK_IMPORTED_MODULE_2__providers_config_json_class__["a" /* ConfigJSON */]();
         this.myconfig = {};
         this.options = [];
         this.selectize_config = function () {
@@ -3512,14 +3876,17 @@ SelectizePopoverPageComponent = __decorate([
 
 /***/ }),
 
-/***/ 213:
+/***/ 241:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MASelectizePopoverPageComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ionic_native_in_app_browser__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_conllu_dao__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_conllu_dao__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_in_app_browser__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3529,7 +3896,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-// import { AnnotatePage } from '../../pages/annotate/annotate';
+
+
 
 
 
@@ -3545,18 +3913,19 @@ var MASelectizePopoverPageComponent = (function () {
         this.iab = iab;
         this.element = null;
         this.analyses = [];
-        this.path = null;
-        this.myconfig = {};
         this.config = null;
         this.project = "";
         this.hash = "";
+        this.mode = "";
+        this.showContext = true;
+        this.path = null;
+        this.myconfig = {};
         this.pageid = "";
         this.dismissed = false;
         this.options = [];
         this.diacsOptions = [];
         // rank = 1;
         this.selected = { form: "" };
-        this.mode = "";
         this.selectize_config = function () {
             var that = this;
             // if(this.options.length == 0 )
@@ -3618,11 +3987,8 @@ var MASelectizePopoverPageComponent = (function () {
                     if (that.mode == "view") {
                         if (el._miscs["DOCID"] !== this.pageid)
                             that.iab.create(['/#/annotate', that.project, that.hash, el._miscs["DOCID"], el._miscs["SENTID"] + "-" + el._miscs["ELEMID"]].join("/"));
-                        else {
-                            // if(el.isMultiword)
-                            //   el = el.children[0]
+                        else
                             that.events.publish('highlight:change', el);
-                        }
                     }
                     else if (that.mode == "change") {
                         var c = that.element.changeWith(el);
@@ -3657,7 +4023,7 @@ var MASelectizePopoverPageComponent = (function () {
                 value: e.id,
                 counter: i,
                 title: i,
-                // score: e._miscs["SCORE"],
+                // score: e._miscs["Score"],
                 lemma: (e.children.length > 0 ? e.children.map(function (ee) { return ee.lemma; }).join(" ") : e.lemma),
                 isMemMA: e._miscs["DOCID"] !== undefined,
                 miscs: e._miscs,
@@ -3683,116 +4049,66 @@ var MASelectizePopoverPageComponent = (function () {
             _this.myselectize.selectize.focus();
             _this.myselectize.selectize.okayToClose = true;
         }, 500);
+        // if(document.querySelector(".popover-content")){
         var allpop = document.querySelector(".popover-content").offsetHeight;
         var inp = document.querySelector(".selectize-input").offsetHeight;
         var ll = document.querySelector(".selectize-dropdown-content");
         ll.style.height = allpop - inp + "px";
         ll.style["max-height"] = allpop - inp + "px";
+        // }
     };
     return MASelectizePopoverPageComponent;
 }());
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('myselectize'),
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0_conllu_dao__["ConlluElement"])
+], MASelectizePopoverPageComponent.prototype, "element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", Array)
+], MASelectizePopoverPageComponent.prototype, "analyses", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__providers_config_json_class__["a" /* ConfigJSON */])
+], MASelectizePopoverPageComponent.prototype, "config", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", Object)
+], MASelectizePopoverPageComponent.prototype, "project", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", Object)
+], MASelectizePopoverPageComponent.prototype, "hash", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", String)
+], MASelectizePopoverPageComponent.prototype, "mode", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Input"])(),
+    __metadata("design:type", Boolean)
+], MASelectizePopoverPageComponent.prototype, "showContext", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["ViewChild"])('myselectize'),
     __metadata("design:type", Object)
 ], MASelectizePopoverPageComponent.prototype, "myselectize", void 0);
 MASelectizePopoverPageComponent = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'ma-selectize-popover-page',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/ma-selectize-popover-page/ma-selectize-popover-page.html"*/'<div>\n  <concordance [element]="element" [config]="config"></concordance>\n	<ng-selectize #myselectize [config]="myconfig"></ng-selectize>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/ma-selectize-popover-page/ma-selectize-popover-page.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Component"])({
+        selector: 'ma-selectize-popover-page',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/ma-selectize-popover-page/ma-selectize-popover-page.html"*/'<div>\n  <concordance *ngIf="showContext" [element]="element" [config]="config"></concordance>\n	<ng-selectize #myselectize [config]="myconfig"></ng-selectize>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/ma-selectize-popover-page/ma-selectize-popover-page.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* Events */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_1__ionic_native_in_app_browser__["a" /* InAppBrowser */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["c" /* Events */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_in_app_browser__["a" /* InAppBrowser */]])
 ], MASelectizePopoverPageComponent);
 
 //# sourceMappingURL=ma-selectize-popover-page.js.map
 
 /***/ }),
 
-/***/ 215:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TagsSelectorComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-/**
- * Generated class for the TagsSelectorComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
-var TagsSelectorComponent = (function () {
-    // @Input() hash : string = ""
-    function TagsSelectorComponent(events) {
-        this.events = events;
-        this.tagsRow = 0;
-        this.currentTags = [];
-        this.tagsRow = 0;
-    }
-    Object.defineProperty(TagsSelectorComponent.prototype, "config", {
-        get: function () {
-            return this._config;
-        },
-        set: function (argv) {
-            this._config = argv;
-            this.currentTags = this.getTags();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TagsSelectorComponent.prototype.getTags = function () {
-        return this.config.alltags.slice(this.tagsRow * 9, (this.tagsRow + 1) * 9).map(function (x, i) {
-            x.fn = i + 1;
-            return x;
-        });
-    };
-    TagsSelectorComponent.prototype.increaseTagsRow = function () {
-        this.tagsRow++;
-        this.currentTags = this.getTags();
-        if (this.currentTags.length == 0) {
-            this.tagsRow = 0;
-            this.currentTags = this.getTags();
-        }
-    };
-    TagsSelectorComponent.prototype.selectTag = function (tag) {
-        this.events.publish("changeTag", tag);
-    };
-    return TagsSelectorComponent;
-}());
-__decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])("config"),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */])
-], TagsSelectorComponent.prototype, "_config", void 0);
-TagsSelectorComponent = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'tags-selector',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/'<button color="secondary" ion-button *ngFor="let tag of currentTags;" class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">\n  {{tag.desc}}\n  <ion-badge >{{tag.fn}}</ion-badge>\n</button>\n\n<button ion-button color="secondary" class="tag" title="Press 0 for more tags" (click)="increaseTagsRow()" tabindex="-1">\n  More\n  <ion-badge >0</ion-badge>\n</button>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/,
-        inputs: ['config']
-    }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]])
-], TagsSelectorComponent);
-
-//# sourceMappingURL=tags-selector.js.map
-
-/***/ }),
-
-/***/ 216:
+/***/ 243:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HelpPopoverComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3814,12 +4130,14 @@ var HelpPopoverComponent = (function () {
     function HelpPopoverComponent(navParams, 
         // public data: Data,
         viewCtrl) {
+        var _this = this;
         this.navParams = navParams;
         this.viewCtrl = viewCtrl;
         this.shortcuts = [];
         this.config = null;
         this.config = navParams.data.config;
-        this.shortcuts = this.config.keyboardShortcuts.map(function (e) {
+        this.shortcuts = Object.keys(this.config.keyboardShortcuts).map(function (id) {
+            var e = _this.config.keyboardShortcuts[id];
             var params = e.params ? e.params.join() : "";
             if (e.code.indexOf("Digit") == 0)
                 params = "";
@@ -3832,7 +4150,7 @@ var HelpPopoverComponent = (function () {
 }());
 HelpPopoverComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'help-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/'  <ion-card>\n  <ion-card-header>\n    Keyboard Shortcuts\n  </ion-card-header>\n      <ion-list no-border>\n      <ion-item *ngFor="let sh of shortcuts">\n        <!-- <h2><button ion-button outline item-right icon-left>\n          {{sh[0]}}\n        </button></h2>\n        <p>{{sh[1]}}</p>\n -->\n        <!-- <ion-icon name=\'planet\' item-start></ion-icon> -->\n      <ion-note item-start>\n      {{sh[0]}}\n      </ion-note>\n      {{sh[1]}}\n      <ion-note item-end>\n      {{sh[2]}}\n      </ion-note>\n    </ion-item>\n\n      </ion-list>\n      </ion-card>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/
+        selector: 'help-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/'  <ion-card>\n  <ion-card-header>\n    {{\'Keyboard Shortcuts\' | translate}}\n  </ion-card-header>\n      <ion-list no-border>\n      <ion-item *ngFor="let sh of shortcuts">\n        <!-- <h2><button ion-button outline item-right icon-left>\n          {{sh[0]}}\n        </button></h2>\n        <p>{{sh[1]}}</p>\n -->\n        <!-- <ion-icon name=\'planet\' item-start></ion-icon> -->\n      <ion-note item-start>\n      {{sh[0]}}\n      </ion-note>\n      {{sh[1]}}\n      <ion-note item-end>\n      {{sh[2]}}\n      </ion-note>\n    </ion-item>\n\n      </ion-list>\n      </ion-card>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/help-popover/help-popover.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
@@ -3842,15 +4160,15 @@ HelpPopoverComponent = __decorate([
 
 /***/ }),
 
-/***/ 217:
+/***/ 265:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GuidelinesService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3881,6 +4199,11 @@ var GuidelinesService = (function () {
             specialPos: [],
             specialSeg: [],
         };
+        this.guidelinesObj = {
+            loaded: false,
+            specialPos: {},
+            specialSeg: {},
+        };
     }
     GuidelinesService.prototype.load = function (project, hash) {
         var _this = this;
@@ -3888,7 +4211,6 @@ var GuidelinesService = (function () {
             // already loaded data
             return Promise.resolve(this.guidelines);
         }
-        var that = this;
         // don't have the data yet
         return new Promise(function (resolve, reject) {
             // We're using Angular HTTP provider to request the data,
@@ -3901,7 +4223,7 @@ var GuidelinesService = (function () {
             //    	}),
             //    	// 'body': JSON.stringify()
             // }
-            _this.http.post(_this.myconfig.get("server") + "guidelines", {
+            _this.http.post(_this.myconfig.getValue("server") + "guidelines", {
                 project: project,
                 hash: hash
             })
@@ -3911,16 +4233,21 @@ var GuidelinesService = (function () {
                 // and save the data for later reference
                 // data = data;
                 if (data.ok) {
+                    _this.guidelines.loaded = true;
                     data.guides.forEach(function (v) {
                         if (v.ok) {
-                            that.guidelines[v.type] = v.data;
+                            _this.guidelines[v.type] = v.data;
+                            _this.guidelinesObj[v.type] = {};
                             _this.guidelines[v.type] = _this.guidelines[v.type].map(function (x) {
                                 x.form_normalized = x.form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g, "");
+                                var options = {};
+                                x.options.forEach(function (x) { return options[x.value] = x; });
+                                _this.guidelinesObj[v.type][x.form_normalized] = options;
                                 return x;
                             });
                         }
                     });
-                    resolve(that.guidelines);
+                    resolve(_this.guidelines);
                 }
                 else
                     reject(data.error);
@@ -3933,25 +4260,31 @@ var GuidelinesService = (function () {
             return {};
         return this.guidelines[type].filter(function (x) { return x.form_normalized == form; })[0] || {};
     };
+    GuidelinesService.prototype.getObj = function (type, form) {
+        form = form.replace(/[ًٌٍَُِّْٰۢٓ۟۠ۥـٔ]/g, "");
+        if (!this.guidelines[type])
+            return {};
+        return this.guidelinesObj[type][form] || {};
+    };
     return GuidelinesService;
 }());
 GuidelinesService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]) === "function" && _b || Object])
 ], GuidelinesService);
 
+var _a, _b;
 //# sourceMappingURL=guidelines-service.js.map
 
 /***/ }),
 
-/***/ 219:
+/***/ 267:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(268);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(281);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -3959,44 +4292,36 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 238:
+/***/ 281:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export loadConfiguration */
 /* unused harmony export deepLinkConfig */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(278);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(208);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(207);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__ = __webpack_require__(212);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__ = __webpack_require__(294);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_guider_guider__ = __webpack_require__(295);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_concordance_concordance__ = __webpack_require__(296);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__components_conllu_editor_conllu_editor__ = __webpack_require__(297);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__ionic_native_in_app_browser__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__pipes_not_multi_tag__ = __webpack_require__(298);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pipes_is_next_sentence__ = __webpack_require__(299);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__ionic_native_status_bar__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26_ng_selectize__ = __webpack_require__(300);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__ = __webpack_require__(203);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28_angular2_focus__ = __webpack_require__(304);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(322);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_word_service__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_config_service__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__ = __webpack_require__(265);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_project_service__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_components_module__ = __webpack_require__(428);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_in_app_browser__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pipes_not_multi_tag__ = __webpack_require__(438);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pipes_is_next_sentence__ = __webpack_require__(439);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__ionic_native_status_bar__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__ionic_native_splash_screen__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__ = __webpack_require__(233);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20_angular2_focus__ = __webpack_require__(440);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__ = __webpack_require__(24);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4004,12 +4329,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-// import { HttpClientModule } from "@angular/common/http";
-
-
-
-
-// import { Data } from './data';
 
 
 
@@ -4025,13 +4344,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-// import { HighlightComponent } from '../components/highlight/highlight';
 
-
-
-
-
-// import { IonicStorageModule } from '@ionic/storage';
 
 
 
@@ -4041,28 +4354,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 function loadConfiguration(configurationService) {
     return function () { return configurationService.load("assets/ionic.config.json"); };
 }
-// import { Storage } from '@ionic/storage';
-// let storage = new Storage(['sqlite', 'websql', 'indexeddb'], { name: '__hadiths' })// optional config);
-// export function provideData() {
-//   return new Data(storage)// optional config);
-// }
-// export function provideStorage() {
-// return storage;
-// }
-// var wasim_config = {
-//   server: "http://wasim-api.localhost/",
-//   // udpipe: "http://localhost:1441/",
-//   locationStrategy: 'hash',
-// }
 var deepLinkConfig = {
     links: [
-        // { component: AnnotatePage, name: 'Annotate Page', segment: '',defaultHistory: [ ] },
-        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id/:position', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */], name: 'Documents Page', segment: 'docs/:project/:hash', defaultHistory: [__WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */]] },
-        { component: __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */], name: 'Projects Page', segment: 'projects', defaultHistory: [] }
+        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: '', defaultHistory: [] },
+        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id/:position', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */], name: 'Annotate Page', segment: 'annotate/:project/:hash/:id', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */], name: 'Documents Page', segment: 'docs/:project/:hash', defaultHistory: [__WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */]] },
+        { component: __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */], name: 'Projects Page', segment: 'projects', defaultHistory: [] },
     ]
 };
+// export function createTranslateLoader(http: Http) {
+//   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+// }
 var AppModule = (function () {
     function AppModule() {
     }
@@ -4073,60 +4376,46 @@ AppModule = __decorate([
         declarations: [
             __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
             __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */],
-            __WEBPACK_IMPORTED_MODULE_21__pipes_not_multi_tag__["a" /* NotMultiTag */],
-            __WEBPACK_IMPORTED_MODULE_22__pipes_is_next_sentence__["a" /* IsNextSentence */],
-            __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__["a" /* GetFormPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_17__components_conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */],
-            __WEBPACK_IMPORTED_MODULE_12__components_tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__["a" /* HelpPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["a" /* LoginModal */],
-            __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__["FileSelectDirective"],
-            __WEBPACK_IMPORTED_MODULE_27_ng2_file_upload__["FileDropDirective"],
-            __WEBPACK_IMPORTED_MODULE_14__components_guider_guider__["a" /* GuiderComponent */],
-            __WEBPACK_IMPORTED_MODULE_15__components_concordance_concordance__["a" /* ConcordanceComponent */]
+            __WEBPACK_IMPORTED_MODULE_14__pipes_not_multi_tag__["a" /* NotMultiTag */],
+            __WEBPACK_IMPORTED_MODULE_15__pipes_is_next_sentence__["a" /* IsNextSentence */],
+            __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["a" /* LoginModal */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectCreateModal */],
+            __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__["FileSelectDirective"],
+            __WEBPACK_IMPORTED_MODULE_19_ng2_file_upload__["FileDropDirective"],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_28_angular2_focus__["a" /* FocusModule */].forRoot(),
+            __WEBPACK_IMPORTED_MODULE_20_angular2_focus__["a" /* FocusModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-            __WEBPACK_IMPORTED_MODULE_23__angular_http__["b" /* HttpModule */],
-            // HttpClientModule,
-            __WEBPACK_IMPORTED_MODULE_26_ng_selectize__["a" /* NgSelectizeModule */],
-            // IonicStorageModule.forRoot(),
-            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], { locationStrategy: 'hash' }, deepLinkConfig)
-            // IonicModule.forRoot(MyApp,wasim_config, deepLinkConfig)
+            __WEBPACK_IMPORTED_MODULE_16__angular_http__["b" /* HttpModule */],
+            __WEBPACK_IMPORTED_MODULE_10__components_components_module__["a" /* ComponentsModule */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], { locationStrategy: 'hash' }, deepLinkConfig),
         ],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicApp */]],
         entryComponents: [
             __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
-            __WEBPACK_IMPORTED_MODULE_19__pages_docs_docs__["a" /* DocsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["b" /* ProjectsPage */],
-            __WEBPACK_IMPORTED_MODULE_20__pages_projects_projects__["a" /* LoginModal */],
-            __WEBPACK_IMPORTED_MODULE_13__components_get_form_popover_get_form_popover__["a" /* GetFormPopoverComponent */],
-            __WEBPACK_IMPORTED_MODULE_10__components_selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_11__components_ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
-            __WEBPACK_IMPORTED_MODULE_16__components_help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_12__pages_docs_docs__["b" /* DocsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["c" /* ProjectsPage */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["a" /* LoginModal */],
+            __WEBPACK_IMPORTED_MODULE_13__pages_projects_projects__["b" /* ProjectCreateModal */],
             __WEBPACK_IMPORTED_MODULE_9__pages_annotate_annotate__["a" /* AnnotatePage */]
         ],
         providers: [
             { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["ErrorHandler"], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["e" /* IonicErrorHandler */] },
-            __WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__["a" /* ConfigurationService */],
+            __WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__["a" /* ConfigurationService */],
             {
                 provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["APP_INITIALIZER"],
                 useFactory: loadConfiguration,
-                deps: [__WEBPACK_IMPORTED_MODULE_29_ionic_configuration_service__["a" /* ConfigurationService */]],
+                deps: [__WEBPACK_IMPORTED_MODULE_21_ionic_configuration_service__["a" /* ConfigurationService */]],
                 multi: true
             },
-            // Data,
-            __WEBPACK_IMPORTED_MODULE_24__ionic_native_status_bar__["a" /* StatusBar */],
-            __WEBPACK_IMPORTED_MODULE_25__ionic_native_splash_screen__["a" /* SplashScreen */],
-            __WEBPACK_IMPORTED_MODULE_18__ionic_native_in_app_browser__["a" /* InAppBrowser */],
+            __WEBPACK_IMPORTED_MODULE_17__ionic_native_status_bar__["a" /* StatusBar */],
+            __WEBPACK_IMPORTED_MODULE_18__ionic_native_splash_screen__["a" /* SplashScreen */],
+            __WEBPACK_IMPORTED_MODULE_11__ionic_native_in_app_browser__["a" /* InAppBrowser */],
             __WEBPACK_IMPORTED_MODULE_4__providers_word_service__["a" /* WordService */],
             __WEBPACK_IMPORTED_MODULE_5__providers_conllu_service__["a" /* ConlluService */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["b" /* ConfigService */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_config_service__["a" /* ConfigService */],
             __WEBPACK_IMPORTED_MODULE_7__providers_guidelines_service__["a" /* GuidelinesService */],
             __WEBPACK_IMPORTED_MODULE_8__providers_project_service__["a" /* ProjectService */],
         ]
@@ -4137,16 +4426,19 @@ AppModule = __decorate([
 
 /***/ }),
 
-/***/ 278:
+/***/ 322:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(199);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(201);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(231);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_storage__ = __webpack_require__(135);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4161,7 +4453,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-// import { Data } from './data';
+
+
+
 // Enable production mode unless running locally
 // if (!/localhost/.test(document.location.host)) {
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
@@ -4169,14 +4463,23 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
 var MyApp = (function () {
     function MyApp(platform, 
         // public data: Data,
-        _config, statusbar, splashscreen) {
+        _config, statusbar, translateService, storage, myconfig, splashscreen) {
+        var _this = this;
         this.platform = platform;
         this._config = _config;
         this.statusbar = statusbar;
+        this.translateService = translateService;
+        this.storage = storage;
+        this.myconfig = myconfig;
         this.splashscreen = splashscreen;
-        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__["b" /* ProjectsPage */];
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_projects_projects__["c" /* ProjectsPage */];
         this.initializeApp();
-        // used for an example of ngFor and navigation
+        var browserLang = this.translateService.getBrowserLang();
+        var lang = this.myconfig.getValue('lang');
+        var langs = this.myconfig.getValue('langs');
+        this.translateService.addLangs(langs);
+        this.translateService.setDefaultLang("en");
+        storage.get("lang").then(function (s) { return s ? _this.translateService.use(s) : _this.translateService.use(lang ? lang : browserLang); });
         this.pages = [];
     }
     MyApp.prototype.initializeApp = function () {
@@ -4205,6 +4508,9 @@ MyApp = __decorate([
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Platform */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Config */],
         __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */],
+        __WEBPACK_IMPORTED_MODULE_5__ngx_translate_core__["c" /* TranslateService */],
+        __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_6_ionic_configuration_service__["a" /* ConfigurationService */],
         __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
 
@@ -4212,15 +4518,15 @@ MyApp = __decorate([
 
 /***/ }),
 
-/***/ 293:
+/***/ 336:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const sentence_1 = __webpack_require__(210);
-const element_1 = __webpack_require__(211);
-const util_1 = __webpack_require__(54);
+const sentence_1 = __webpack_require__(239);
+const element_1 = __webpack_require__(125);
+const util_1 = __webpack_require__(67);
 class ConlluDocument {
     // constructor(config, public events: Events=null) {
     constructor(config, id = "") {
@@ -4228,7 +4534,11 @@ class ConlluDocument {
          * ConllU.ConlluDocument: represents CoNLL-U document
          */
         this.sentences = [];
-        this.config = { alltags: [] };
+        this.config = {
+            alltags: [],
+            mapTagToXpostag: false,
+            mapTagToUpostag: false,
+        };
         this.id = "";
         this.error = false;
         this.strict = false;
@@ -4236,11 +4546,21 @@ class ConlluDocument {
         this.logger = (s) => { };
         if (!config)
             console.error("No config JSON is supplied!");
-        this.config = config;
+        // this.config = config
         this.reset();
         this.id = id;
     }
+    getInfo() {
+        let obj = {};
+        obj.sent_no = this.sentences.length;
+        obj.elem_no = this.sentences.map(s => s.elements.length).reduce((p, c) => p += c, 0);
+        obj.tokens_no = this.sentences.map(s => s.tokens().length).reduce((p, c) => p += c, 0);
+        obj.elem_no = this.sentences.map(s => s.elements.filter(el => el.isMultiword).length).reduce((p, c) => p += c, 0);
+        return obj;
+    }
     mapTagToXpostag(from) {
+        if (this.config.mapTagToXpostag === false)
+            return from;
         var f = this.config.alltags.find(x => x.tag == from || x.mapFrom.indexOf(from) >= 0);
         if (f)
             return f.tag;
@@ -4268,6 +4588,8 @@ class ConlluDocument {
         });
     }
     mapTagToUpostag(from, from_ud) {
+        if (this.config.mapTagToUpostag === false)
+            return from_ud;
         var f = this.config.alltags.find(x => x.tag == from);
         if (f)
             return f.mapToConllU;
@@ -4355,15 +4677,9 @@ class ConlluDocument {
      * 9.  DEPS: List of secondary dependencies (head-deprel pairs).
      * 10. MISC: Any other annotation.
      */
-    parse(input, logger, strict) {
+    parse(input, logger = (s) => { }, strict = false) {
         // discard previous state, if any
         this.reset();
-        if (logger !== undefined) {
-            this.logger = logger;
-        }
-        if (strict !== undefined) {
-            this.strict = strict;
-        }
         // TODO: handle other newline formats
         var lines = input.split('\n');
         if (!this.strict) {
@@ -4418,7 +4734,7 @@ class ConlluDocument {
                 logLineError('expected 10 fields, got ' + fields.length);
                 util_1.Util.repairFields(fields, this.logger);
             }
-            var element = new element_1.ConlluElement(fields, idx, line, currentSentence);
+            var element = new element_1.ConlluElement(fields, "" + idx, line, currentSentence);
             let issues = element.validate();
             issues.forEach(v => logLineError(v));
             if (issues.length !== 0) {
@@ -4471,7 +4787,11 @@ class ConlluDocument {
         return this;
     }
     validate() {
-        this.sentences.forEach(s => s.validate());
+        var issues = [];
+        issues.concat(...this.sentences.map(s => s.validate()));
+        this.sentences.map(s => issues.concat(...s.elements.map(e => e.validate())));
+        console.log("my issues", issues);
+        return issues;
     }
     find(creteria) {
         var regExps = ["form", "lemma"]
@@ -4561,13 +4881,515 @@ exports.ConlluDocument = ConlluDocument;
 
 /***/ }),
 
-/***/ 294:
+/***/ 36:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GetFormPopoverComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigJSON; });
+var desc = { "saveFile": "Convert to Conll then Save",
+    "syncConllU": "Convert to Conll",
+    "diactric": "Add a diactric",
+    "nav": "Move next/prev Word",
+    "undo": "Undo last action (move backward in action history)",
+    "redo": "Move forward in action history",
+    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
+    "tag": "Assign current segment a new tag",
+    "tag_ma": "Ask a morphological analyser for help",
+    "tag_morphofeatures": "Assign morphological features",
+    "diac": "Mark the last character with a diacritic",
+    "more": "Show more less-frequent tags" };
+var ConfigJSON = (function () {
+    function ConfigJSON(data, orig) {
+        if (orig === void 0) { orig = {}; }
+        /**
+         * The remote repository to push changes of your project to. Please make sure that you have appropriate login
+         */
+        this.remote_repo = "";
+        /**
+         * The default view for the right panel of Conll-U view. Four possible values or null to hide it completely: "textarea, pretty, errors, info"
+         */
+        this.conlluEditorType = "pretty";
+        /**
+         * Wether a morphological analyser will be used.
+         */
+        this.askMA = false;
+        /**
+         * Wether the memory-based morphological analyser (from previous taggins) will be used.
+         */
+        this.askMemMA = false;
+        /**
+         * Wether online guideline will be used. Requires memory-based option to be true.
+         */
+        this.askGuider = false;
+        /**
+         * (Read-only) project name
+         */
+        this.project = "";
+        /**
+         * (Read-only) project name
+         */
+        this.hash = "";
+        /**
+         * the model name for UDPipe.
+         */
+        this.language = "qac";
+        /**
+         * (Read-only) tagset name
+         */
+        this.tagset = "";
+        this.users = [];
+        this.debug = false;
+        this.keyboardShortcuts = {};
+        this.MfVsPos = {};
+        this.MfVsPos_upostag = true;
+        this.concordanceWindow = 5;
+        this.mf = {};
+        this.isRtl = true;
+        this.useUD = true;
+        this.sync = true;
+        this.alltags = [];
+        this.allxtags = [];
+        this.allutags = [];
+        this.onFeatSelect = {};
+        this.tags = {};
+        this.sentenceTags = [];
+        this.loaded = false;
+        this.undoSize = 5;
+        this.features = {};
+        this.orig = {};
+        this.orig = orig; // the original JSON
+        if (data) {
+            this.remote_repo = data.remote_repo;
+            this.language = data.language;
+            this.tagset = data.tagset;
+            this.useUD = data.useUD;
+            this.isRtl = data.isRtl;
+            this.sync = data.sync;
+            this.undoSize = data.undoSize;
+            this.users = data.users;
+            this.keyboardShortcuts = data.keyboardShortcuts;
+            this.conlluEditorType = data.conlluEditorType; //as ConlluEditorType
+            this.askMA = data.askMA;
+            this.askMemMA = data.askMemMA;
+            this.askGuider = data.askGuider;
+            this.onFeatSelect = data.onFeatSelect;
+            this.MfVsPos = data["MF.vs.POS"] || data.MfVsPos;
+            this.MfVsPos_upostag = data["MF.vs.POS_upostag"] || data.MfVsPos_upostag;
+            this.mf = data.mf;
+            this.sentenceTags = data.sentenceTags;
+            this.allutags = data.allutags;
+            this.alltags = data.alltags;
+        }
+    }
+    ConfigJSON.prototype.getFeature = function (key) {
+        return this.features[key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    ConfigJSON.prototype.getAction = function (e) {
+        var _this = this;
+        var id = Object.keys(this.keyboardShortcuts)
+            .find(function (i) {
+            var v = _this.keyboardShortcuts[i];
+            return (v.code == e.code) &&
+                // (v.key!=undefined && v.key == e.key) &&
+                ((v.metaKey == true) == e.metaKey) &&
+                ((v.shiftKey == true) == e.shiftKey) &&
+                ((v.altKey == true) == e.altKey) &&
+                ((v.ctrlKey == true) == e.ctrlKey) &&
+                true;
+        });
+        if (!id)
+            return null;
+        return this.keyboardShortcuts[id];
+    };
+    // getFeatures(xpostag){
+    //   return this.alltags.find(x=>x.tag==this.xpostag)
+    // }
+    ConfigJSON.prototype.getXPosTag = function (key) {
+        return this.tags["X:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    ConfigJSON.prototype.getUPosTag = function (key) {
+        return this.tags["U:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
+    };
+    return ConfigJSON;
+}());
+
+ConfigJSON.validation = {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "definitions": {
+        "ConlluEditorType": {
+            "enum": [
+                "errors",
+                "info",
+                "pretty",
+                "textarea"
+            ],
+            "type": "string"
+        },
+        "KeyboardJSON": {
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "altKey": {
+                    "type": "boolean"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "ctrlKey": {
+                    "type": "boolean"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "keys": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "metaKey": {
+                    "type": "boolean"
+                },
+                "params": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "shiftKey": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "TagsJSON": {
+            "properties": {
+                "count": {
+                    "type": "number"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "features": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "fn": {
+                    "type": "number"
+                },
+                "mapFrom": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "mapToConllU": {
+                    "type": "string"
+                },
+                "mf": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "MfVsPos": {
+            "properties": {},
+            "type": "object"
+        },
+        "MfVsPos_upostag": {
+            "default": true,
+            "type": "boolean"
+        },
+        "alltags": {
+            "default": [],
+            "items": {
+                "$ref": "#/definitions/TagsJSON"
+            },
+            "type": "array"
+        },
+        "allutags": {
+            "default": [],
+            "items": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "allxtags": {
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "askGuider": {
+            "default": false,
+            "description": "Wether online guideline will be used. Requires memory-based option to be true.",
+            "type": "boolean"
+        },
+        "askMA": {
+            "default": false,
+            "description": "Wether a morphological analyser will be used.",
+            "type": "boolean"
+        },
+        "askMemMA": {
+            "default": false,
+            "description": "Wether the memory-based morphological analyser (from previous taggins) will be used.",
+            "type": "boolean"
+        },
+        "concordanceWindow": {
+            "default": 5,
+            "type": "number"
+        },
+        "conlluEditorType": {
+            "$ref": "#/definitions/ConlluEditorType",
+            "description": "The default view for the right panel of Conll-U view. Four possible values or null to hide it completely: \"textarea, pretty, errors, info\""
+        },
+        "debug": {
+            "default": false,
+            "type": "boolean"
+        },
+        "features": {
+            "additionalProperties": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "hash": {
+            "default": "",
+            "description": "(Read-only) project name",
+            "type": "string"
+        },
+        "isRtl": {
+            "default": true,
+            "type": "boolean"
+        },
+        "keyboardShortcuts": {
+            "additionalProperties": {
+                "$ref": "#/definitions/KeyboardJSON"
+            },
+            "type": "object"
+        },
+        "language": {
+            "default": "qac",
+            "description": "the model name for UDPipe.",
+            "type": "string"
+        },
+        "loaded": {
+            "default": false,
+            "type": "boolean"
+        },
+        "mf": {
+            "properties": {},
+            "type": "object"
+        },
+        "onFeatSelect": {
+            "additionalProperties": {
+                "additionalProperties": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "project": {
+            "default": "",
+            "description": "(Read-only) project name",
+            "type": "string"
+        },
+        "remote_repo": {
+            "default": "",
+            "description": "The remote repository to push changes of your project to. Please make sure that you have appropriate login",
+            "type": "string"
+        },
+        "sentenceTags": {
+            "default": [],
+            "items": {},
+            "type": "array"
+        },
+        "sync": {
+            "default": true,
+            "type": "boolean"
+        },
+        "tags": {
+            "additionalProperties": {
+                "properties": {
+                    "desc": {
+                        "type": "string"
+                    },
+                    "tag": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "tagset": {
+            "default": "",
+            "description": "(Read-only) tagset name",
+            "type": "string"
+        },
+        "undoSize": {
+            "default": 5,
+            "type": "number"
+        },
+        "useUD": {
+            "default": true,
+            "type": "boolean"
+        },
+        "users": {
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+};
+//# sourceMappingURL=config-json.class.js.map
+
+/***/ }),
+
+/***/ 428:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export createTranslateLoader */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ComponentsModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__ = __webpack_require__(240);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__ = __webpack_require__(429);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__guider_guider__ = __webpack_require__(430);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__ = __webpack_require__(431);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__ = __webpack_require__(432);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng_selectize__ = __webpack_require__(433);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ngx_translate_http_loader__ = __webpack_require__(436);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__angular_http__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__ionic_storage__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__ = __webpack_require__(249);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function createTranslateLoader(http) {
+    return new __WEBPACK_IMPORTED_MODULE_12__ngx_translate_http_loader__["a" /* TranslateHttpLoader */](http, './assets/i18n/', '.json');
+}
+// let translate =
+var ComponentsModule = (function () {
+    function ComponentsModule() {
+    }
+    return ComponentsModule;
+}());
+ComponentsModule = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
+        declarations: [__WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_5__guider_guider__["a" /* GuiderComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
+            __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__["a" /* ConcordanceComponent */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+            __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */]],
+        imports: [
+            __WEBPACK_IMPORTED_MODULE_14_ionic_angular__["f" /* IonicModule */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_common__["CommonModule"],
+            __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__["c" /* NgJsonEditorModule */],
+            __WEBPACK_IMPORTED_MODULE_15__ionic_storage__["a" /* IonicStorageModule */].forRoot(),
+            __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["b" /* TranslateModule */].forRoot({
+                loader: {
+                    provide: __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["a" /* TranslateLoader */],
+                    useFactory: (createTranslateLoader),
+                    deps: [__WEBPACK_IMPORTED_MODULE_13__angular_http__["a" /* Http */]]
+                }
+            }),
+            __WEBPACK_IMPORTED_MODULE_10_ng_selectize__["a" /* NgSelectizeModule */]
+        ],
+        entryComponents: [
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+        ],
+        exports: [__WEBPACK_IMPORTED_MODULE_2__selectize_popover_page_selectize_popover_page__["a" /* SelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_3__ma_selectize_popover_page_ma_selectize_popover_page__["a" /* MASelectizePopoverPageComponent */],
+            __WEBPACK_IMPORTED_MODULE_5__guider_guider__["a" /* GuiderComponent */],
+            __WEBPACK_IMPORTED_MODULE_11__ngx_translate_core__["b" /* TranslateModule */],
+            __WEBPACK_IMPORTED_MODULE_9__pages_docs_docs__["a" /* ConfigModal */],
+            __WEBPACK_IMPORTED_MODULE_16_ang_jsoneditor__["c" /* NgJsonEditorModule */],
+            __WEBPACK_IMPORTED_MODULE_6__help_popover_help_popover__["a" /* HelpPopoverComponent */],
+            __WEBPACK_IMPORTED_MODULE_7__tags_selector_tags_selector__["a" /* TagsSelectorComponent */],
+            __WEBPACK_IMPORTED_MODULE_4__concordance_concordance__["a" /* ConcordanceComponent */],
+            __WEBPACK_IMPORTED_MODULE_8__conllu_editor_conllu_editor__["a" /* ConlluEditorComponent */]]
+    })
+], ComponentsModule);
+
+//# sourceMappingURL=components.module.js.map
+
+/***/ }),
+
+/***/ 429:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConcordanceComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4580,120 +5402,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 /**
- * Generated class for the GetFormPopoverComponent component.
+ * Generated class for the GuiderComponent component.
  *
  * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
  * for more info on Angular Components.
  */
-var GetFormPopoverComponent = (function () {
-    // @ViewChild('diacs') diacsGroup: RadioGroup;
-    function GetFormPopoverComponent(navParams, viewCtrl) {
-        var _this = this;
-        this.navParams = navParams;
-        this.viewCtrl = viewCtrl;
-        this.element = null;
-        this.diacsOptions = [];
-        this.rank = 1;
-        this.selected = { form: "" };
-        this.mapObj = {
-            "noun": "NOUN",
-            "noun_prop": "PROPN",
-            "verb": "VERB",
-            "adj": "ADJ",
-            "adv": "ADV",
-            "prep": "PART",
-        };
-        this.element = navParams.data.element;
-        // this.diacsOptions = this.element.analysis.diacs()
-        // this.diacsOptions = this.element.analysis.possibilities;
-        // console.log(this.element.analysis.possibilities)
-        console.log(this.diacsOptions);
-        this.rank = this.diacsOptions.findIndex(function (val) {
-            return _this.element.form == val.diac;
-        });
+var ConcordanceComponent = (function () {
+    function ConcordanceComponent() {
+        this.elementIndex = 0;
     }
-    GetFormPopoverComponent.prototype.map = function (from) {
-        return this.mapObj[from] || from;
-    };
-    GetFormPopoverComponent.prototype.onChange = function (ev) {
-        var _this = this;
-        if (ev.code == "Enter") {
-            var newval = this.diacsOptions[this.rank];
-            if (newval) {
-                // this.element.form = newval.segmentation[this.element.isSeg] || newval.segmentation[0];
-                if (newval.segmentation.length == 1) {
-                    this.element.form = newval.segmentation[0];
-                }
-                else {
-                    newval.segmentation.forEach(function (seg, i) {
-                        if (_this.element.parent) {
-                            if (_this.element.parent.children[i])
-                                _this.element.parent.children[i].form = seg;
-                        }
-                        else
-                            console.error("ERROR: Should have a parent:", _this.element);
-                    });
-                }
-                this.element.lemma = newval.lemma;
-                this.element.upostag = this.map(newval.pos);
-            }
-            // else
-            // this.element.form = ev.target.value
-            this.viewCtrl.dismiss();
-        }
-        if (ev.code == "ArrowDown") {
-            ev.preventDefault();
-            // var i = this.diacsOptions.findIndex((val) => {
-            //   return this.rank == val.rank;
-            // })
-            // // var i = this.rank
-            // var chosen = this.diacsOptions[i + 1 >= this.diacsOptions.length ? this.diacsOptions.length - 1 : i + 1]
-            // this.element.form = chosen.diac
-            // this.rank = chosen.rank
-            this.rank = this.rank + 1 >= this.diacsOptions.length ? this.rank : this.rank + 1;
-        }
-        if (ev.code == "ArrowUp") {
-            ev.preventDefault();
-            // var i = this.diacsOptions.findIndex((val) => {
-            //   return this.rank == val.rank;
-            // })
-            // // var i = this.rank
-            // var chosen = this.diacsOptions[i - 1 < 0 ? 0 : i - 1]
-            // // this.element.form = chosen.diac
-            // this.rank = chosen.rank
-            this.rank = this.rank - 1 < 0 ? this.rank : this.rank - 1;
-        }
-        if (ev.code == "Escape") {
-            // this.viewCtrl.dismiss()
-        }
-        if (/F[0-9]/.test(ev.code)) {
-            ev.preventDefault();
-            console.log(ev.code);
-            // this.element.form = this.element.analysis.diacs()[parseInt(ev.code.replace("F", "")) - 1]
-        }
-    };
-    return GetFormPopoverComponent;
+    return ConcordanceComponent;
 }());
-GetFormPopoverComponent = __decorate([
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", Object)
+], ConcordanceComponent.prototype, "element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__providers_config_json_class__["a" /* ConfigJSON */])
+], ConcordanceComponent.prototype, "config", void 0);
+ConcordanceComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'get-form-popover',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/get-form-popover/get-form-popover.html"*/'<ion-input (keyup)="onChange($event)" class="form_input" value="{{this.element.form}}" autofocus></ion-input>\n  <ion-list radio-group [(ngModel)]="rank" #diacs>\n      <ion-list-header>\n        Diacritization\n      </ion-list-header>\n        <ion-item radio-group *ngFor="let option of diacsOptions" [(ngModel)]="rank">\n          <ion-label>{{option.diac}}\n            <div class="segmentation">\n              <span *ngFor="let seg of option.segmentation">{{seg}}</span>\n            </div>\n            <span>{{option.gloss}}</span>\n            <span>{{map(option.pos)}}</span>\n          </ion-label>\n          <ion-radio value="{{option.rank}}"></ion-radio>\n        </ion-item>\n  </ion-list>'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/get-form-popover/get-form-popover.html"*/
+        selector: 'concordance',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/'<div style="text-align: center">\n<div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">\n  <div>{{element?.sentence.tag}}</div>\n  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{\n              isCompounds: elem.upostag==\'_\',\n              highlight: elem == element,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              isSeg: elem.isSeg > 0 }">\n    <span>\n          <span class="form">{{elem.getForm()}}</span>\n          <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n          <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n    </span>\n  </div>\n</div>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
-], GetFormPopoverComponent);
+    __metadata("design:paramtypes", [])
+], ConcordanceComponent);
 
-//# sourceMappingURL=get-form-popover.js.map
+//# sourceMappingURL=concordance.js.map
 
 /***/ }),
 
-/***/ 295:
+/***/ 430:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GuiderComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__ = __webpack_require__(265);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_config_json_class__ = __webpack_require__(36);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4714,27 +5461,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * for more info on Angular Components.
  */
 var GuiderComponent = (function () {
-    function GuiderComponent(navParams, guidelinesService, events, toastCtrl, viewCtrl) {
-        var _this = this;
-        this.navParams = navParams;
+    function GuiderComponent(guidelinesService, events, toastCtrl) {
         this.guidelinesService = guidelinesService;
         this.events = events;
         this.toastCtrl = toastCtrl;
-        this.viewCtrl = viewCtrl;
-        this.showDetails = false;
         this.project = "";
         this.hash = "";
         this.options = [];
-        // this.config = navParams.data.config
-        this.guidelinesService.load(navParams.data.project, navParams.data.hash).then(function (x) {
-            // this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
-        }).catch(function (x) {
-            _this.toastCtrl.create({
-                message: 'No guider is found: ' + x,
-                duration: 3000,
-                position: "top"
-            }).present();
-        });
+        // this.guidelinesService.load(this.project,this.hash).then(x=>{
+        // // this.guidelinesService.load("hadiths","d14274111536eed778f6b8a648115aa8").then(x=>{
+        //   }).catch(x=>{
+        //       this.toastCtrl.create({
+        //         message: 'No guider is found: ' + x,
+        //         duration: 3000,
+        //         position: "top"
+        //       }).present()
+        //   })
     }
     GuiderComponent.prototype.toggle = function (e) {
         e.showDetails = e.showDetails || false;
@@ -4752,11 +5494,14 @@ var GuiderComponent = (function () {
         // console.log(element,option)
     };
     GuiderComponent.prototype.ngOnChanges = function (changes) {
-        this.options = this.guidelinesService.get(this.type, this.element.form).options;
-        if (this.options)
-            this.options.forEach(function (e) { return e.showDetails = true; });
-        if (this.show())
-            this.events.publish("stats", { action: "showGuider", elements: this.element });
+        var _this = this;
+        this.guidelinesService.load(this.project, this.hash).then(function (x) {
+            _this.options = _this.guidelinesService.get(_this.type, _this.element.form).options;
+            if (_this.options)
+                _this.options.forEach(function (e) { return e.showDetails = false; });
+            if (_this.show())
+                _this.events.publish("stats", { action: "showGuider", elements: _this.element });
+        });
     };
     return GuiderComponent;
 }());
@@ -4778,31 +5523,28 @@ __decorate([
 ], GuiderComponent.prototype, "hash", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_3__providers_config_service__["a" /* ConfigJSON */])
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__providers_config_json_class__["a" /* ConfigJSON */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_config_json_class__["a" /* ConfigJSON */]) === "function" && _a || Object)
 ], GuiderComponent.prototype, "config", void 0);
 GuiderComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'guider',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/guider/guider.html"*/'<ion-list *ngIf="show()">\n  <ion-item-divider color="light">{{element?.form}}</ion-item-divider>\n  <ion-item *ngFor="let e of this.options">\n    <h2>\n      <ion-badge color="secondary" item-start>{{e.percentage}}</ion-badge>\n      {{config.getXPosTag(e.value).desc}}\n      <button ion-button (click)="toggle(e)" icon-only tabindex="-1">\n        <ion-icon name="eye" [hidden]="e.showDetails"></ion-icon>\n        <ion-icon name="eye-off" [hidden]="!e.showDetails"></ion-icon>\n      </button>\n      <button ion-button (click)="assign(element,e)" icon-only tabindex="-1"> <ion-icon name="checkmark"></ion-icon></button>\n    </h2>\n    <p *ngIf="e.showDetails">\n      <span style="display: block;" *ngFor="let ex of e.examples">{{ex}}</span>\n    </p>\n  </ion-item>\n</ion-list>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/guider/guider.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__["a" /* GuidelinesService */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
+    __metadata("design:paramtypes", [typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__["a" /* GuidelinesService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_guidelines_service__["a" /* GuidelinesService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]) === "function" && _d || Object])
 ], GuiderComponent);
 
+var _a, _b, _c, _d;
 //# sourceMappingURL=guider.js.map
 
 /***/ }),
 
-/***/ 296:
+/***/ 431:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConcordanceComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TagsSelectorComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_config_service__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_conllu_dao__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_conllu_dao___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_conllu_dao__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4814,46 +5556,58 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
 /**
- * Generated class for the GuiderComponent component.
+ * Generated class for the TagsSelectorComponent component.
  *
  * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
  * for more info on Angular Components.
  */
-var ConcordanceComponent = (function () {
-    function ConcordanceComponent(navParams, events, toastCtrl, viewCtrl) {
-        this.navParams = navParams;
-        this.events = events;
-        this.toastCtrl = toastCtrl;
-        this.viewCtrl = viewCtrl;
-        this.elementIndex = 0;
+var TagsSelectorComponent = (function () {
+    // @Input("config") public _config : ConfigJSON
+    // set config(argv){
+    //   this._config = argv
+    //   this.currentTags = this.getTags()
+    // }
+    // get config(){
+    //   return this._config
+    // }
+    // @Input() hash : string = ""
+    function TagsSelectorComponent() {
+        this.currentTags = [];
+        this.nextTags = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+        // this.tagsRow = 0;
     }
-    return ConcordanceComponent;
+    TagsSelectorComponent.prototype.selectTag = function (tag) {
+        if (this.element)
+            this.element.xpostag = tag.tag;
+    };
+    return TagsSelectorComponent;
 }());
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", Object)
-], ConcordanceComponent.prototype, "element", void 0);
+    __metadata("design:type", Array)
+], TagsSelectorComponent.prototype, "currentTags", void 0);
 __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__providers_config_service__["a" /* ConfigJSON */])
-], ConcordanceComponent.prototype, "config", void 0);
-ConcordanceComponent = __decorate([
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_conllu_dao__["ConlluElement"])
+], TagsSelectorComponent.prototype, "element", void 0);
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
+], TagsSelectorComponent.prototype, "nextTags", void 0);
+TagsSelectorComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'concordance',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/'<div style="text-align: center">\n<div *ngIf="element" class="sentence" [ngClass]="{rtl:config.isRtl}">\n  <div>{{element?.sentence.tag}}</div>\n  <div tabindex="{{elem == element ? 1 : -1}}" *ngFor="let elem of element?.sentence.elements ; let i = index" class="element" [hidden]="elem.isMultiword || i > element.sentence.elements.indexOf(element) + config.concordanceWindow || i < element.sentence.elements.indexOf(element) - config.concordanceWindow" [ngClass]="{\n              isCompounds: elem.upostag==\'_\',\n              highlight: elem == element,\n              rtl:config.isRtl,\n              unclear: elem._miscs[\'UNCLEAR\'],\n              isSeg: elem.isSeg > 0 }">\n    <span>\n          <span class="form">{{elem.getForm()}}</span>\n          <span class="postag">{{config.useUD ? config.tags[\'U:\'+elem.upostag]?.desc : config.tags[\'X:\'+elem.xpostag]?.desc}}</span>\n          <span class="mf_missing" [hidden]="elem.morphFeatsMissing().length == 0">{{elem.morphFeatsMissing().length}}</span>\n    </span>\n  </div>\n</div>\n</div>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/concordance/concordance.html"*/
+        selector: 'tags-selector',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/'<button color="secondary" style="direction: rtl" ion-button *ngFor="let tag of currentTags;" small class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">\n  <span class=\'tag-num\'>{{tag.fn}}-</span>{{tag.desc}}\n</button>\n\n<button small ion-button style="direction: rtl" color="secondary" class="tag" title="Press 0 for more tags" (click)="this.nextTags.emit(true)" tabindex="-1">\n  <span class=\'tag-num\'>0</span>{{\'MORE\' | translate}}\n</button>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/tags-selector/tags-selector.html"*/,
+        inputs: ['config']
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["c" /* Events */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */]])
-], ConcordanceComponent);
+    __metadata("design:paramtypes", [])
+], TagsSelectorComponent);
 
-//# sourceMappingURL=concordance.js.map
+//# sourceMappingURL=tags-selector.js.map
 
 /***/ }),
 
-/***/ 297:
+/***/ 432:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4876,7 +5630,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Components.
  */
 var ConlluEditorComponent = (function () {
-    function ConlluEditorComponent() {
+    function ConlluEditorComponent(renderer) {
+        this.renderer = renderer;
         this.conlluRawSpansSubset = [{}];
         this._conlluRaw = "";
         this.eid = -1;
@@ -4935,7 +5690,7 @@ var ConlluEditorComponent = (function () {
             });
             // r[index]=e.target.innerText
             var conlluRaw = _this.conlluRaw.split("\n").map(function (rr, i) {
-                return i == row_index ? e.target.innerText : rr;
+                return i == row_index ? e.target.innerText.trim() : rr;
             }).join("\n");
             // console.log(this.conlluRaw)
             if (document.activeElement.classList.contains("conllu-row"))
@@ -4949,38 +5704,36 @@ var ConlluEditorComponent = (function () {
     ConlluEditorComponent.prototype.removeConlluRawRow = function (r, row_index, e) {
         var _this = this;
         if (e === void 0) { e = null; }
-        //make sure there is a tab after each span
-        setTimeout(function () {
-            // r[index]=e.target.innerText
-            var conlluRaw = _this.conlluRaw.split("\n").filter(function (rr, i) {
-                return i != row_index;
-            }).join("\n");
-            // if(document.activeElement.classList.contains("conllu-row"))
-            //   return
-            // this.saveForUndo(conlluRaw)
-            _this.conlluRawChange.emit(conlluRaw);
-        });
+        if (e && window.getSelection().baseOffset != 0)
+            return;
+        this.conlluRaw = this.conlluRaw.split("\n").filter(function (rr, i) {
+            return i != row_index;
+        }).join("\n");
+        setTimeout(function () { return e ? _this.focus(row_index, e) : ""; });
+        this.conlluRawChange.emit(this.conlluRaw);
     };
     ConlluEditorComponent.prototype.addConlluRawRow = function (r, row_index, e) {
         var _this = this;
         if (e === void 0) { e = null; }
-        //make sure there is a tab after each span
-        setTimeout(function () {
-            // r[index]=e.target.innerText
-            var ar = _this.conlluRaw.split("\n");
-            ar.splice(row_index, 0, "# ");
-            var conlluRaw = ar.join("\n");
-            // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
-            // console.log(this.conlluRaw)
-            // console.log(document.activeElement)
-            // if(document.activeElement.classList.contains("conllu-row"))
-            // return
-            // this.saveForUndo(conlluRaw)
-            _this.conlluRawChange.emit(conlluRaw);
-        });
+        if (e)
+            e.preventDefault();
+        var ar = this.conlluRaw.split("\n");
+        ar.splice(row_index, 0, "# ");
+        this.conlluRaw = ar.join("\n");
+        setTimeout(function () { return e ? _this.focus(row_index, e) : ""; });
+        this.conlluRawChange.emit(this.conlluRaw);
     };
-    ConlluEditorComponent.prototype.downloadConlluRawRow = function (r, row_index, e) {
+    ConlluEditorComponent.prototype.focus = function (row_index, e) {
         if (e === void 0) { e = null; }
+        // var current =
+        var highlighNode = document.querySelector("div.conllu-row-" + row_index);
+        console.log(highlighNode);
+        if (highlighNode)
+            this.renderer.invokeElementMethod(highlighNode, 'focus', []);
+        // else
+        // console.log("Not found",current)
+    };
+    ConlluEditorComponent.prototype.downloadConlluRawRow = function () {
         //make sure there is a tab after each span
         // this.conlluRaw = this.conlluRaw.split("\n").splice(row_index,0,"# ").join("\n")
         // this.conlluRawSpans.splice(row_index,0, {sentid: this.conlluRawSpans[row_index].sentid, elemid:"comment", elems: ["# "]})
@@ -5007,7 +5760,7 @@ var ConlluEditorComponent = (function () {
                 sentid: sentid,
                 elemid: elemid,
                 line: i,
-                elems: e.split("\t").map(function (ee) { return ee += "\t"; })
+                elems: e.split("\t") //.map(ee=>ee+="\t")
             };
         });
     };
@@ -5028,25 +5781,25 @@ __decorate([
     __metadata("design:paramtypes", [Array])
 ], ConlluEditorComponent.prototype, "hid", null);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])('rawChange'),
     __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
 ], ConlluEditorComponent.prototype, "conlluRawChange", void 0);
 __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])('highlightChange'),
     __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
 ], ConlluEditorComponent.prototype, "highlighElementChange", void 0);
 ConlluEditorComponent = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'conllu-editor',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/'<!-- Generated template for the ConlluEditorComponent component -->\n<pre [style.counter-reset]="\'line \'+ start">\n<!--       --><div contenteditable="true" class="conllu-row" [ngClass]="{\n              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (blur)="onConlluRawSpansChanged(r,i, $event)"><div class=\'actions\' contenteditable="false"><button tabindex="-1" ion-button small icon-only color="light" (click)="removeConlluRawRow(r,i,$event)"><ion-icon name="remove"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="addConlluRawRow(r,i,$event)"><ion-icon name="add"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="highlighElementChange.emit(\'S\'+r.sentid+\':\'+r.elemid)"><ion-icon name="checkmark"></ion-icon></button></div><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]==\'#\'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>\n          <button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>\n\n<!-- --></pre>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/
+        selector: 'conllu-editor',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/'<!-- Generated template for the ConlluEditorComponent component -->\n<pre [style.counter-reset]="\'line \'+ start">\n<!--       --><div contenteditable="true" class="conllu-row conllu-row-{{i}}" [ngClass]="{\n              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (focus)="highlighElementChange.emit(\'S\'+r.sentid+\':\'+r.elemid)" (blur)="onConlluRawSpansChanged(r,i, $event)" (keydown.enter)="addConlluRawRow(r,i+1,$event)" (keydown.arrowup)="focus(i-1,$event)" (keydown.arrowdown)="focus(i+1,$event)" (keyup.backspace)="removeConlluRawRow(r,i,$event)"><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]==\'#\'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>\n          <div class="downloadButton"><button tabindex="-1" ion-button small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>\n<button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button></div>\n\n<!-- --></pre>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/components/conllu-editor/conllu-editor.html"*/
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer"]])
 ], ConlluEditorComponent);
 
 //# sourceMappingURL=conllu-editor.js.map
 
 /***/ }),
 
-/***/ 298:
+/***/ 438:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5088,7 +5841,7 @@ NotMultiTag = __decorate([
 
 /***/ }),
 
-/***/ 299:
+/***/ 439:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5137,254 +5890,20 @@ IsNextSentence = __decorate([
 
 /***/ }),
 
-/***/ 30:
+/***/ 64:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigJSON; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ConfigService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-// import { Config } from 'ionic-angular';
-
-
-
-// import { Sentence} from '../pages/annotate/conllu';
-
-/*
-  Generated class for the WordService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
-var desc = { "saveFile": "Convert to Conll then Save",
-    "syncConllU": "Convert to Conll",
-    "diactric": "Add a diactric",
-    "nav": "Move next/prev Word",
-    "undo": "Undo last action (move backward in action history)",
-    "redo": "Move forward in action history",
-    "segment": "Edit the form/Add new segments to the current word/Delete current segment",
-    "tag": "Assign current segment a new tag",
-    "tag_ma": "Ask a morphological analyser for help",
-    "tag_morphofeatures": "Assign morphological features",
-    "diac": "Mark the last character with a diacritic",
-    "more": "Show more less-frequent tags" };
-var ConfigJSON = (function () {
-    function ConfigJSON(data) {
-        this.remote_repo = "";
-        this.isConlluHidden = false;
-        this.askMA = false;
-        this.askMemMA = false;
-        this.askGuider = false;
-        this.project = "";
-        this.hash = "";
-        this.language = "qac";
-        this.tagset = "";
-        this.rowlength = 7;
-        this.users = [];
-        this.debug = false;
-        this.keyboardShortcuts = [];
-        this.MfVsPos = {};
-        this.MfVsPos_upostag = true;
-        this.concordanceWindow = 5;
-        this.mf = {};
-        this.isRtl = true;
-        this.useUD = true;
-        this.sync = true;
-        this.alltags = [];
-        this.allxtags = [];
-        this.allutags = [];
-        this.onFeatSelect = {};
-        this.tags = {};
-        this.sentenceTags = [];
-        this.loaded = false;
-        this.undoSize = 5;
-        this.features = {};
-        if (data) {
-            this.remote_repo = data.config.remote_repo;
-            this.language = data.config.language;
-            this.tagset = data.config.tagset;
-            this.useUD = data.config.useUD;
-            this.rowlength = data.config.rowlength;
-            this.isRtl = data.config.isRtl;
-            this.sync = data.config.sync;
-            this.undoSize = data.config.undoSize;
-            this.users = data.config.users;
-            this.keyboardShortcuts = data.config.keyboardShortcuts;
-            this.isConlluHidden = data.config.isConlluHidden;
-            this.askMA = data.config.askMA;
-            this.askMemMA = data.config.askMemMA;
-            this.askGuider = data.config.askGuider;
-            this.onFeatSelect = data.config.onFeatSelect;
-            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos;
-            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag;
-            this.mf = data.config.mf;
-            this.sentenceTags = data.config.sentenceTags;
-            this.allutags = data.config.allutags;
-            this.alltags = data.config.alltags;
-        }
-    }
-    ConfigJSON.prototype.getFeature = function (key) {
-        return this.features[key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    // getFeatures(xpostag){
-    //   return this.alltags.find(x=>x.tag==this.xpostag)
-    // }
-    ConfigJSON.prototype.getXPosTag = function (key) {
-        return this.tags["X:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    ConfigJSON.prototype.getUPosTag = function (key) {
-        return this.tags["U:" + key] || { tag: "N/A:" + key, desc: "n/a:" + key };
-    };
-    return ConfigJSON;
-}());
-
-var ConfigService = (function () {
-    function ConfigService(http, myconfig) {
-        this.http = http;
-        this.myconfig = myconfig;
-        this.config = {};
-        this.rtls = ["arabic", "qac"];
-        this.config.default = new ConfigJSON();
-    }
-    ConfigService.prototype.load = function (project, hash) {
-        var _this = this;
-        if (this.config[project]) {
-            // already loaded data
-            return Promise.resolve(this.config[project]);
-        }
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.getValue("server") + "get_config", {
-                project: project,
-                hash: hash
-            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    var config = new ConfigJSON(data);
-                    config.project = project;
-                    config.hash = hash;
-                    config.keyboardShortcuts.forEach(function (e) {
-                        e.keys = [];
-                        if (e.metaKey)
-                            e.keys.push("⌘");
-                        if (e.shiftKey)
-                            e.keys.push("⇧");
-                        if (e.altKey)
-                            e.keys.push("⎇");
-                        if (!e.code)
-                            e.code = "";
-                        var code = e.code
-                            .replace(/^Key/, "")
-                            .replace("ArrowLeft", "⇦")
-                            .replace("ArrowRight", "⇨")
-                            .replace("Enter", "⏎");
-                        if (code)
-                            e.keys.push(code);
-                        var params = e.params ? e.params.join() : "";
-                        if (e.code.indexOf("Digit") == 0)
-                            params = "";
-                        if (e.code.indexOf("F" + params) == 0)
-                            params = "";
-                        e.desc = desc[e.action + params] || desc[e.action] || e.action;
-                    });
-                    config.alltags.forEach(function (xx, i, arr) {
-                        arr[i].mapFrom = arr[i].mapFrom || [""];
-                    });
-                    if (config.MfVsPos) {
-                        config.alltags.forEach(function (xx, i, arr) {
-                            arr[i].features = Object.keys(config.mf).filter(function (x) { return config.MfVsPos[x].indexOf(config.MfVsPos_upostag ? xx.mapToConllU : xx.tag) >= 0; });
-                        });
-                    }
-                    else {
-                        console.error("config['MF.vs.POS'] is missing");
-                    }
-                    config.allxtags = config.alltags.map(function (x) { return x.tag; });
-                    // config.allutags = data.config.alltags.map(x=>x.mapToConllU).sort().filter(function(el,i,a){return i==a.indexOf(el);}) // sort and unique
-                    config.tags = {};
-                    config.alltags.forEach(function (x) { return config.tags["X:" + x.tag] = x; });
-                    // config.allutags.forEach(x=>config.tags["U:"+x.tag]=x)
-                    config.tags["X:_"] = { tag: "_", desc: "_" };
-                    config.tags["U:_"] = { tag: "_", desc: "_" };
-                    config.features = {};
-                    Object.keys(config.mf).forEach(function (k) { return config.mf[k].forEach(function (v) { return config.features[k + "=" + v.tag] = v; }); });
-                    _this.config[project] = config;
-                    resolve(_this.config[project]);
-                }
-                else
-                    // if(data.default)
-                    // 	that.config.default = data.default
-                    reject(data.error);
-            });
-        });
-    };
-    ConfigService.prototype.save = function (project, hash, config) {
-        var _this = this;
-        config = JSON.parse(JSON.stringify(config));
-        delete config.hash;
-        // don't have the data yet
-        return new Promise(function (resolve, reject) {
-            _this.http.post(_this.myconfig.getValue("server") + "save_config", {
-                project: project,
-                hash: hash,
-                config: config
-            }, new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ withCredentials: true }))
-                .map(function (res) { return res.json(); })
-                .subscribe(function (data) {
-                if (data.ok) {
-                    resolve();
-                    config.isRtl = _this.isRtl(project);
-                    _this.config[project] = config;
-                }
-                else
-                    reject(data.error);
-            });
-        });
-    };
-    ConfigService.prototype.getConfig = function (project) {
-        return this.config[project] ? this.config[project] : this.config.default;
-    };
-    ConfigService.prototype.isRtl = function (project) {
-        if (this.getConfig(project).isRtl != undefined)
-            return this.getConfig(project).isRtl;
-        return this.rtls.indexOf(this.getConfig(project).language) >= 0;
-    };
-    return ConfigService;
-}());
-ConfigService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Http */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_configuration_service__["a" /* ConfigurationService */]])
-], ConfigService);
-
-//# sourceMappingURL=config-service.js.map
-
-/***/ }),
-
-/***/ 53:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ProjectsPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return ProjectsPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginModal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ProjectCreateModal; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(202);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_project_service__ = __webpack_require__(232);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__docs_docs__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(135);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5398,7 +5917,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-// import { Storage } from '@ionic/storage';
+
+
+
 /**
  * Generated class for the ProjectsPage page.
  *
@@ -5407,49 +5928,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var ProjectsPage = (function () {
     // public validSecurity  = false
-    function ProjectsPage(navCtrl, navParams, projectService, 
-        // public storage: Storage,
-        modalCtrl, toastCtrl) {
-        // this.storage.get("security").then(v=>{
-        // 	this.security = v
-        // 	if(this.security){
-        // 		this.validSecurity = true
-        // 		this.securityChanged()
-        // 	}
+    function ProjectsPage(navCtrl, navParams, alertCtrl, projectService, storage, myconfig, translateService, modalCtrl, toastCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
         this.projectService = projectService;
+        this.storage = storage;
+        this.myconfig = myconfig;
+        this.translateService = translateService;
         this.modalCtrl = modalCtrl;
         this.toastCtrl = toastCtrl;
         // public security = ""
         this.projects = [];
         this.new_project = "";
-        // });
         this.list();
     }
     ProjectsPage.prototype.create = function () {
+        var projectCreateModal = this.modalCtrl.create(ProjectCreateModal, { projectPage: this }, {
+            showBackdrop: true,
+        });
+        projectCreateModal.present();
+    };
+    ProjectsPage.prototype.goto = function (project) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["b" /* DocsPage */], {
+            project: project.project,
+            hash: project.hash,
+        });
+    };
+    ProjectsPage.prototype.remove = function (project) {
         var _this = this;
-        this.projectService.create(this.new_project)
-            .then(function (result) {
-            if (result.ok) {
-                _this.projects.push({
-                    project: result.project,
-                    hash: result.hash,
-                });
-                // this.storage.set("project_hash_"+result.project,result.hash);
+        this.projectService.remove(project.project).then(function (result) {
+            // this.validSecurity = true
+            // this.storage.set("security",this.security);
+            _this.projects = _this.projects.filter(function (p) { return p != project; });
+            if (_this.projects.length == 0) {
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant("There is no projects created yet. Please create one now."),
+                    duration: 3000,
+                    position: "top"
+                }).present();
             }
-        }).catch(function (e) {
+        }).catch(function (error) {
+            console.error(error);
             _this.toastCtrl.create({
-                message: e.error,
+                message: _this.translateService.instant("" + error),
                 duration: 3000,
                 position: "top"
             }).present();
-        });
-    };
-    ProjectsPage.prototype.goto = function (project) {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__docs_docs__["a" /* DocsPage */], {
-            project: project.project,
-            hash: project.hash,
         });
     };
     ProjectsPage.prototype.logout = function () {
@@ -5462,6 +5987,31 @@ var ProjectsPage = (function () {
         loginModal.present();
         loginModal.onDidDismiss(function () { _this.list(); });
     };
+    ProjectsPage.prototype.lang = function (event) {
+        var _this = this;
+        if (event === void 0) { event = null; }
+        var prompt = this.alertCtrl.create({
+            title: this.translateService.instant('Language Change'),
+            // message: this.translateService.instant("Please the language code"),
+            inputs: this.translateService.getLangs().map(function (e) { return new Object({
+                name: 'lang',
+                type: 'radio',
+                label: e,
+                checked: e == _this.translateService.currentLang,
+                value: e
+            }); }),
+            buttons: [
+                {
+                    text: this.translateService.instant('Change Langugaue'),
+                    handler: function (data) {
+                        _this.translateService.use(data);
+                        _this.storage.get("lang").then(function (e) { return console.log(e); });
+                        _this.storage.set("lang", data);
+                    }
+                }
+            ]
+        }).present();
+    };
     ProjectsPage.prototype.list = function () {
         var _this = this;
         this.projectService.list().then(function (result) {
@@ -5470,14 +6020,14 @@ var ProjectsPage = (function () {
             // this.storage.set("security",this.security);
             if (result.projects.length == 0) {
                 _this.toastCtrl.create({
-                    message: "There is no projects created yet. Please create one now.",
+                    message: _this.translateService.instant("There is no projects created yet. Please create one now."),
                     duration: 3000,
                     position: "top"
                 }).present();
             }
         }).catch(function (error) {
             _this.toastCtrl.create({
-                message: error,
+                message: _this.translateService.instant(error),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -5494,18 +6044,23 @@ var ProjectsPage = (function () {
 }());
 ProjectsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>المشاريع</ion-title>\n    <ion-buttons end>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">\n        <ion-icon name="log-out"></ion-icon>\n      </button>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">\n        <ion-icon name="contact"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding rtl>\n  <ion-card>\n  <ion-item-divider>\n    المشاريع الحالية\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>\n    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">احذف</button>\n    	</ion-item>\n  	</ion-list>\n	<ion-item *ngIf=\'projects.length === 0\'>لا يوجد أي مشروع</ion-item>\n  <ion-item-divider>\n    مشروع جديد\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>اسم المشروع</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>\n	</ion-item>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
+        selector: 'page-projects',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'PROJECTS TITLE\' | translate}}</ion-title>\n    <ion-buttons end>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">\n        <ion-icon name="log-out"></ion-icon>\n      </button>\n      <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">\n        <ion-icon name="contact"></ion-icon>\n      </button>\n      <button right ion-button icon-only (click)="lang($event)" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding rtl>\n  <ion-card>\n  <ion-item-divider>\n    {{\'CURRENT PROJECTS\' | translate}}\n  </ion-item-divider>\n  	<ion-list>\n    	<ion-item *ngFor="let p of projects">\n    		{{p.project}}\n    		<button ion-button outline item-end icon-left (click)="goto(p)">{{\'GO\' | translate}}</button>\n    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">{{\'DELETE\' | translate}}</button>\n    	</ion-item>\n  	</ion-list>\n  <ion-item *ngIf=\'projects.length === 0\'>{{\'NO PROJECT IS FOUND\' | translate}}</ion-item>\n	<ion-item >\n    <button ion-button color="secondary" outline item-end icon-left (click)="create()">{{\'CREATE NEW PROJECT\' | translate}}</button>\n  </ion-item>\n<!--   <ion-item-divider>\n    {{\'NEW PROJECT\' | translate}}\n  </ion-item-divider>\n	<ion-item >\n	    <ion-label fixed>{{\'PROJECT NAME\' | translate}}</ion-label>\n	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>\n		<button ion-button outline item-end icon-left (click)="create()">{{\'CREATE NEW PROJECT\' | translate}}</button>\n	</ion-item>\n -->  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/projects.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
         __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */],
+        __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_5_ionic_configuration_service__["a" /* ConfigurationService */],
+        __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
 ], ProjectsPage);
 
 var LoginModal = (function () {
-    function LoginModal(viewCtrl, params, projectService, toastCtrl) {
+    function LoginModal(viewCtrl, params, translateService, projectService, toastCtrl) {
         this.viewCtrl = viewCtrl;
+        this.translateService = translateService;
         this.projectService = projectService;
         this.toastCtrl = toastCtrl;
         this.username = "";
@@ -5521,7 +6076,7 @@ var LoginModal = (function () {
         })
             .catch(function (e) {
             _this.toastCtrl.create({
-                message: e,
+                message: _this.translateService.instant(e),
                 duration: 3000,
                 position: "top"
             }).present();
@@ -5531,16 +6086,324 @@ var LoginModal = (function () {
 }());
 LoginModal = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        selector: 'page-login',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>تسجيل الدخول</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card *ngIf="!validSecurity">\n    <ion-card-header>تسجيل الدخول</ion-card-header>\n    <ion-card-content>\n      <form (ngSubmit)="login()">\n        <ion-item>\n          <ion-label fixed>اسم المستخدم</ion-label>\n          <ion-input [(ngModel)]="username" name="username"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label fixed>كلمة المرور</ion-label>\n          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>\n        </ion-item>\n        <button type="submit" ion-button block>تسجيل الدخول</button>\n      </form>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/,
+        selector: 'page-login',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'LOGIN PAGE TITLE\' | translate}}</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card *ngIf="!validSecurity">\n    <ion-card-header>{{\'LOGIN MODAL TITLE\' | translate}}</ion-card-header>\n    <ion-card-content>\n      <form (ngSubmit)="login()">\n        <ion-item>\n          <ion-label fixed>{{\'USERNAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="username" name="username"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label fixed>{{\'PASSWORD\' | translate}}</ion-label>\n          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>\n        </ion-item>\n        <button type="submit" ion-button block>{{\'LOGIN\' | translate}}</button>\n      </form>\n    </ion-card-content>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/login.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
 ], LoginModal);
+
+var ProjectCreateModal = (function () {
+    function ProjectCreateModal(viewCtrl, params, translateService, projectService, toastCtrl) {
+        this.viewCtrl = viewCtrl;
+        this.translateService = translateService;
+        this.projectService = projectService;
+        this.toastCtrl = toastCtrl;
+        this.remote_repo = "";
+        this.askMA = true;
+        this.askMemMA = true;
+        this.askGuider = true;
+        this.project = "";
+        this.language = "arabic";
+        this.debug = false;
+        this.isRtl = true;
+        this.useUD = false;
+        this.projectPage = params.data.projectPage;
+    }
+    ProjectCreateModal.prototype.createProject = function () {
+        var _this = this;
+        this.projectService.create(this.project, {
+            remote_repo: this.remote_repo,
+            askMA: this.askMA,
+            askMemMA: this.askMemMA,
+            askGuider: this.askGuider,
+            project: this.project,
+            language: this.language,
+            debug: this.debug,
+            isRtl: this.isRtl,
+            useUD: this.useUD,
+        })
+            .then(function (result) {
+            _this.projectPage.projects.push({
+                project: result.project,
+                hash: result.hash,
+            });
+            _this.viewCtrl.dismiss({ project: result.project });
+        }).catch(function (e) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant("Error: " + e),
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+    };
+    return ProjectCreateModal;
+}());
+ProjectCreateModal = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'project-create',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/projects/project-create.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'PAGE_CREATE\' | translate}}</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n  <ion-card>\n    <form (ngSubmit)="createProject()">\n      <ion-item>\n        <ion-label>{{\'PROJECT_NAME\' | translate}}</ion-label>\n        <ion-input [(ngModel)]="project" name="project" required="true"></ion-input>\n      </ion-item>\n      <ion-card-header>{{\'CONFIG\' | translate}}</ion-card-header>\n      <ion-card-content>\n        <ion-item>\n          <ion-label>{{\'ASK_MA\' | translate}}</ion-label>\n          <ion-toggle [(ngModel)]="askMA" name="askMA"></ion-toggle>\n        </ion-item>\n        <ion-item>\n          <ion-label>{{\'ASK_MEM_MA\' | translate}}</ion-label>\n          <ion-toggle [(ngModel)]="askMemMA" name="askMemMA"></ion-toggle>\n        </ion-item>\n        <ion-item>\n          <ion-label>{{\'ASK_GUIDER\' | translate}}</ion-label>\n          <ion-toggle [(ngModel)]="askGuider" name="askGuider"></ion-toggle>\n        </ion-item>\n        <ion-item>\n          <ion-label>{{\'LANGUAGE\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="language" name="language"></ion-input>\n        </ion-item>\n        <ion-item>\n          <ion-label>{{\'IS_RTL\' | translate}}</ion-label>\n          <ion-toggle [(ngModel)]="isRtl" name="isRtl"></ion-toggle>\n        </ion-item>\n        <ion-item>\n          <ion-label>{{\'USE_UD\' | translate}}</ion-label>\n          <ion-toggle [(ngModel)]="useUD" name="useUD"></ion-toggle>\n        </ion-item>\n        <button ion-button block type="submit">{{\'CREATE_PROJECT\' | translate}}</button>\n      </ion-card-content>\n    </form>\n  </ion-card>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/projects/project-create.html"*/,
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* ViewController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_4__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_2__providers_project_service__["a" /* ProjectService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+], ProjectCreateModal);
 
 //# sourceMappingURL=projects.js.map
 
 /***/ }),
 
-/***/ 54:
+/***/ 65:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DocsPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfigModal; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__ = __webpack_require__(333);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__projects_projects__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__annotate_annotate__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_config_service__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_config_json_class__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__ = __webpack_require__(249);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+
+
+/**
+ * Generated class for the DocsPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
+var DocsPage = (function () {
+    // public config :ConfigJSON = ""
+    function DocsPage(navCtrl, navParams, conlluService, myconfig, configService, modalCtrl, translateService, toastCtrl) {
+        var _this = this;
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.conlluService = conlluService;
+        this.myconfig = myconfig;
+        this.configService = configService;
+        this.modalCtrl = modalCtrl;
+        this.translateService = translateService;
+        this.toastCtrl = toastCtrl;
+        this.uploader = new __WEBPACK_IMPORTED_MODULE_3_ng2_file_upload_ng2_file_upload__["FileUploader"]({ url: this.myconfig.getValue("server") + "conllu_upload" });
+        this.hasBaseDropZoneOver = false;
+        this.hasAnotherDropZoneOver = false;
+        this.project = "";
+        this.hash = "";
+        this.newFilename = "";
+        this.text = "";
+        this.list = [];
+        if (!navParams.data.project) {
+            navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_5__projects_projects__["c" /* ProjectsPage */]);
+        }
+        else {
+            this.project = navParams.data.project;
+            this.hash = navParams.data.hash;
+        }
+        var that = this;
+        this.uploader.authToken = this.project + ":" + this.hash;
+        this.uploader.onSuccessItem = function (item) {
+            that.list.push(item.file.name);
+        };
+        this.configService.load(this.project, this.hash).then(function (s) {
+            _this.config = s;
+        }).catch(function (x) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant('Conllu File loading Error: ') + _this.translateService.instant(x),
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+        conlluService.getList(this.project, this.hash).then(function (result) {
+            if (result.ok)
+                _this.list = result.files;
+            else
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant(result.error),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+        })
+            .catch(function (e) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant(e),
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+    }
+    DocsPage.prototype.goto = function (id) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_6__annotate_annotate__["a" /* AnnotatePage */], {
+            project: this.project,
+            hash: this.hash,
+            id: id,
+        });
+    };
+    DocsPage.prototype.remove = function (filename) {
+        var _this = this;
+        this.conlluService.remove(this.project, this.hash, filename).then(function (s) {
+            if (s.ok)
+                _this.list.splice(_this.list.findIndex(function (x) { return x.filename == filename; }), 1);
+        });
+    };
+    DocsPage.prototype.udpipe = function (sentence) {
+        var _this = this;
+        this.conlluService.udpipe(this.project, this.hash, sentence, this.newFilename, this.config.language).then(function (result) {
+            _this.newFilename = "";
+            _this.list.push({ filename: result.filename, firstline: result.firstline });
+        }).catch(function (err) {
+            _this.toastCtrl.create({
+                message: _this.translateService.instant(err),
+                duration: 3000,
+                position: "top"
+            }).present();
+        });
+    };
+    DocsPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad DocsPage');
+    };
+    DocsPage.prototype.fileOverBase = function (e) {
+        this.hasBaseDropZoneOver = e;
+    };
+    DocsPage.prototype.fileOverAnother = function (e) {
+        this.hasAnotherDropZoneOver = e;
+    };
+    DocsPage.prototype.openConfig = function () {
+        var loginModal = this.modalCtrl.create(ConfigModal, {
+            project: this.project,
+            hash: this.hash,
+            config: this.config,
+        }, {
+            enableBackdropDismiss: true
+        });
+        loginModal.present();
+        // loginModal.onDidDismiss(()=>{this.list()})
+    };
+    return DocsPage;
+}());
+DocsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-docs',template:/*ion-inline-start:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/'<!--\n  Generated template for the DocsPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>{{\'MANAGE PROJECT\' | translate}}: {{project}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)="openConfig()" tabindex="-1">\n        <ion-icon name="settings"></ion-icon>\n      </button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n  <ion-grid>\n    <ion-row>\n      <ion-col col-12>\n        <ion-list ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n          <ion-item>\n            <button ion-button color="secondary" outline item-end icon-left (click)="goto(\'NEWFILE\')">{{\'NEWFILE\' | translate}}</button>\n            <button ion-button outline (click)="uploadbutton.click()" item-end>\n              <ion-icon name="cloud-upload"></ion-icon>\n              <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n            </button>\n          </ion-item>\n\n          <ion-item *ngFor="let item of uploader.queue; index as i">\n            <ion-avatar item-start>\n              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> {{i+1}}\n            </ion-avatar>\n            <h2>{{ item?.file?.name }}</h2>\n            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n            <div *ngIf="uploader.isHTML5">\n              <div class="progress" style="margin-bottom: 0;">\n                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n              </div>\n            </div>\n            <ion-row>\n              <ion-col>\n                <button ion-button outline icon-end clear (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                  <ion-icon name="cloud-upload"></ion-icon>\n                  <div>{{\'Upload\' | translate}}</div>\n                </button>\n                <button ion-button outline icon-end clear (click)="item.cancel()" [disabled]="!item.isUploading">\n                  <ion-icon name="undo"></ion-icon>\n                  <div>{{\'Cancel\' | translate}}</div>\n                </button>\n                <button ion-button outline icon-end clear (click)="item.remove()">\n                  <ion-icon name="trash"></ion-icon>\n                  <div>{{\'Remove\' | translate}}</div>\n                </button>\n              </ion-col>\n            </ion-row>\n          </ion-item>\n\n\n          <ion-item *ngFor="let i of list">\n            {{i.filename}}\n            <ion-note>{{i.firstline}}</ion-note>\n            <button ion-button outline item-end icon-left (click)="goto(i.filename)">{{\'GO\' | translate}}</button>\n            <a ion-button outline item-end icon-left href="{{myconfig.getValue(\'server\')}}conllu_download?project={{project}}&hash={{hash}}&&file={{i.filename}}">{{\'DOWNLOAD\' | translate}}</a>\n            <button ion-button outline item-end icon-left color="danger" (click)="remove(i.filename)">{{\'DELETE\' | translate}}</button>\n          </ion-item>\n          <ion-item>\n            <button ion-button color="secondary" outline item-end icon-left (click)="goto(\'NEWFILE\')">{{\'NEWFILE\' | translate}}</button>\n          </ion-item>\n        </ion-list>\n      </ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-card>\n        <ion-item>\n          <!-- <ion-label >Text</ion-label> -->\n          <ion-textarea [(ngModel)]="text" placeholder="Text you need to tokenize,tag" rows="7"></ion-textarea>\n        </ion-item>\n        <ion-item-divider>\n        </ion-item-divider>\n        <ion-item>\n          <ion-label fixed>{{\'FILENAME\' | translate}}</ion-label>\n          <ion-input [(ngModel)]="newFilename" required></ion-input>\n          <button ion-button outline item-end icon-left (click)="udpipe(text)">{{\'GO\' | translate}}</button>\n        </ion-item>\n      </ion-card>\n    </ion-row>\n    <!-- <ion-row ng2FileDrop (fileOver)="fileOverBase($event)" [uploader]="uploader" [ngClass]="{\'nv-file-over\': hasBaseDropZoneOver}">\n      <ion-card>\n        <ion-card-header>\n          {{\'UPLOADING FILES\' | translate}}\n        </ion-card-header>\n        <ion-list>\n          <ion-item-divider>\n            {{\'FILE LIST\' | translate}}\n          </ion-item-divider>\n          <ion-item *ngFor="let item of uploader.queue">\n            <ion-avatar item-start>\n              <span *ngIf="item.isSuccess"><ion-icon name="cloud-done"></ion-icon></span>\n              <span *ngIf="item.isCancel"><ion-icon name="trash"></ion-icon></span>\n              <span *ngIf="item.isError"><ion-icon name="alert"></ion-icon></span> 1\n            </ion-avatar>\n            <h2>{{ item?.file?.name }}</h2>\n            <p *ngIf="uploader.isHTML5">{{ item?.file?.size/1024/1024 | number:\'.2\' }} MB</p>\n            <div *ngIf="uploader.isHTML5">\n              <div class="progress" style="margin-bottom: 0;">\n                <div class="progress-bar" role="progressbar" [ngStyle]="{ \'width\': item.progress + \'%\' }"></div>\n              </div>\n            </div>\n            <ion-row>\n              <ion-col>\n                <button ion-button icon-left clear small (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">\n                  <ion-icon name="cloud-upload"></ion-icon>\n                  <div>{{\'Upload\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.cancel()" [disabled]="!item.isUploading">\n                  <ion-icon name="undo"></ion-icon>\n                  <div>{{\'Cancel\' | translate}}</div>\n                </button>\n                <button ion-button icon-left clear small (click)="item.remove()">\n                  <ion-icon name="trash"></ion-icon>\n                  <div>{{\'Remove\' | translate}}</div>\n                </button>\n              </ion-col>\n            </ion-row>\n          </ion-item>\n        </ion-list>\n        <ion-item-divider>\n          {{\'UPLOAD A NEW FILE(S)\' | translate}}\n        </ion-item-divider>\n        <button ion-button (click)="uploadbutton.click()" icon-only>\n          <ion-icon name="cloud-upload"></ion-icon>\n          <input #uploadbutton type="file" ng2FileSelect [uploader]="uploader" multiple style="display: none" />\n        </button>\n      </ion-card>\n    </ion-row> -->\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/abbander/Leeds/Wasim/src/pages/docs/docs.html"*/,
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_4__providers_conllu_service__["a" /* ConlluService */],
+        __WEBPACK_IMPORTED_MODULE_2_ionic_configuration_service__["a" /* ConfigurationService */],
+        __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */],
+        __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */]])
+], DocsPage);
+
+
+var ConfigModal = (function () {
+    function ConfigModal(params, translateService, toastCtrl, configService) {
+        this.translateService = translateService;
+        this.toastCtrl = toastCtrl;
+        this.configService = configService;
+        // get config (){
+        //   return this._config;
+        // }
+        // set config (argv){
+        //   // this.configStr = JSON.stringify(argv,null,4)
+        //   this._config =argv
+        // }
+        // configStr : string = ""
+        this.project = "";
+        this.hash = "";
+        this.height = "600";
+        this.configErrors = "";
+        // console.log('UserId', params.get('userId'));
+        this.project = params.data.project;
+        this.hash = params.data.hash;
+        this.config = params.data.config.orig;
+        console.log(this.config);
+        this.editorOptions = new __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["b" /* JsonEditorOptions */]();
+        this.editorOptions.schema = __WEBPACK_IMPORTED_MODULE_9__providers_config_json_class__["a" /* ConfigJSON */].validation;
+        // this.editorOptions.modes = ['code']; // set all allowed modes
+        this.editorOptions.mode = 'code';
+    }
+    ConfigModal.prototype.saveConfig = function () {
+        var _this = this;
+        try {
+            this.configService.save(this.project, this.hash, this.editor.get()).then(function (e) {
+                // this.configService.save(this.project, this.hash,JSON.parse(this.configStr)).then(e=>{
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant("Config file has been updated successfully."),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+            }).catch(function (e) {
+                console.dir(e);
+                _this.toastCtrl.create({
+                    message: _this.translateService.instant(e),
+                    duration: 3000,
+                    position: "top"
+                }).present();
+                _this.configErrors = e;
+            });
+        }
+        catch (e) {
+            console.dir(e);
+            this.configErrors = e.message;
+        }
+    };
+    return ConfigModal;
+}());
+__decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])(__WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */]),
+    __metadata("design:type", __WEBPACK_IMPORTED_MODULE_10_ang_jsoneditor__["a" /* JsonEditorComponent */])
+], ConfigModal.prototype, "editor", void 0);
+ConfigModal = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'page-login',
+        // styleUrls: ['./app.component.css'],
+        template: "\n  <ion-header>\n  <ion-navbar>\n    <ion-title>{{'Configuration File' | translate}}</ion-title>\n    <ion-buttons end>\n      <button right ion-button icon-only (click)=\"saveConfig()\" tabindex=\"-1\">\n        {{ \"Save\" || translate }}\n        <ion-icon name=\"cloud-upload\"></ion-icon>\n      </button>\n    </ion-buttons>\n\n  </ion-navbar>\n</ion-header>\n<ion-content padding rtl>\n<div style=\"height:100%;\">\n  <json-editor [options]=\"editorOptions\" [data]=\"config\"></json-editor>\n</div>\n                    <div [hidden]=\"!configErrors\" class=\"configErrors\">{{configErrors}}</div>\n                    </ion-content>\n",
+    }),
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_7__ngx_translate_core__["c" /* TranslateService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["o" /* ToastController */], __WEBPACK_IMPORTED_MODULE_8__providers_config_service__["a" /* ConfigService */]])
+], ConfigModal);
+
+//# sourceMappingURL=docs.js.map
+
+/***/ }),
+
+/***/ 66:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var sentence_1 = __webpack_require__(239);
+exports.ConlluSentence = sentence_1.ConlluSentence;
+var element_1 = __webpack_require__(125);
+exports.ConlluElement = element_1.ConlluElement;
+var document_1 = __webpack_require__(336);
+exports.ConlluDocument = document_1.ConlluDocument;
+var util_1 = __webpack_require__(67);
+exports.Util = util_1.Util;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 67:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5576,10 +6439,10 @@ Util.repairFields = function (fields, logger) {
         fields = fields.slice(0, 10);
     }
     else {
-        logger('repair: filling in empty ("_") for missing fields');
-        for (let m = 0; m < 10 - fields.length; m++) {
+        for (let m = 0; fields.length < 10; m++) {
             fields.push('_');
         }
+        logger('repair: filling in empty ("_") for missing fields. Fields now are ' + fields.length);
     }
 };
 Util.strictFieldSplitter = function (line) {
@@ -5677,5 +6540,5 @@ exports.Util = Util;
 
 /***/ })
 
-},[219]);
+},[267]);
 //# sourceMappingURL=main.js.map

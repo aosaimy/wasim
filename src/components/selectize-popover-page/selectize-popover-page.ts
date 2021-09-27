@@ -1,7 +1,7 @@
 import { ConlluElement } from 'conllu-dao';
 import { Component, ViewChild } from '@angular/core';
 import { ViewController , NavParams } from 'ionic-angular';
-import { ConfigJSON } from '../../providers/config-service';
+import { ConfigJSON } from '../../providers/config-json.class';
 
 @Component({
   selector: 'selectize-popover-page',

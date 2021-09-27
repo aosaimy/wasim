@@ -1,9 +1,7 @@
-<button color="secondary" ion-button *ngFor="let tag of currentTags;" class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">
-  {{tag.desc}}
-  <ion-badge >{{tag.fn}}</ion-badge>
+<button color="secondary" style="direction: rtl" ion-button *ngFor="let tag of currentTags;" small class="tag" title="{{tag.desc}}" (click)="selectTag(tag)" tabindex="-1">
+  <span class='tag-num'>{{tag.fn}}-</span>{{tag.desc}}
 </button>
 
-<button ion-button color="secondary" class="tag" title="Press 0 for more tags" (click)="increaseTagsRow()" tabindex="-1">
-  More
-  <ion-badge >0</ion-badge>
+<button small ion-button style="direction: rtl" color="secondary" class="tag" title="Press 0 for more tags" (click)="this.nextTags.emit(true)" tabindex="-1">
+  <span class='tag-num'>0</span>{{'MORE' | translate}}
 </button>

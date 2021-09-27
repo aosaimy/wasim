@@ -1,22 +1,22 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>تسجيل الدخول</ion-title>
+    <ion-title>{{'LOGIN PAGE TITLE' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding rtl>
   <ion-card *ngIf="!validSecurity">
-    <ion-card-header>تسجيل الدخول</ion-card-header>
+    <ion-card-header>{{'LOGIN MODAL TITLE' | translate}}</ion-card-header>
     <ion-card-content>
       <form (ngSubmit)="login()">
         <ion-item>
-          <ion-label fixed>اسم المستخدم</ion-label>
+          <ion-label fixed>{{'USERNAME' | translate}}</ion-label>
           <ion-input [(ngModel)]="username" name="username"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label fixed>كلمة المرور</ion-label>
+          <ion-label fixed>{{'PASSWORD' | translate}}</ion-label>
           <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
         </ion-item>
-        <button type="submit" ion-button block>تسجيل الدخول</button>
+        <button type="submit" ion-button block>{{'LOGIN' | translate}}</button>
       </form>
     </ion-card-content>
   </ion-card>

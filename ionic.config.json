@@ -1,9 +1,14 @@
 {
-  "server": "http://wasim-api.localhost/",
   "name": "myWasim",
-  "app_id": "wasim.al-osaimy.com",
-  "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "server": "http://wasim-api.localhost:8080/",
+  "type": "ionic-angular",
+  "langs": [
+    "ar",
+    "en"
+  ],
+  "lang": "ar",
+  "pro_id": "wasim.al-osaimy.com"
 }

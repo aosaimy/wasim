@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {  ViewController, NavParams } from 'ionic-angular';
-import {  ConfigJSON } from '../../providers/config-service';
+import {  ConfigJSON } from '../../providers/config-json.class';
 
 /**
  * Generated class for the HelpPopoverComponent component.
@@ -20,7 +20,8 @@ export class HelpPopoverComponent {
     // public data: Data,
     public viewCtrl: ViewController) {
     this.config = navParams.data.config
-    this.shortcuts = this.config.keyboardShortcuts.map(e=>{
+    this.shortcuts = Object.keys(this.config.keyboardShortcuts).map(id=>{
+      var e = this.config.keyboardShortcuts[id]
       let params = e.params ? e.params.join() : ""
       if(e.code.indexOf("Digit") ==0)
         params = ""

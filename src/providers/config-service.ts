@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { ConfigurationService } from "ionic-configuration-service";
 import { Http , Headers, RequestOptionsArgs } from '@angular/http';
 import { RequestOptions, Request, RequestMethod} from '@angular/http';
+import { ConfigJSON} from './config-json.class';
 // import { Sentence} from '../pages/annotate/conllu';
-import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/map';
 
 
 /*
@@ -13,6 +14,7 @@ import 'rxjs/add/operator/map';
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
+
 let desc = {"saveFile":"Convert to Conll then Save",
   "syncConllU":"Convert to Conll",
   "diactric":"Add a diactric",
@@ -26,104 +28,6 @@ let desc = {"saveFile":"Convert to Conll then Save",
   "diac":"Mark the last character with a diacritic",
   "more":"Show more less-frequent tags"}
 
-interface KeyboardJSON {
-  code : string
-  action : string
-  altKey: boolean
-  metaKey: boolean
-  ctrlKey: boolean
-  shiftKey: boolean
-  desc?: string
-  params : string[]
-  keys?: string[]
-}
-
-interface TagsJSON {
-  mapFrom: string[]
-  tag: string
-  desc: string
-  count: number
-  fn: number
-  mapToConllU: string
-  mf: string[]
-  features: string[]
-}
-
-export class ConfigJSON {
-      remote_repo : string ="";
-      isConlluHidden : boolean = false;
-      askMA : boolean = false;
-      askMemMA : boolean = false;
-      askGuider : boolean = false;
-      project : string ="";
-      hash : string ="";
-      language : string ="qac";
-      tagset: string ="";
-      rowlength: number = 7;
-      users: string[] = [];
-      debug: boolean = false;
-      keyboardShortcuts: KeyboardJSON[] = [];
-
-      MfVsPos:{} = {};
-      MfVsPos_upostag:boolean = true;
-      concordanceWindow:number = 5;
-      mf:{} = {};
-      isRtl:boolean = true;
-      useUD:boolean = true;
-      sync:boolean = true;
-      alltags : TagsJSON[] = [];
-      allxtags : string[] = [];
-      allutags : string[] = [];
-      onFeatSelect : { [id:string]: { [id:string]: string[] }} = {};
-      tags : { [id:string]: {tag:string,desc:string}} = {};
-      sentenceTags : any[] = [];
-      loaded: boolean = false
-      undoSize: number = 5
-      features: { [id:string]: {tag:string,desc:string}} = {};
-
-      constructor(data?: any){
-        if(data){
-            this.remote_repo = data.config.remote_repo
-            this.language = data.config.language
-            this.tagset = data.config.tagset
-            this.useUD = data.config.useUD
-            this.rowlength = data.config.rowlength
-            this.isRtl = data.config.isRtl
-            this.sync = data.config.sync
-            this.undoSize = data.config.undoSize
-            this.users = data.config.users
-            this.keyboardShortcuts = data.config.keyboardShortcuts
-            this.isConlluHidden = data.config.isConlluHidden
-            this.askMA = data.config.askMA
-            this.askMemMA = data.config.askMemMA
-            this.askGuider = data.config.askGuider
-            this.onFeatSelect = data.config.onFeatSelect
-            this.MfVsPos = data.config["MF.vs.POS"] || data.config.MfVsPos
-            this.MfVsPos_upostag = data.config["MF.vs.POS_upostag"] || data.config.MfVsPos_upostag
-
-            this.mf = data.config.mf
-            this.sentenceTags = data.config.sentenceTags
-            this.allutags = data.config.allutags
-
-            this.alltags = data.config.alltags
-          }
-      }
-      getFeature(key) : {tag:string,desc:string}{
-        return this.features[key] || {tag:"N/A:"+key, desc : "n/a:"+key}
-      }
-      // getFeatures(xpostag){
-      //   return this.alltags.find(x=>x.tag==this.xpostag)
-      // }
-      getXPosTag(key): {tag:string,desc:string}{
-        return this.tags["X:"+key] || {tag:"N/A:"+key, desc : "n/a:"+key}
-      }
-
-      getUPosTag(key): {tag:string,desc:string}{
-        return this.tags["U:"+key] || {tag:"N/A:"+key, desc : "n/a:"+key}
-      }
-}
-
-
 @Injectable()
 export class ConfigService {
 
@@ -133,9 +37,13 @@ export class ConfigService {
   }
 
   config : {[id:string]:ConfigJSON } = {}
+  default_config : any = null
 
 
-  load(project:string, hash: string,) {
+  extend(default_config, config) {
+    Object.assign
+  }
+  load(project:string, hash: string) {
 	  if (this.config[project]) {
 	    // already loaded data
 	    return Promise.resolve(this.config[project]);
@@ -149,10 +57,18 @@ export class ConfigService {
 	      .map(res => res.json())
 	      .subscribe(data => {
 	        if(data.ok){
-            var config = new ConfigJSON(data)
+            if(!this.default_config)
+              this.default_config = data.default
+            var merged = Object.assign({}, this.default_config, data.config)
+            merged.keyboardShortcuts = Object.assign({}, this.default_config.keyboardShortcuts, data.config.keyboardShortcuts)
+            merged.mf = Object.assign({}, this.default_config.mf, data.config.mf)
+            merged["MF.vs.POS"] = Object.assign({}, this.default_config["MF.vs.POS"], data.config["MF.vs.POS"])
+            var config = new ConfigJSON(merged, data.config)
+
             config.project = project
             config.hash = hash
-            config.keyboardShortcuts.forEach(e=>{
+            Object.keys(config.keyboardShortcuts).forEach(i=>{
+              var e = config.keyboardShortcuts[i]
               e.keys = []
               if(e.metaKey)
                 e.keys.push("⌘")
@@ -204,7 +120,12 @@ export class ConfigService {
 	        	// if(data.default)
 	        	// 	that.config.default = data.default
 	        	reject(data.error)
-	      });
+	      }, error=>{
+          if(error.status != 200)
+            reject("Server is not working properly. url="+this.myconfig.getValue("server"))
+          else
+            reject(error.message)
+        });
 	  });
 	}
 
@@ -223,23 +144,15 @@ export class ConfigService {
 	      .subscribe(data => {
 	        if(data.ok){
 	        	resolve();
-            config.isRtl = this.isRtl(project)
-	        	this.config[project] = config
+	        	this.config[project] = new ConfigJSON(Object.assign(this.default_config, config), config)
 	        }
 	        else
 	        	reject(data.error)
 	      });
 	  });
 	}
-	getConfig(project) : ConfigJSON{
-		return this.config[project] ? this.config[project] : this.config.default
-	}
-	rtls = ["arabic","qac"]
-	isRtl(project){
-    if(this.getConfig(project).isRtl != undefined)
-      return this.getConfig(project).isRtl
-		return this.rtls.indexOf(this.getConfig(project).language) >= 0
-
-	}
+	// getConfig(project) : ConfigJSON{
+	// 	return this.config[project] ? this.config[project] : this.config.default
+	// }
 
 }

@@ -1,7 +1,8 @@
 <!-- Generated template for the ConlluEditorComponent component -->
 <pre [style.counter-reset]="'line '+ start">
-<!--       --><div contenteditable="true" class="conllu-row" [ngClass]="{
-              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (blur)="onConlluRawSpansChanged(r,i, $event)"><div class='actions' contenteditable="false"><button tabindex="-1" ion-button small icon-only color="light" (click)="removeConlluRawRow(r,i,$event)"><ion-icon name="remove"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="addConlluRawRow(r,i,$event)"><ion-icon name="add"></ion-icon></button><button tabindex="-1" ion-button small icon-only color="light" (click)="highlighElementChange.emit('S'+r.sentid+':'+r.elemid)"><ion-icon name="checkmark"></ion-icon></button></div><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]=='#'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>
-          <button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>
+<!--       --><div contenteditable="true" class="conllu-row conllu-row-{{i}}" [ngClass]="{
+              highlight:sid==r.sentid && eid == r.elemid}" *ngFor="let r of conlluRawSpansSubset; let i = index" (focus)="highlighElementChange.emit('S'+r.sentid+':'+r.elemid)" (blur)="onConlluRawSpansChanged(r,i, $event)" (keydown.enter)="addConlluRawRow(r,i+1,$event)" (keydown.arrowup)="focus(i-1,$event)" (keydown.arrowdown)="focus(i+1,$event)" (keyup.backspace)="removeConlluRawRow(r,i,$event)"><code class="conllu-cell conllu-cell-{{ii}} begins-with-{{c[0]=='#'}}" *ngFor="let c of r.elems; let ii = index">{{c}}</code><!--  --></div>
+          <div class="downloadButton"><button tabindex="-1" ion-button small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button>
+<button tabindex="-1" ion-button class="downloadButton" small icon-only color="light" (click)="downloadConlluRawRow($event)"><ion-icon name="download"></ion-icon></button></div>
 
 <!-- --></pre>

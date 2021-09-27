@@ -1,12 +1,15 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>المشاريع</ion-title>
+    <ion-title>{{'PROJECTS TITLE' | translate}}</ion-title>
     <ion-buttons end>
       <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="logout($event)" tabindex="-1">
         <ion-icon name="log-out"></ion-icon>
       </button>
       <button *ngIf="projectService.username!=null" right ion-button icon-only (click)="profile($event)" tabindex="-1">
         <ion-icon name="contact"></ion-icon>
+      </button>
+      <button right ion-button icon-only (click)="lang($event)" tabindex="-1">
+        <ion-icon name="settings"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -15,23 +18,26 @@
 <ion-content padding rtl>
   <ion-card>
   <ion-item-divider>
-    المشاريع الحالية
+    {{'CURRENT PROJECTS' | translate}}
   </ion-item-divider>
   	<ion-list>
     	<ion-item *ngFor="let p of projects">
     		{{p.project}}
-    		<button ion-button outline item-end icon-left (click)="goto(p)">اذهب</button>
-    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">احذف</button>
+    		<button ion-button outline item-end icon-left (click)="goto(p)">{{'GO' | translate}}</button>
+    		<button color="danger" ion-button outline item-end icon-left (click)="remove(p)">{{'DELETE' | translate}}</button>
     	</ion-item>
   	</ion-list>
-	<ion-item *ngIf='projects.length === 0'>لا يوجد أي مشروع</ion-item>
-  <ion-item-divider>
-    مشروع جديد
+  <ion-item *ngIf='projects.length === 0'>{{'NO PROJECT IS FOUND' | translate}}</ion-item>
+	<ion-item >
+    <button ion-button color="secondary" outline item-end icon-left (click)="create()">{{'CREATE NEW PROJECT' | translate}}</button>
+  </ion-item>
+<!--   <ion-item-divider>
+    {{'NEW PROJECT' | translate}}
   </ion-item-divider>
 	<ion-item >
-	    <ion-label fixed>اسم المشروع</ion-label>
+	    <ion-label fixed>{{'PROJECT NAME' | translate}}</ion-label>
 	    <ion-input type="text" [(ngModel)]="new_project"></ion-input>
-		<button ion-button outline item-end icon-left (click)="create()">إنشاء</button>
+		<button ion-button outline item-end icon-left (click)="create()">{{'CREATE NEW PROJECT' | translate}}</button>
 	</ion-item>
-  </ion-card>
+ -->  </ion-card>
 </ion-content>

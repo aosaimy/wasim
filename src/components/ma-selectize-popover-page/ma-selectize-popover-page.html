@@ -1,4 +1,4 @@
 <div>
-  <concordance [element]="element" [config]="config"></concordance>
+  <concordance *ngIf="showContext" [element]="element" [config]="config"></concordance>
 	<ng-selectize #myselectize [config]="myconfig"></ng-selectize>
 </div>

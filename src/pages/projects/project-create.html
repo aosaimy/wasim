@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'PAGE_CREATE' | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding rtl>
+  <ion-card>
+    <form (ngSubmit)="createProject()">
+      <ion-item>
+        <ion-label>{{'PROJECT_NAME' | translate}}</ion-label>
+        <ion-input [(ngModel)]="project" name="project" required="true"></ion-input>
+      </ion-item>
+      <ion-card-header>{{'CONFIG' | translate}}</ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>{{'ASK_MA' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="askMA" name="askMA"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'ASK_MEM_MA' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="askMemMA" name="askMemMA"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'ASK_GUIDER' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="askGuider" name="askGuider"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'LANGUAGE' | translate}}</ion-label>
+          <ion-input [(ngModel)]="language" name="language"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'IS_RTL' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="isRtl" name="isRtl"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{'USE_UD' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="useUD" name="useUD"></ion-toggle>
+        </ion-item>
+        <button ion-button block type="submit">{{'CREATE_PROJECT' | translate}}</button>
+      </ion-card-content>
+    </form>
+  </ion-card>
+</ion-content>
